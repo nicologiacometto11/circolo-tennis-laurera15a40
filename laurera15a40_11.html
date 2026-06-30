@@ -720,7 +720,10 @@ body.viewer .adm-hint{display:none!important;}
       </div>
       <div class="fg">
         <label class="flbl">Password</label>
-        <input type="password" id="admin-pw-input" class="finput" placeholder="Password" autocomplete="current-password">
+        <div style="position:relative;display:flex;align-items:center">
+          <input type="password" id="admin-pw-input" class="finput" placeholder="Password" autocomplete="current-password" style="width:100%;padding-right:38px">
+          <button type="button" onclick="const i=document.getElementById('admin-pw-input');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈'" style="position:absolute;right:10px;background:none;border:none;cursor:pointer;font-size:16px;padding:0;color:var(--text2)">👁</button>
+        </div>
       </div>
       <div id="admin-pw-err" style="color:var(--red);font-size:12px;margin-top:6px;display:none">❌ Email o password errata</div>
       <div class="btn-row" style="margin-top:16px">
