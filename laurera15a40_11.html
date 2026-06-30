@@ -465,7 +465,7 @@ body.light .cmc{border-bottom-color:#e0e4ee;}
 @keyframes rippleAnim{to{transform:scale(4);opacity:0;}}
 
 /* ── VIEWER MODE (default per tutti) ── */
-body.viewer .btn-p,body.viewer .btn-d,body.viewer [onclick*="openNew"],body.viewer [onclick*="openEdit"],body.viewer [onclick*="openCal"],body.viewer [onclick*="openFanta"],body.viewer [onclick*="addLog"],body.viewer [onclick*="deleteP"],body.viewer [onclick*="clearLog"],body.viewer [onclick*="resetData"],body.viewer [onclick*="importBackup"],body.viewer [onclick*="importExcel"],body.viewer [onclick*="recalcStats"],body.viewer [onclick*="generateBracket"],body.viewer [onclick*="openManualBracket"],body.viewer [onclick*="exportHTMLWithData"]{display:none!important;}
+body.viewer .btn-p,body.viewer .btn-d,body.viewer [onclick*="openNew"],body.viewer [onclick*="openEdit"],body.viewer [onclick*="openCal"],body.viewer [onclick*="openFanta"],body.viewer [onclick*="addLog"],body.viewer [onclick*="deleteP"],body.viewer [onclick*="clearLog"],body.viewer [onclick*="resetData"],body.viewer [onclick*="importBackup"],body.viewer [onclick*="importExcel"],body.viewer [onclick*="recalcStats"],body.viewer [onclick*="generateBracket"],body.viewer [onclick*="openManualBracket"],body.viewer [onclick*="exportHTMLWithData"],body.viewer [onclick*="addBracketMatchToCal"]{display:none!important;}
 body.viewer .fab,body.viewer button[onclick*="savePlayer"],body.viewer button[onclick*="saveCalMatch"],body.viewer button[onclick*="saveTorneo"],body.viewer button[onclick*="saveManualBracket"],body.viewer button[onclick*="saveFantaPrediction"]{display:none!important;}
 body.viewer .tab[data-tab="settings"]{display:none!important;}
 /* ── ADMIN LOCK ICON ── */
@@ -3129,6 +3129,7 @@ function saveManualBracket(){
 // Fix addBracketMatchToCal: set torneo first, then fill selects
 const _origAddBracketXT=addBracketMatchToCal;
 function addBracketMatchToCal(torneoId,p1Id,p2Id){
+  if(_checkViewer())return;
   calActiveTorneoId=torneoId;
   fillCalTorneoSelect();
   const ts=document.getElementById('mc-torneo-id');
