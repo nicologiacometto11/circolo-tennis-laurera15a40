@@ -616,11 +616,6 @@ body.light .cmc{border-bottom-color:#e0e4ee;}
 <div id="page-settings" class="page">
   <div class="wrap" style="max-width:800px">
     <div class="pg-title">⚙️ Impostazioni</div>
-    <div class="card stg-block" style="border-color:var(--accent);border-top:3px solid var(--accent);background:rgba(232,255,0,.06);margin-bottom:12px">
-      <h3>📱 Esporta per altro dispositivo</h3>
-      <p>Scarica il file HTML con tutti i dati incorporati. Aprilo su qualsiasi dispositivo o browser.</p>
-      <div class="btn-row"><button class="btn btn-p" onclick="exportHTMLWithData()">📱 Esporta File Completo (.html)</button></div>
-    </div>
     <div class="card stg-block">
       <h3>📊 Importa da Excel</h3>
       <p>Colonne: GIOCATORE, ETA, SESSO, LIVELLO, NAZIONALITÀ, MANO, STORICO, GAME VINTI, PARTITE GIOCATE, MEDIA GAME VINTI.</p>
@@ -645,11 +640,6 @@ body.light .cmc{border-bottom-color:#e0e4ee;}
         <label class="btn btn-g" style="cursor:pointer">⬆️ Carica Backup<input type="file" accept=".json" style="display:none" onchange="importBackup(this)"></label>
       </div>
       <p style="margin-top:8px"><strong style="color:var(--red)">Caricare un backup sovrascrive tutti i dati attuali.</strong></p>
-    </div>
-    <div class="card stg-block">
-      <h3>⚠️ Reset</h3>
-      <p>Ripristina l'app vuota. <strong style="color:var(--red)">Dati persi.</strong></p>
-      <div class="btn-row"><button class="btn btn-d" onclick="resetData()">⚠️ Ripristina</button></div>
     </div>
     <div class="card stg-block"><h3>ℹ️ Info</h3><p id="info-text">—</p></div>
     <div class="card stg-block">
