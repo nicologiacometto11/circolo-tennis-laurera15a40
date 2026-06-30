@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <title>LAURERA 15A40 — Centro Sportivo</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Exo+2:wght@700;900&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -1035,8 +1037,32 @@ let nextId=100,matchNextId=200,schedNextId=300;
 let gF='ALL',lvF=[1,2,3],editPlayerId=null,editMatchId=null,editSchedId=null,pendingPhoto=null;
 let currentTab='players';
 // ═══ STORAGE ═══
-function save(){try{localStorage.setItem('laurera_p',JSON.stringify(players.map(p=>{const{photoUrl,...r}=p;return r;})));localStorage.setItem('laurera_m',JSON.stringify(matches));localStorage.setItem('laurera_s',JSON.stringify(sched));localStorage.setItem('laurera_i',JSON.stringify({nextId,matchNextId,schedNextId}));}catch(e){}}
-function load(){if(typeof __EMBEDDED__!=='undefined'&&__EMBEDDED__&&__EMBEDDED__.players){try{const d=__EMBEDDED__;players=d.players||[];matches=d.matches||[];sched=d.sched||[];nextId=d.nextId||100;matchNextId=d.matchNextId||200;schedNextId=d.schedNextId||300;save();return;}catch(e){}}try{const rp=localStorage.getItem('laurera_p');if(rp)players=JSON.parse(rp);const rm=localStorage.getItem('laurera_m');if(rm)matches=JSON.parse(rm);const rs=localStorage.getItem('laurera_s');if(rs)sched=JSON.parse(rs);const ri=localStorage.getItem('laurera_i');if(ri){const x=JSON.parse(ri);nextId=x.nextId||100;matchNextId=x.matchNextId||200;schedNextId=x.schedNextId||300;}players.forEach(p=>{const ph=localStorage.getItem('laurera_ph_'+p.id);if(ph)p.photoUrl=ph;});matches.forEach(m=>{const v=localStorage.getItem('laurera_vid_'+m.id);if(v)m.videoUrl=v;});}catch(e){}}
+// ═══ FIREBASE INIT ═══
+const _fbConfig={apiKey:"AIzaSyB56IrpHXm0bJ4sm5lqR6OhO2-9fjnLRfk",authDomain:"laurera15a40-1d606.firebaseapp.com",projectId:"laurera15a40-1d606",storageBucket:"laurera15a40-1d606.firebasestorage.app",messagingSenderId:"676104929977",appId:"1:676104929977:web:70f0b90c9c71864fbdd168"};
+firebase.initializeApp(_fbConfig);
+const _db=firebase.firestore();
+const _doc=(name)=>_db.collection('clubs').doc('laurera15a40').collection('data').doc(name);
+let _skipNextSnap={main:false,tornei:false,fanta:false,albo:false};
+
+function _lsCache(){try{localStorage.setItem('laurera_p',JSON.stringify(players.map(p=>{const{photoUrl,...r}=p;return r;})));localStorage.setItem('laurera_m',JSON.stringify(matches));localStorage.setItem('laurera_s',JSON.stringify(sched));localStorage.setItem('laurera_i',JSON.stringify({nextId,matchNextId,schedNextId}));}catch(e){}}
+function _lsLoad(){try{const rp=localStorage.getItem('laurera_p');if(rp)players=JSON.parse(rp);const rm=localStorage.getItem('laurera_m');if(rm)matches=JSON.parse(rm);const rs=localStorage.getItem('laurera_s');if(rs)sched=JSON.parse(rs);const ri=localStorage.getItem('laurera_i');if(ri){const x=JSON.parse(ri);nextId=x.nextId||100;matchNextId=x.matchNextId||200;schedNextId=x.schedNextId||300;}}catch(e){}}
+function _attachPhotos(){players.forEach(p=>{const ph=localStorage.getItem('laurera_ph_'+p.id);if(ph)p.photoUrl=ph;});matches.forEach(m=>{const v=localStorage.getItem('laurera_vid_'+m.id);if(v)m.videoUrl=v;});}
+
+function save(){
+  const data={players:players.map(p=>{const{photoUrl,...r}=p;return r;}),matches,sched,nextId,matchNextId,schedNextId};
+  _lsCache();
+  _skipNextSnap.main=true;
+  _doc('main').set(data).catch(()=>{});
+}
+async function load(){
+  if(typeof __EMBEDDED__!=='undefined'&&__EMBEDDED__&&__EMBEDDED__.players){try{const d=__EMBEDDED__;players=d.players||[];matches=d.matches||[];sched=d.sched||[];nextId=d.nextId||100;matchNextId=d.matchNextId||200;schedNextId=d.schedNextId||300;save();_attachPhotos();return;}catch(e){}}
+  try{
+    const snap=await _doc('main').get();
+    if(snap.exists){const d=snap.data();players=d.players||[];matches=d.matches||[];sched=d.sched||[];nextId=d.nextId||100;matchNextId=d.matchNextId||200;schedNextId=d.schedNextId||300;}
+    else{_lsLoad();if(players.length||matches.length)save();}
+  }catch(e){_lsLoad();}
+  _attachPhotos();
+}
 function savePh(id,u){try{localStorage.setItem('laurera_ph_'+id,u);}catch(e){toast('⚠️ Foto troppo grande');}}
 function delPh(id){try{localStorage.removeItem('laurera_ph_'+id);}catch(e){}}
 function saveVid(id,u){try{localStorage.setItem('laurera_vid_'+id,u);}catch(e){toast('⚠️ Video troppo grande');}}
@@ -2292,11 +2318,17 @@ function clearLog(){if(!confirm('Cancellare il registro?'))return;localStorage.r
 let tornei=[],editTorneoId=null;
 let tNextId=1000;
 
-function loadTornei(){
-  try{const r=localStorage.getItem('laurera_tornei');if(r)tornei=JSON.parse(r);const ri=localStorage.getItem('laurera_torn_id');if(ri)tNextId=+ri;}catch(e){}
+async function loadTornei(){
+  try{
+    const snap=await _doc('tornei').get();
+    if(snap.exists){const d=snap.data();tornei=d.tornei||[];tNextId=d.tNextId||1000;}
+    else{try{const r=localStorage.getItem('laurera_tornei');if(r)tornei=JSON.parse(r);const ri=localStorage.getItem('laurera_torn_id');if(ri)tNextId=+ri;}catch(e){} if(tornei.length)saveTornei();}
+  }catch(e){try{const r=localStorage.getItem('laurera_tornei');if(r)tornei=JSON.parse(r);const ri=localStorage.getItem('laurera_torn_id');if(ri)tNextId=+ri;}catch(e2){}}
 }
 function saveTornei(){
   try{localStorage.setItem('laurera_tornei',JSON.stringify(tornei));localStorage.setItem('laurera_torn_id',tNextId);}catch(e){}
+  _skipNextSnap.tornei=true;
+  _doc('tornei').set({tornei,tNextId}).catch(()=>{});
 }
 
 function getTorneoEsito(t){
@@ -2825,8 +2857,14 @@ function exportBracketPDF(torneoId){
 let fantaData={predictions:[]};
 let editFantaMatchId=null;
 
-function loadFanta(){try{const r=localStorage.getItem('laurera_fanta');if(r)fantaData=JSON.parse(r);}catch(e){}}
-function saveFanta(){try{localStorage.setItem('laurera_fanta',JSON.stringify(fantaData));}catch(e){}}
+async function loadFanta(){
+  try{const snap=await _doc('fanta').get();if(snap.exists){fantaData=snap.data().fantaData||{predictions:[]};}else{try{const r=localStorage.getItem('laurera_fanta');if(r)fantaData=JSON.parse(r);}catch(e){} if(fantaData.predictions&&fantaData.predictions.length)saveFanta();}}catch(e){try{const r=localStorage.getItem('laurera_fanta');if(r)fantaData=JSON.parse(r);}catch(e2){}}
+}
+function saveFanta(){
+  try{localStorage.setItem('laurera_fanta',JSON.stringify(fantaData));}catch(e){}
+  _skipNextSnap.fanta=true;
+  _doc('fanta').set({fantaData}).catch(()=>{});
+}
 
 function fantaTab(tab,btn){
   document.querySelectorAll('.fc[id^="ft-"]').forEach(b=>b.classList.remove('on'));
@@ -3054,9 +3092,43 @@ function migrateStorageNamespace(){
   }catch(e){}
 }
 migrateStorageNamespace();
-loadTornei();loadFanta();loadAlbo();load();initTheme();initAdmin();migrateStoricoAll();
-// Aggiorna albo per tornei già completati
-setTimeout(function(){tornei.forEach(function(t){if(t.bracket)autoAlboCheck(t.id);});},300);migrateAlboNotes();renderAlbo();renderCards();renderTickerTape();updateHdrStats();fetchMeteo();setInterval(updateHdrClock,1000);setInterval(updateHdrStats,30000);setInterval(fetchMeteo,600000);updateHdrClock();initQuotes();
+initTheme();initAdmin();
+(async()=>{
+  await Promise.all([loadTornei(),loadFanta(),loadAlbo(),load()]);
+  migrateStoricoAll();
+
+  // ── Realtime listeners ──
+  _doc('main').onSnapshot(snap=>{
+    if(_skipNextSnap.main){_skipNextSnap.main=false;return;}
+    if(!snap.exists)return;
+    const d=snap.data();players=d.players||[];matches=d.matches||[];sched=d.sched||[];nextId=d.nextId||100;matchNextId=d.matchNextId||200;schedNextId=d.schedNextId||300;
+    _attachPhotos();_lsCache();
+    renderCards();renderTickerTape();updateHdrStats();renderRisultati();
+    if(currentTab==='classifiche')renderRank();
+  });
+  _doc('tornei').onSnapshot(snap=>{
+    if(_skipNextSnap.tornei){_skipNextSnap.tornei=false;return;}
+    if(!snap.exists)return;
+    const d=snap.data();tornei=d.tornei||[];tNextId=d.tNextId||1000;
+    if(currentTab==='tornei')renderTornei();
+    if(currentTab==='calendario')renderCalTorneoSelector();
+    if(currentTab==='classifiche-torneo')renderRanking();
+  });
+  _doc('fanta').onSnapshot(snap=>{
+    if(_skipNextSnap.fanta){_skipNextSnap.fanta=false;return;}
+    if(!snap.exists)return;
+    fantaData=snap.data().fantaData||{predictions:[]};
+    if(currentTab==='fanta')renderFantaPronostici();
+  });
+  _doc('albo').onSnapshot(snap=>{
+    if(_skipNextSnap.albo){_skipNextSnap.albo=false;return;}
+    if(!snap.exists)return;
+    alboData=snap.data().alboData||[];
+    if(currentTab==='albo')renderAlbo();
+  });
+  // Aggiorna albo per tornei già completati
+  setTimeout(function(){tornei.forEach(function(t){if(t.bracket)autoAlboCheck(t.id);});},300);migrateAlboNotes();renderAlbo();renderCards();renderTickerTape();updateHdrStats();fetchMeteo();setInterval(updateHdrClock,1000);setInterval(updateHdrStats,30000);setInterval(fetchMeteo,600000);updateHdrClock();initQuotes();
+})();
 function advanceBracket(torneoId,p1Id,p2Id,winnerId,risultato){
   const t=tornei.find(x=>x.id===torneoId);
   if(!t||!t.bracket||!t.bracket.rounds)return;
@@ -3232,8 +3304,14 @@ function updateMbmOptions(matchIdx){
 
 
 var editAlboId=null;
-function loadAlbo(){try{var d=localStorage.getItem('laurera_albo');if(d)alboData=JSON.parse(d);}catch(e){alboData=[];}}
-function saveAlboData(){localStorage.setItem('laurera_albo',JSON.stringify(alboData));}
+async function loadAlbo(){
+  try{const snap=await _doc('albo').get();if(snap.exists){alboData=snap.data().alboData||[];}else{try{var d=localStorage.getItem('laurera_albo');if(d)alboData=JSON.parse(d);}catch(e){alboData=[];} if(alboData.length)saveAlboData();}}catch(e){try{var d2=localStorage.getItem('laurera_albo');if(d2)alboData=JSON.parse(d2);}catch(e2){alboData=[];}}
+}
+function saveAlboData(){
+  try{localStorage.setItem('laurera_albo',JSON.stringify(alboData));}catch(e){}
+  _skipNextSnap.albo=true;
+  _doc('albo').set({alboData}).catch(()=>{});
+}
 function renderAlbo(){
   var el=document.getElementById('albo-list');if(!el)return;
   if(!alboData.length){el.innerHTML='<div class="empty"><span class="empty-icon">🏅</span>Nessun trofeo ancora.'+(_checkViewer()?'':`<br><button class="btn btn-p" style="margin-top:14px" onclick="openAlboModal()">+ Aggiungi Trofeo</button>`)+'</div>';return;}
