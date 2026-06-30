@@ -713,15 +713,17 @@ body.viewer .adm-hint{display:none!important;}
 <div class="modal-bg" id="modal-admin-login" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal" onclick="event.stopPropagation()">
     <h2 id="admin-modal-title">🔐 Accesso Admin</h2>
-    <div class="fg">
-      <label class="flbl">Password</label>
-      <input type="password" id="admin-pw-input" class="finput" placeholder="Password admin" onkeydown="if(event.key==='Enter')submitAdminLogin()">
-    </div>
-    <div id="admin-pw-err">❌ Password errata</div>
-    <div class="btn-row" style="margin-top:16px">
-      <button class="btn btn-g" onclick="document.getElementById('modal-admin-login').classList.remove('open')">Annulla</button>
-      <button class="btn btn-p" onclick="submitAdminLogin()">Entra</button>
-    </div>
+    <form onsubmit="event.preventDefault();submitAdminLogin()">
+      <div class="fg">
+        <label class="flbl">Password</label>
+        <input type="password" id="admin-pw-input" class="finput" placeholder="Password admin" autocomplete="current-password">
+      </div>
+      <div id="admin-pw-err">❌ Password errata</div>
+      <div class="btn-row" style="margin-top:16px">
+        <button type="button" class="btn btn-g" onclick="document.getElementById('modal-admin-login').classList.remove('open')">Annulla</button>
+        <button type="submit" class="btn btn-p" style="flex:1">🔓 Entra</button>
+      </div>
+    </form>
   </div>
 </div>
 <div class="modal-bg" id="modal-player" onclick="if(event.target===this)this.classList.remove('open')">
