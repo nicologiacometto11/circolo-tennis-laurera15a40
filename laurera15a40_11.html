@@ -460,6 +460,14 @@ body.light .cmc{border-bottom-color:#e0e4ee;}
 .pc-ilbl{font-size:13px;color:#ffffff;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;min-width:88px}
 .pc-ival{font-size:16px;font-weight:700;color:var(--text);padding-left:0}
 
+/* ── PLAYER CHIP (selezione giocatori torneo) ── */
+.mt-player-chip{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;cursor:pointer;border:1.5px solid transparent;background:var(--bg3);transition:.12s;user-select:none;position:relative}
+.mt-player-chip input{position:absolute;opacity:0;width:0;height:0}
+.mt-player-chip:has(input:checked){background:rgba(124,92,252,.14);border-color:var(--accent)}
+.mt-chip-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.mt-chip-name{font-size:13px;font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mt-chip-check{width:16px;height:16px;border-radius:50%;background:var(--accent);display:none;align-items:center;justify-content:center;font-size:9px;color:#000;font-weight:900;flex-shrink:0}
+.mt-player-chip:has(input:checked) .mt-chip-check{display:flex}
 /* ── PILL TOGGLE (modal torneo) ── */
 .mt-toggle{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);transition:.15s;user-select:none;white-space:nowrap}
 .mt-toggle input{position:absolute;opacity:0;width:0;height:0}
@@ -890,8 +898,9 @@ body.viewer .adm-hint{display:none!important;}
         <div class="mt-section-label" style="margin-bottom:0">Seleziona Giocatori</div>
         <button type="button" onclick="selectAllPlayers()" style="background:rgba(124,92,252,.15);border:1px solid var(--accent);color:var(--accent2);border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">✅ Seleziona Tutto</button>
       </div>
-      <div id="mt-players-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;max-height:190px;overflow-y:auto;background:var(--bg4);border-radius:9px;padding:10px;border:1px solid var(--border)"></div>
-      <div style="font-size:11px;color:var(--text2);margin-top:5px" id="mt-count">0 selezionati</div>
+      <input type="text" id="mt-search" placeholder="🔍 Cerca giocatore…" oninput="filterMtPlayers(this.value)" style="width:100%;box-sizing:border-box;background:var(--bg4);border:1px solid var(--border);border-radius:9px;padding:8px 11px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;margin-bottom:8px">
+      <div id="mt-players-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;max-height:210px;overflow-y:auto"></div>
+      <div style="font-size:11px;color:var(--text2);margin-top:6px" id="mt-count">0 selezionati</div>
     </div>
 
     <div class="modal-actions">
@@ -2421,14 +2430,19 @@ function openEditTorneo(id){if(_checkViewer())return;
 }
 function fillMtPlayers(selected){
   const el=document.getElementById('mt-players-list');if(!el)return;
+  const s=document.getElementById('mt-search');if(s)s.value='';
   el.innerHTML=[...players].sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>{
     const checked=selected.includes(p.id);
-    return`<label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:5px;border-radius:7px;background:${checked?'rgba(124,92,252,.15)':'transparent'};border:1px solid ${checked?'var(--accent)':'transparent'}">
-      <input type="checkbox" value="${p.id}" ${checked?'checked':''} onchange="updateMtCount()" style="accent-color:var(--accent)">
-      <span style="font-size:13px;font-weight:500">${p.nome}</span>
-    </label>`;
+    const ini=p.nome.split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
+    return`<label class="mt-player-chip"><input type="checkbox" value="${p.id}" ${checked?'checked':''} onchange="updateMtCount()"><div class="mt-chip-av av-${p.id%8}">${ini}</div><span class="mt-chip-name">${p.nome}</span><div class="mt-chip-check">✓</div></label>`;
   }).join('');
   updateMtCount();
+}
+function filterMtPlayers(q){
+  const q2=q.toLowerCase();
+  document.querySelectorAll('#mt-players-list .mt-player-chip').forEach(chip=>{
+    chip.style.display=chip.querySelector('.mt-chip-name').textContent.toLowerCase().includes(q2)?'':'none';
+  });
 }
 function updateMtCount(){
   const isGirone=document.getElementById('mt-tipo')&&document.getElementById('mt-tipo').value==='girone';
@@ -2445,11 +2459,7 @@ function updateMtCount(){
     const isChecked=cb.checked;
     const limitReached=!isEditing&&max>0&&checked.length>=max&&!isChecked;
     cb.disabled=limitReached;
-    if(lbl){
-      lbl.style.background=isChecked?'rgba(124,92,252,.15)':'transparent';
-      lbl.style.borderColor=isChecked?'var(--accent)':'transparent';
-      lbl.style.opacity=limitReached?'0.4':'1';
-    }
+    if(lbl)lbl.style.opacity=limitReached?'0.35':'1';
   });
 }
 function selectAllPlayers(){
