@@ -460,6 +460,14 @@ body.light .cmc{border-bottom-color:#e0e4ee;}
 .pc-ilbl{font-size:13px;color:#ffffff;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;min-width:88px}
 .pc-ival{font-size:16px;font-weight:700;color:var(--text);padding-left:0}
 
+/* ── PILL TOGGLE (modal torneo) ── */
+.mt-toggle{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);transition:.15s;user-select:none;white-space:nowrap}
+.mt-toggle input{position:absolute;opacity:0;width:0;height:0}
+.mt-toggle:has(input:checked){background:rgba(232,255,0,.12);border-color:var(--accent);color:var(--accent)}
+body.light .mt-toggle:has(input:checked){background:rgba(80,60,220,.1);border-color:var(--accent2);color:var(--accent2)}
+.mt-section{margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+.mt-section-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;font-weight:500;margin-bottom:8px}
+
 .btn,.cal-nbtn,.fc{position:relative;overflow:hidden;}
 .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.15);transform:scale(0);animation:rippleAnim .45s ease-out;pointer-events:none;}
 @keyframes rippleAnim{to{transform:scale(4);opacity:0;}}
@@ -822,8 +830,9 @@ body.viewer .adm-hint{display:none!important;}
 
 <!-- MODAL NUOVO TORNEO -->
 <div class="modal-bg" id="modal-torneo" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal" onclick="event.stopPropagation()" style="max-width:560px">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:580px">
     <h2>🏆 <span id="mt-title">Nuovo Torneo</span></h2>
+
     <div class="form-grid">
       <div class="fg fg-full"><label>Nome Torneo</label><input id="mt-nome" type="text" placeholder="E.R.A.D Tour — Estate 2025"></div>
       <div class="fg"><label>Tipologia</label>
@@ -841,22 +850,13 @@ body.viewer .adm-hint{display:none!important;}
           <option value="libero">🆓 Libero</option>
         </select>
       </div>
-      <div class="fg fg-full" id="mt-libero-opts">
-        <label>Cosa aggiornare alla fine delle partite</label>
-        <div style="display:flex;gap:14px;flex-wrap:wrap;padding:6px 0">
-          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;color:var(--text)"><input type="checkbox" id="mt-lib-ranking" checked style="accent-color:var(--accent)"> Ranking</label>
-          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;color:var(--text)"><input type="checkbox" id="mt-lib-vps" checked style="accent-color:var(--accent)"> V/P/S</label>
-          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;color:var(--text)"><input type="checkbox" id="mt-lib-mediagame" checked style="accent-color:var(--accent)"> Game Vinti / Media</label>
-        </div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.5">Ranking = punti in classifica Ranking · V/P/S = storico vittorie/pareggi/sconfitte del giocatore · Game Vinti/Media = classifiche Game Vinti e Media nella sezione Classifiche</div>
-      </div>
       <div class="fg"><label>Singolo / Doppio</label>
         <select id="mt-format">
           <option value="singolo">🎾 Singolo</option>
           <option value="doppio">👥 Doppio</option>
         </select>
       </div>
-      <div class="fg" id="mt-max-wrap"><label>Numero Partecipanti</label>
+      <div class="fg" id="mt-max-wrap"><label>Partecipanti</label>
         <select id="mt-max" onchange="updateTorneoMaxUI()">
           <option value="0">Tutti i giocatori</option>
           <option value="-1">Numero libero</option>
@@ -869,13 +869,31 @@ body.viewer .adm-hint{display:none!important;}
       </div>
       <div class="fg"><label>Data Inizio</label><input id="mt-data-start" type="date"></div>
       <div class="fg"><label>Data Fine</label><input id="mt-data-end" type="date"></div>
-
     </div>
-    <div style="margin-top:12px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><label style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;font-weight:500">Seleziona Giocatori</label><button type="button" onclick="selectAllPlayers()" style="background:rgba(124,92,252,.15);border:1px solid var(--accent);color:var(--accent2);border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">✅ Seleziona Tutto</button></div>
-      <div id="mt-players-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;max-height:200px;overflow-y:auto;background:var(--bg4);border-radius:9px;padding:10px;border:1px solid var(--border)"></div>
+
+    <div class="mt-section" id="mt-libero-opts">
+      <div class="mt-section-label">Aggiorna a fine partita</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <label class="mt-toggle"><input type="checkbox" id="mt-lib-ranking" checked> 📊 Ranking</label>
+        <label class="mt-toggle"><input type="checkbox" id="mt-lib-vps" checked> 📈 V/P/S</label>
+        <label class="mt-toggle"><input type="checkbox" id="mt-lib-mediagame" checked> 🎮 Game Vinti / Media</label>
+      </div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.6;margin-top:10px">
+        <strong style="color:var(--text)">Ranking</strong> = punti classifica &nbsp;·&nbsp;
+        <strong style="color:var(--text)">V/P/S</strong> = vittorie/pareggi/sconfitte &nbsp;·&nbsp;
+        <strong style="color:var(--text)">Game Vinti/Media</strong> = classifiche nella sezione Classifiche
+      </div>
+    </div>
+
+    <div class="mt-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="mt-section-label" style="margin-bottom:0">Seleziona Giocatori</div>
+        <button type="button" onclick="selectAllPlayers()" style="background:rgba(124,92,252,.15);border:1px solid var(--accent);color:var(--accent2);border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">✅ Seleziona Tutto</button>
+      </div>
+      <div id="mt-players-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;max-height:190px;overflow-y:auto;background:var(--bg4);border-radius:9px;padding:10px;border:1px solid var(--border)"></div>
       <div style="font-size:11px;color:var(--text2);margin-top:5px" id="mt-count">0 selezionati</div>
     </div>
+
     <div class="modal-actions">
       <button class="btn btn-d" id="mt-del-btn" onclick="deleteTorneo()" style="display:none">Elimina</button>
       <button class="btn btn-g" onclick="document.getElementById('modal-torneo').classList.remove('open')">Annulla</button>
