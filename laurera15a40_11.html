@@ -651,9 +651,6 @@ body.light .cmc{border-bottom-color:#e0e4ee;}
         <div class="log-entry"><span class="log-icon">ℹ️</span><span class="log-text">Nessuna modifica registrata.</span></div>
       </div>
     </div>
-    <div style="text-align:center;padding:16px 0 8px">
-      <button id="theme-btn" onclick="toggleTheme()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:12px;padding:12px 28px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s">🌙 Modalità Chiara / Scura</button>
-    </div>
   </div>
 </div>
 
@@ -1001,9 +998,8 @@ const fmtDIt=(s,o)=>new Date(s+'T12:00:00').toLocaleDateString('it-IT',o||{weekd
 const DAY=['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
 function toast(msg){const t=document.getElementById('toast-el');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
 // ═══ THEME ═══
-function applyTheme(isLight){document.body.classList.toggle('light',isLight);const b=document.getElementById('theme-btn');if(b)b.textContent=isLight?'🌙':'☀️';}
-function toggleTheme(){const l=document.body.classList.toggle('light');const b=document.getElementById('theme-btn');if(b)b.textContent=l?'🌙':'☀️';localStorage.setItem('laurera_theme',l?'light':'dark');}
-function initTheme(){const saved=localStorage.getItem('laurera_theme');if(saved){applyTheme(saved==='light');}else{const mq=window.matchMedia('(prefers-color-scheme: light)');applyTheme(mq.matches);mq.addEventListener('change',e=>{if(!localStorage.getItem('laurera_theme'))applyTheme(e.matches);});}}
+function applyTheme(isLight){document.body.classList.toggle('light',isLight);}
+function initTheme(){const mq=window.matchMedia('(prefers-color-scheme: light)');applyTheme(mq.matches);mq.addEventListener('change',e=>applyTheme(e.matches));}
 // ═══ TAB ═══
 function switchTab(t){currentTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+t).classList.add('active');document.getElementById('fab').style.display=['players','highlights','calendario'].includes(t)?'flex':'none';if(t==='classifiche')renderRank();if(t==='highlights')renderMatches();if(t==='fanta'){loadFanta();renderFantaPronostici();}if(t==='calendario'){loadTornei();renderCalTorneoSelector();}if(t==='risultati')renderRisultati();if(t==='tornei'){loadTornei();renderTornei();}if(t==='albo'){renderAlbo();}if(t==='classifiche-torneo'){loadTornei();renderRanking();}if(t==='settings'){renderLog();const i=document.getElementById('info-text');if(i)i.textContent=`${players.length} giocatori · ${sched.length} partite`;}if(t==='players')renderTickerTape();}
 function fabClick(){if(_checkViewer())return;if(currentTab==='players')openNewPlayer();else if(currentTab==='highlights')openMatchModal();else if(currentTab==='calendario')openCalModal();}
