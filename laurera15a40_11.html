@@ -974,12 +974,12 @@ const _ADMIN_PW_KEY='laurera_admin_pw';
 const _DEFAULT_PW_HASH='8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
 async function _hashPw(pw){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pw));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
 function _checkViewer(){return document.body.classList.contains('viewer');}
-function enableAdmin(){document.body.classList.remove('viewer');sessionStorage.setItem('laurera_admin','1');const btn=document.getElementById('admin-lock-btn');if(btn){btn.textContent='🔓';btn.title='Admin attivo — clicca per uscire';btn.classList.add('is-admin');btn.onclick=adminLogout;}}
+function enableAdmin(){document.body.classList.remove('viewer');const btn=document.getElementById('admin-lock-btn');if(btn){btn.textContent='🔓';btn.title='Admin attivo — clicca per uscire';btn.classList.add('is-admin');btn.onclick=adminLogout;}}
 function adminLogout(){document.body.classList.add('viewer');sessionStorage.removeItem('laurera_admin');const btn=document.getElementById('admin-lock-btn');if(btn){btn.textContent='🔐';btn.title='Admin';btn.classList.remove('is-admin');btn.onclick=openAdminModal;}if(currentTab==='settings')switchTab('players');toast('👋 Uscito dalla modalità admin');}
 function openAdminModal(){document.getElementById('admin-pw-input').value='';document.getElementById('admin-pw-err').style.display='none';document.getElementById('modal-admin-login').classList.add('open');setTimeout(()=>document.getElementById('admin-pw-input').focus(),100);}
-async function submitAdminLogin(){const pw=document.getElementById('admin-pw-input').value;if(!pw)return;const stored=localStorage.getItem(_ADMIN_PW_KEY)||_DEFAULT_PW_HASH;const h=await _hashPw(pw);if(h===stored){document.getElementById('modal-admin-login').classList.remove('open');enableAdmin();toast('✅ Benvenuto Admin!');}else{document.getElementById('admin-pw-err').style.display='block';}}
+async function submitAdminLogin(){const pw=document.getElementById('admin-pw-input').value;if(!pw)return;const stored=localStorage.getItem(_ADMIN_PW_KEY)||_DEFAULT_PW_HASH;const h=await _hashPw(pw);if(h===stored){document.getElementById('modal-admin-login').classList.remove('open');sessionStorage.setItem('laurera_admin',h);enableAdmin();toast('✅ Benvenuto Admin!');}else{document.getElementById('admin-pw-err').style.display='block';}}
 async function changeAdminPassword(oldPw,newPw){const stored=localStorage.getItem(_ADMIN_PW_KEY)||_DEFAULT_PW_HASH;const oh=await _hashPw(oldPw);if(oh!==stored){toast('❌ Password attuale errata');return;}if(!newPw||newPw.length<4){toast('❌ Nuova password troppo corta');return;}const nh=await _hashPw(newPw);localStorage.setItem(_ADMIN_PW_KEY,nh);toast('✅ Password cambiata');}
-function initAdmin(){if(sessionStorage.getItem('laurera_admin')==='1')enableAdmin();}
+function initAdmin(){const t=sessionStorage.getItem('laurera_admin');if(t&&t===(localStorage.getItem(_ADMIN_PW_KEY)||_DEFAULT_PW_HASH))enableAdmin();}
 
 // ═══ FLAGS ═══
 const FC={'ITALIA':'it','RUSSIA':'ru','UZBEKISTAN':'uz','SPAGNA':'es','GERMANIA':'de','SERBIA':'rs','TURCHIA':'tr','CROAZIA':'hr','FRANCIA':'fr','USA':'us','BRASILE':'br','ARGENTINA':'ar','INGHILTERRA':'gb-eng','SVIZZERA':'ch','PORTOGALLO':'pt','OLANDA':'nl','BELGIO':'be','POLONIA':'pl','UCRAINA':'ua','AUSTRALIA':'au','CANADA':'ca','GIAPPONE':'jp','CINA':'cn','COREA':'kr','MESSICO':'mx','GRECIA':'gr','ROMANIA':'ro','AUSTRIA':'at','SVEZIA':'se','NORVEGIA':'no','DANIMARCA':'dk','SERBIA':'rs','ITA':'it','RUS':'ru','ESP':'es','GER':'de','FRA':'fr','POR':'pt'};
@@ -2990,7 +2990,6 @@ function saveFantaPrediction(){
 }
 
 // ═══ VIEWER GUARDS ═══
-function _checkViewer(){return window.__IS_VIEWER__===true;}
 
 // ═══ INIT ═══
 function migrateStoricoAll(){
