@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Exo+2:wght@700;900&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -692,9 +693,8 @@ body.viewer .adm-hint{display:none!important;}
     </div>
     <div class="card stg-block">
       <h3>🔐 Cambia Password Admin</h3>
-      <div class="fg"><label class="flbl">Password attuale</label><input type="password" id="adm-pw-old" class="finput" placeholder="Password attuale"></div>
-      <div class="fg" style="margin-top:8px"><label class="flbl">Nuova password</label><input type="password" id="adm-pw-new" class="finput" placeholder="Nuova password (min 4 caratteri)"></div>
-      <div class="btn-row" style="margin-top:10px"><button class="btn btn-p" onclick="changeAdminPassword(document.getElementById('adm-pw-old').value,document.getElementById('adm-pw-new').value);document.getElementById('adm-pw-old').value='';document.getElementById('adm-pw-new').value=''">💾 Salva Password</button><button class="btn btn-d" style="margin-left:8px" onclick="adminLogout()">🔒 Esci Admin</button></div>
+      <div class="fg"><label class="flbl">Nuova password (min 6 caratteri)</label><input type="password" id="adm-pw-new" class="finput" placeholder="Nuova password"></div>
+      <div class="btn-row" style="margin-top:10px"><button class="btn btn-p" onclick="changeAdminPassword(document.getElementById('adm-pw-new').value);document.getElementById('adm-pw-new').value=''">💾 Salva Password</button><button class="btn btn-d" style="margin-left:8px" onclick="adminLogout()">🔒 Esci Admin</button></div>
     </div>
     <div class="card stg-block"><h3>ℹ️ Info</h3><p id="info-text">—</p></div>
     <div class="card stg-block">
@@ -714,11 +714,15 @@ body.viewer .adm-hint{display:none!important;}
   <div class="modal" onclick="event.stopPropagation()">
     <h2 id="admin-modal-title">🔐 Accesso Admin</h2>
     <form onsubmit="event.preventDefault();submitAdminLogin()">
+      <div class="fg" style="margin-bottom:10px">
+        <label class="flbl">Email</label>
+        <input type="email" id="admin-email-input" class="finput" placeholder="Email admin" autocomplete="email">
+      </div>
       <div class="fg">
         <label class="flbl">Password</label>
-        <input type="password" id="admin-pw-input" class="finput" placeholder="Password admin" autocomplete="current-password">
+        <input type="password" id="admin-pw-input" class="finput" placeholder="Password" autocomplete="current-password">
       </div>
-      <div id="admin-pw-err">❌ Password errata</div>
+      <div id="admin-pw-err" style="color:var(--red);font-size:12px;margin-top:6px;display:none">❌ Email o password errata</div>
       <div class="btn-row" style="margin-top:16px">
         <button type="button" class="btn btn-g" onclick="document.getElementById('modal-admin-login').classList.remove('open')">Annulla</button>
         <button type="submit" class="btn btn-p" style="flex:1">🔓 Entra</button>
@@ -1018,17 +1022,13 @@ body.viewer .adm-hint{display:none!important;}
 
 
 // ═══ ADMIN / VIEWER ═══
-const _ADMIN_PW_KEY='laurera_admin_pw';
-// Default password hash: SHA-256 di "admin" — cambiabile dalle impostazioni
-const _DEFAULT_PW_HASH='8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
-async function _hashPw(pw){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pw));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
 function _checkViewer(){return document.body.classList.contains('viewer');}
 function enableAdmin(){document.body.classList.remove('viewer');const btn=document.getElementById('admin-lock-btn');if(btn){btn.textContent='🔓';btn.title='Admin attivo — clicca per uscire';btn.classList.add('is-admin');btn.onclick=adminLogout;}}
-function adminLogout(){document.body.classList.add('viewer');sessionStorage.removeItem('laurera_admin');const btn=document.getElementById('admin-lock-btn');if(btn){btn.textContent='🔐';btn.title='Admin';btn.classList.remove('is-admin');btn.onclick=openAdminModal;}if(currentTab==='settings')switchTab('players');toast('👋 Uscito dalla modalità admin');}
-function openAdminModal(){document.getElementById('admin-pw-input').value='';document.getElementById('admin-pw-err').style.display='none';document.getElementById('modal-admin-login').classList.add('open');setTimeout(()=>document.getElementById('admin-pw-input').focus(),100);}
-async function submitAdminLogin(){const pw=document.getElementById('admin-pw-input').value;if(!pw)return;const btn=document.querySelector('#modal-admin-login .btn-p');if(btn)btn.disabled=true;try{const stored=localStorage.getItem(_ADMIN_PW_KEY)||_DEFAULT_PW_HASH;const h=await _hashPw(pw);if(h===stored){document.getElementById('modal-admin-login').classList.remove('open');sessionStorage.setItem('laurera_admin',h);enableAdmin();toast('✅ Benvenuto Admin!');}else{document.getElementById('admin-pw-err').style.display='block';}}catch(e){toast('❌ Errore interno — aggiorna il browser');}finally{if(btn)btn.disabled=false;}}
-async function changeAdminPassword(oldPw,newPw){try{const stored=localStorage.getItem(_ADMIN_PW_KEY)||_DEFAULT_PW_HASH;const oh=await _hashPw(oldPw);if(oh!==stored){toast('❌ Password attuale errata');return;}if(!newPw||newPw.length<4){toast('❌ Nuova password troppo corta');return;}const nh=await _hashPw(newPw);localStorage.setItem(_ADMIN_PW_KEY,nh);toast('✅ Password cambiata');}catch(e){toast('❌ Errore interno — aggiorna il browser');}}
-function initAdmin(){const t=sessionStorage.getItem('laurera_admin');if(t&&t===(localStorage.getItem(_ADMIN_PW_KEY)||_DEFAULT_PW_HASH))enableAdmin();}
+function adminLogout(){_auth.signOut();document.body.classList.add('viewer');const btn=document.getElementById('admin-lock-btn');if(btn){btn.textContent='🔐';btn.title='Admin';btn.classList.remove('is-admin');btn.onclick=openAdminModal;}if(currentTab==='settings')switchTab('players');toast('👋 Uscito dalla modalità admin');}
+function openAdminModal(){const ei=document.getElementById('admin-email-input');const pi=document.getElementById('admin-pw-input');if(ei)ei.value='';if(pi)pi.value='';document.getElementById('admin-pw-err').style.display='none';document.getElementById('modal-admin-login').classList.add('open');setTimeout(()=>{if(ei)ei.focus();else if(pi)pi.focus();},100);}
+async function submitAdminLogin(){const email=document.getElementById('admin-email-input').value.trim();const pw=document.getElementById('admin-pw-input').value;if(!email||!pw)return;const btn=document.querySelector('#modal-admin-login .btn-p');if(btn)btn.disabled=true;try{await _auth.signInWithEmailAndPassword(email,pw);document.getElementById('modal-admin-login').classList.remove('open');toast('✅ Benvenuto Admin!');}catch(e){document.getElementById('admin-pw-err').style.display='block';}finally{if(btn)btn.disabled=false;}}
+async function changeAdminPassword(newPw){try{const user=_auth.currentUser;if(!user){toast('❌ Non sei loggato');return;}if(!newPw||newPw.length<6){toast('❌ Password troppo corta (min 6 caratteri)');return;}await user.updatePassword(newPw);toast('✅ Password cambiata');}catch(e){toast('❌ Errore: riloggati e riprova');}}
+function initAdmin(){}
 
 // ═══ FLAGS ═══
 const FC={'ITALIA':'it','RUSSIA':'ru','UZBEKISTAN':'uz','SPAGNA':'es','GERMANIA':'de','SERBIA':'rs','TURCHIA':'tr','CROAZIA':'hr','FRANCIA':'fr','USA':'us','BRASILE':'br','ARGENTINA':'ar','INGHILTERRA':'gb-eng','SVIZZERA':'ch','PORTOGALLO':'pt','OLANDA':'nl','BELGIO':'be','POLONIA':'pl','UCRAINA':'ua','AUSTRALIA':'au','CANADA':'ca','GIAPPONE':'jp','CINA':'cn','COREA':'kr','MESSICO':'mx','GRECIA':'gr','ROMANIA':'ro','AUSTRIA':'at','SVEZIA':'se','NORVEGIA':'no','DANIMARCA':'dk','SERBIA':'rs','ITA':'it','RUS':'ru','ESP':'es','GER':'de','FRA':'fr','POR':'pt'};
@@ -1043,6 +1043,7 @@ let currentTab='players';
 const _fbConfig={apiKey:"AIzaSyB56IrpHXm0bJ4sm5lqR6OhO2-9fjnLRfk",authDomain:"laurera15a40-1d606.firebaseapp.com",projectId:"laurera15a40-1d606",storageBucket:"laurera15a40-1d606.firebasestorage.app",messagingSenderId:"676104929977",appId:"1:676104929977:web:70f0b90c9c71864fbdd168"};
 firebase.initializeApp(_fbConfig);
 const _db=firebase.firestore();
+const _auth=firebase.auth();
 const _doc=(name)=>_db.collection('clubs').doc('laurera15a40').collection('data').doc(name);
 let _skipNextSnap={main:false,tornei:false,fanta:false,albo:false};
 
