@@ -720,9 +720,8 @@ body.viewer .adm-hint{display:none!important;}
       <p style="margin-top:8px"><strong style="color:var(--red)">Caricare un backup sovrascrive tutti i dati attuali.</strong></p>
     </div>
     <div class="card stg-block">
-      <h3>🔐 Cambia Password Admin</h3>
-      <div class="fg"><label class="flbl">Nuova password (min 6 caratteri)</label><input type="password" id="adm-pw-new" class="finput" placeholder="Nuova password"></div>
-      <div class="btn-row" style="margin-top:10px"><button class="btn btn-p" onclick="changeAdminPassword(document.getElementById('adm-pw-new').value);document.getElementById('adm-pw-new').value=''">💾 Salva Password</button><button class="btn btn-d" style="margin-left:8px" onclick="adminLogout()">🔒 Esci Admin</button></div>
+      <h3>🔐 Admin</h3>
+      <div class="btn-row"><button class="btn btn-d" onclick="adminLogout()">🔒 Esci Admin</button></div>
     </div>
     <div class="card stg-block"><h3>ℹ️ Info</h3><p id="info-text">—</p></div>
     <div class="card stg-block">
@@ -1058,7 +1057,6 @@ function enableAdmin(){document.body.classList.remove('viewer');const btn=docume
 function adminLogout(){_auth.signOut();document.body.classList.add('viewer');const btn=document.getElementById('admin-lock-btn');if(btn){btn.textContent='🔐';btn.title='Admin';btn.classList.remove('is-admin');btn.onclick=openAdminModal;}if(currentTab==='settings')switchTab('players');toast('👋 Uscito dalla modalità admin');}
 function openAdminModal(){const ei=document.getElementById('admin-email-input');const pi=document.getElementById('admin-pw-input');if(ei)ei.value='';if(pi)pi.value='';document.getElementById('admin-pw-err').style.display='none';document.getElementById('modal-admin-login').classList.add('open');setTimeout(()=>{if(ei)ei.focus();else if(pi)pi.focus();},100);}
 async function submitAdminLogin(){const email=document.getElementById('admin-email-input').value.trim();const pw=document.getElementById('admin-pw-input').value;if(!email||!pw)return;const btn=document.querySelector('#modal-admin-login .btn-p');if(btn)btn.disabled=true;try{await _auth.signInWithEmailAndPassword(email,pw);document.getElementById('modal-admin-login').classList.remove('open');toast('✅ Benvenuto Admin!');}catch(e){document.getElementById('admin-pw-err').style.display='block';}finally{if(btn)btn.disabled=false;}}
-async function changeAdminPassword(newPw){try{const user=_auth.currentUser;if(!user){toast('❌ Non sei loggato');return;}if(!newPw||newPw.length<6){toast('❌ Password troppo corta (min 6 caratteri)');return;}await user.updatePassword(newPw);toast('✅ Password cambiata');}catch(e){toast('❌ Errore: riloggati e riprova');}}
 function initAdmin(){_auth.onAuthStateChanged(user=>{if(user)enableAdmin();});}
 
 // ═══ FLAGS ═══
