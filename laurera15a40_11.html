@@ -51,7 +51,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 /* TABS */
 .tabs{background:var(--bg2);border-top:3px solid var(--accent);border-bottom:3px solid var(--accent);overflow-x:auto;scrollbar-width:none;position:sticky;top:var(--header-h,0px);z-index:999;backdrop-filter:blur(20px);letter-spacing:.5px;}
 .ticker-tape{position:sticky;top:calc(var(--header-h,0px) + var(--tabs-h,0px));z-index:998;overflow:hidden;white-space:nowrap;background:var(--accent);border-bottom:3px solid #000;}
-.ticker-tape-content{display:inline-flex;animation:tickerScroll 34s linear infinite;}
+.ticker-tape-content{display:inline-flex;animation:tickerScroll 44s linear infinite;}
 .ticker-tape-content span{display:inline-block;padding:13px 0;font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:1px;color:#111111;font-weight:700;padding-right:46px;}
 @keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .tabs-inner{display:flex;align-items:center;gap:6px;max-width:1400px;margin:0 auto;padding:10px 20px;}
@@ -67,12 +67,14 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .tabs-mobile-btn:active{border-color:var(--accent);}
 .tabs-mobile-arrow{font-size:11px;color:var(--text2);transition:transform .15s;position:absolute;right:14px;top:50%;transform:translateY(-50%);}
 .tabs-mobile-btn.open .tabs-mobile-arrow{transform:translateY(-50%) rotate(180deg);}
-.tabs-mobile-menu{position:fixed;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;box-shadow:0 12px 28px rgba(0,0,0,.5);overflow-y:auto;max-height:70vh;display:none;z-index:1500;}
-.tabs-mobile-menu.open{display:block;}
-.tabs-mobile-item{padding:12px 16px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;color:var(--text2);cursor:pointer;border-bottom:1px solid var(--border);text-align:center;}
-.tabs-mobile-item:last-child{border-bottom:none;}
-.tabs-mobile-item:active{background:var(--bg4);}
-.tabs-mobile-item.active{color:#111111;background:var(--accent);font-weight:700;}
+.tabs-mobile-menu{position:fixed;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;box-shadow:0 12px 28px rgba(0,0,0,.5);overflow-y:auto;max-height:70vh;display:none;z-index:1500;padding:10px;box-sizing:border-box;}
+.tabs-mobile-menu.open{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.tabs-mobile-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 8px;border-radius:12px;background:var(--bg4);border:1px solid var(--border2);cursor:pointer;transition:.15s;}
+.tabs-mobile-item:active{border-color:var(--accent);}
+.tabs-mobile-item.active{background:var(--accent);border-color:var(--accent);}
+.tabs-mobile-item .tmi-icon{font-size:22px;line-height:1;}
+.tabs-mobile-item .tmi-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--text2);text-align:center;line-height:1.25;}
+.tabs-mobile-item.active .tmi-label{color:#111111;}
 /* UTILS */
 .wrap{max-width:1400px;margin:0 auto;padding:16px 20px}
 .pg-title{display:inline-flex;align-items:center;font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:2px;margin-bottom:14px;color:#111111;background:var(--accent);padding:9px 30px 9px 16px;clip-path:polygon(0 0,100% 0,92% 100%,0 100%);text-transform:uppercase;white-space:nowrap;}
@@ -206,28 +208,22 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .vmodal{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:2000;display:none;align-items:center;justify-content:center;padding:16px}
 /* PLAYER PROFILE */
 .profile-modal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1500;background:var(--bg);display:none;flex-direction:column;overflow:hidden;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);}
-/* PLAYER CARD */
-.pcrd{width:320px;max-width:100%;margin:0 auto;border-radius:0;clip-path:polygon(0 0,100% 0,100% calc(100% - 30px),calc(100% - 30px) 100%,0 100%);padding:0;position:relative;overflow:hidden;background:linear-gradient(160deg,var(--bg3) 0%,var(--bg2) 100%);border:2px solid var(--accent);box-shadow:0 20px 50px -10px rgba(0,0,0,.6);}
-.pcrd-bignum{position:absolute;top:-18px;right:-8px;font-family:"Bebas Neue",sans-serif;font-size:130px;line-height:1;color:var(--accent);opacity:.1;z-index:0;pointer-events:none;user-select:none;}
-.pcrd-top{padding:26px 22px 6px;text-align:center;position:relative;z-index:1;}
-.pcrd-ovr{position:absolute;top:16px;left:16px;width:46px;height:46px;border-radius:14px;background:var(--bg4);border:1px solid var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.pcrd-ovr b{font-family:"Bebas Neue",sans-serif;font-size:19px;line-height:1;color:var(--accent);}
-.pcrd-ovr span{font-size:8px;color:var(--text2);letter-spacing:1px;margin-top:1px;}
-.pcrd-lv{position:absolute;top:16px;right:16px;font-family:"Bebas Neue",sans-serif;font-size:11px;padding:3px 9px;border-radius:6px;letter-spacing:.5px;}
-.pcrd-ring{width:125px;height:125px;border-radius:50%;margin:0 auto 12px;padding:3px;display:flex;align-items:center;justify-content:center;}
-.pcrd-ring-inner{width:100%;height:100%;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-family:"Bebas Neue",sans-serif;font-size:38px;color:var(--text);overflow:hidden;}
+/* PLAYER CARD — layout orizzontale compatto: foto a sinistra, nome+stats a destra */
+.pcrd{width:100%;max-width:440px;margin:0 auto;border-radius:14px;padding:12px 14px;position:relative;overflow:hidden;background:linear-gradient(160deg,var(--bg3) 0%,var(--bg2) 100%);border:1.5px solid var(--accent);box-shadow:0 8px 24px -8px rgba(0,0,0,.55);display:flex;align-items:center;gap:12px;}
+.pcrd-ring{width:60px;height:60px;border-radius:50%;padding:2.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pcrd-ring-inner{width:100%;height:100%;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-family:"Bebas Neue",sans-serif;font-size:20px;color:var(--text);overflow:hidden;}
 .pcrd-ring-inner img{width:100%;height:100%;object-fit:cover;}
-.pcrd-name{font-family:"Bebas Neue",sans-serif;font-size:23px;letter-spacing:1px;margin:0;}
-.pcrd-rows{padding:2px 22px;border-top:1px solid var(--border);background:var(--bg3);position:relative;z-index:1;}
-.pcrd-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:16px;}
-.pcrd-row:last-child{border-bottom:none;}
-.pcrd-row-lbl{color:var(--text2);font-size:14px;}
-.pcrd-row-val{font-weight:700;color:var(--text);font-size:17px;}
-.pcrd-dot{color:#ffffff;opacity:.45;font-weight:400;margin:0 1px;}
-.pcrd-badges{display:flex;gap:8px;justify-content:center;padding:6px 16px 12px;flex-wrap:wrap;position:relative;z-index:1;}
-.pcrd-badge{width:34px;height:34px;border-radius:50%;background:var(--bg4);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:16px;}
-.pcrd-badge.locked{opacity:.25;filter:grayscale(1);}
-.pcrd-edit{position:absolute;top:16px;left:16px;z-index:2;font-size:13px;opacity:.4;cursor:pointer;transition:opacity .15s;}
+.pcrd-info{flex:1;min-width:0;}
+.pcrd-name-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;}
+.pcrd-name{font-family:"Bebas Neue",sans-serif;font-size:17px;letter-spacing:.5px;display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pcrd-name-actions{display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.pcrd-lv{font-family:"Bebas Neue",sans-serif;font-size:10px;padding:3px 8px;border-radius:6px;letter-spacing:.5px;}
+.pcrd-rows{display:flex;flex-wrap:wrap;gap:2px 14px;}
+.pcrd-row{display:flex;align-items:baseline;gap:5px;font-size:12px;white-space:nowrap;}
+.pcrd-row-lbl{color:var(--text2);}
+.pcrd-row-val{font-weight:700;color:var(--text);}
+.pcrd-dot{color:#ffffff;opacity:.35;font-weight:400;margin:0 1px;}
+.pcrd-edit{font-size:13px;opacity:.4;cursor:pointer;transition:opacity .15s;}
 .pcrd-edit:hover{opacity:1;}
 
 .profile-modal.open{display:flex;transform:translateY(0)}
@@ -283,7 +279,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 /* RESPONSIVE — MOBILE */
 @media(max-width:640px){
   /* HEADER — solo logo centrato, titolo e indirizzo nascosti */
-  .logo-img{height:40px;width:auto;max-width:160px;}
+  .logo-img{height:56px;width:auto;max-width:200px;}
   .hdr{padding:6px 12px;gap:8px;justify-content:center;}
   .hdr-center{display:none!important;}
   .hdr-info{position:absolute;right:10px;top:50%;transform:translateY(-50%);min-width:auto!important;gap:6px;align-items:center;padding-bottom:0;}
@@ -296,8 +292,8 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .tabs-mobile{display:block;}
 
   /* TICKER */
-  .ticker-tape{border-bottom-width:2px;}
-  .ticker-tape-content span{font-size:12px;padding:6px 0;padding-right:18px;}
+  .ticker-tape{border-bottom-width:1px;}
+  .ticker-tape-content span{font-size:10px;padding:4px 0;padding-right:14px;}
 
   /* QUOTE BAR — in flusso, sopra a ricerca/ordinamento */
   #quote-text-inline{position:static!important;left:auto!important;transform:none!important;order:-1;width:100%;max-width:100%;font-size:12px!important;overflow:visible;text-overflow:clip;white-space:normal!important;text-align:center!important;line-height:1.35;padding:2px 0;}
@@ -367,6 +363,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .cmc-winner-emoji{display:none;}
   .add-res-full{display:none!important;}
   .add-res-short{display:inline!important;}
+  .cal-torneo-tipo{display:none!important;}
 
   /* RANKING (tab Ranking torneo) — nome a capo invece di troncato, cognome sempre su riga propria */
   .rank-item-name{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.25;}
@@ -388,22 +385,16 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .girone-table{font-size:12px;min-width:360px;}
   .girone-table th,.girone-table td{padding:7px 6px;}
 
-  /* PLAYER CARDS — 2 per riga, ridimensionate automaticamente, centrate */
-  .cards-grid{display:grid;grid-template-columns:repeat(2,1fr);padding:8px 8px 100px;gap:10px;justify-content:center;align-items:stretch;}
-  .pcrd{width:100%;max-width:100%;clip-path:polygon(0 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%);}
-  .pcrd-top{padding:12px 8px 2px;}
-  .pcrd-lv{font-size:9px;padding:2px 6px;top:8px;right:8px;}
-  .pcrd-ring{width:64px;height:64px;margin:0 auto 8px;}
-  .pcrd-ring-inner{font-size:18px;}
-  .pcrd-name{font-size:16px;}
+  /* PLAYER CARDS — layout orizzontale, 1 per riga, compatte */
+  .cards-grid{display:flex;flex-direction:column;padding:8px 8px 100px;gap:10px;}
+  .pcrd{max-width:100%;padding:10px 12px;gap:10px;}
+  .pcrd-ring{width:52px;height:52px;}
+  .pcrd-ring-inner{font-size:16px;}
+  .pcrd-name{font-size:15px;}
   .pcrd-name img{width:16px;height:12px;}
-  .pcrd-rows{padding:2px 10px 8px;}
-
-  /* PCRD ROW font size */
-  .pcrd-row{font-size:11px;padding:7px 0;flex-wrap:wrap;gap:2px;}
-  .pcrd-row-lbl{font-size:9px;}
-  .pcrd-row-val{font-size:11px;}
-  .pcrd-edit{top:8px;left:8px;right:auto;font-size:11px;}
+  .pcrd-lv{font-size:9px;padding:2px 6px;}
+  .pcrd-row{font-size:11px;}
+  .pcrd-edit{font-size:12px;}
 
   /* TORNEO CARDS */
   .torneo-grid{grid-template-columns:1fr}
@@ -693,7 +684,7 @@ body.viewer .adm-hint{display:none!important;}
           <button class="cal-nbtn" onclick="exitCalTorneo()" title="Cambia torneo">←</button>
           <div>
             <div class="pg-title" style="margin:0;font-size:16px" id="cal-torneo-name">Torneo</div>
-            <div style="font-size:11px;color:var(--text2)" id="cal-torneo-tipo"></div>
+            <div class="cal-torneo-tipo" style="font-size:11px;color:var(--text2)" id="cal-torneo-tipo"></div>
           </div>
         </div>
         <div class="cal-nav">
@@ -1144,6 +1135,17 @@ function delVid(id){try{localStorage.removeItem('laurera_vid_'+id);}catch(e){}}
 // ═══ HELPERS ═══
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ini=n=>{const p=(n||'?').trim().split(/[\s.]+/);return p.length>1?p[0][0]+p[p.length-1][0]:(n||'?').slice(0,2).toUpperCase()};
+const isMobileView=()=>window.matchMedia('(max-width:640px)').matches;
+// Su mobile: "Nome Cognome" -> "N. COGNOME" (prima parola = iniziale, resto = cognome). Gestisce anche coppie "Nome1 Cognome1 / Nome2 Cognome2".
+const mobileShortName=nome=>{
+  if(!nome)return nome;
+  return nome.split(' / ').map(n=>{
+    const parts=n.trim().split(/\s+/);
+    if(parts.length<2)return n;
+    return parts[0].charAt(0)+'. '+parts.slice(1).join(' ');
+  }).join(' / ');
+};
+const dispName=nome=>isMobileView()?mobileShortName(nome):nome;
 const avc=id=>`av-${id%8}`;
 const caC={1:'#22c55e',2:'#9b59b6',3:'#f59e0b'};
 const calcMg=(gv,pg)=>pg>0?parseFloat((gv/pg).toFixed(6)):0;
@@ -1166,8 +1168,8 @@ function initTheme(){const saved=localStorage.getItem('laurera_theme');const mq=
 function switchTab(t){currentTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+t).classList.add('active');document.getElementById('fab').style.display=['players','highlights','calendario'].includes(t)?'flex':'none';if(t==='classifiche')renderRank();if(t==='highlights')renderMatches();if(t==='fanta'){loadFanta();renderFantaPronostici();}if(t==='calendario'){loadTornei();renderCalTorneoSelector();}if(t==='risultati')renderRisultati();if(t==='tornei'){loadTornei();renderTornei();}if(t==='albo'){renderAlbo();}if(t==='classifiche-torneo'){loadTornei();renderRanking();}if(t==='settings'){renderLog();}if(t==='players')renderTickerTape();updateTabsMobileLabel();closeTabsMenu();}
 // ═══ TABS MOBILE DROPDOWN ═══
 function updateTabsMobileLabel(){const active=document.querySelector('.tabs-inner .tab.active');const lbl=document.getElementById('tabs-mobile-label');if(lbl&&active)lbl.textContent=active.textContent;}
-function buildTabsMobileMenu(){const menu=document.getElementById('tabs-mobile-menu');if(!menu)return;if(menu.parentElement!==document.body)document.body.appendChild(menu);menu.innerHTML='';document.querySelectorAll('.tabs-inner .tab').forEach(tabEl=>{if(getComputedStyle(tabEl).display==='none')return;const item=document.createElement('div');item.className='tabs-mobile-item'+(tabEl.classList.contains('active')?' active':'');item.textContent=tabEl.textContent;item.onclick=()=>{switchTab(tabEl.dataset.tab);};menu.appendChild(item);});}
-function toggleTabsMenu(){const menu=document.getElementById('tabs-mobile-menu');const btn=document.getElementById('tabs-mobile-btn');const willOpen=!menu.classList.contains('open');if(willOpen){buildTabsMobileMenu();const r=btn.getBoundingClientRect();menu.style.top=(r.bottom+4)+'px';menu.style.left=r.left+'px';menu.style.width=r.width+'px';}menu.classList.toggle('open',willOpen);btn.classList.toggle('open',willOpen);}
+function buildTabsMobileMenu(){const menu=document.getElementById('tabs-mobile-menu');if(!menu)return;if(menu.parentElement!==document.body)document.body.appendChild(menu);menu.innerHTML='';document.querySelectorAll('.tabs-inner .tab').forEach(tabEl=>{if(getComputedStyle(tabEl).display==='none')return;const txt=tabEl.textContent.trim();const m=txt.match(/^(\S+)\s+(.+)$/);const icon=m?m[1]:'';const label=m?m[2]:txt;const item=document.createElement('div');item.className='tabs-mobile-item'+(tabEl.classList.contains('active')?' active':'');item.innerHTML='<span class="tmi-icon">'+esc(icon)+'</span><span class="tmi-label">'+esc(label)+'</span>';item.onclick=()=>{switchTab(tabEl.dataset.tab);};menu.appendChild(item);});}
+function toggleTabsMenu(){const menu=document.getElementById('tabs-mobile-menu');const btn=document.getElementById('tabs-mobile-btn');const willOpen=!menu.classList.contains('open');if(willOpen){buildTabsMobileMenu();const r=btn.getBoundingClientRect();menu.style.top=(r.bottom+8)+'px';menu.style.left='12px';menu.style.right='12px';menu.style.width='auto';}menu.classList.toggle('open',willOpen);btn.classList.toggle('open',willOpen);}
 function closeTabsMenu(){const menu=document.getElementById('tabs-mobile-menu');const btn=document.getElementById('tabs-mobile-btn');if(menu)menu.classList.remove('open');if(btn)btn.classList.remove('open');}
 document.addEventListener('click',e=>{const wrap=document.querySelector('.tabs-mobile');const menu=document.getElementById('tabs-mobile-menu');const inside=(wrap&&wrap.contains(e.target))||(menu&&menu.contains(e.target));if(!inside)closeTabsMenu();});
 function fabClick(){if(_checkViewer())return;if(currentTab==='players')openNewPlayer();else if(currentTab==='highlights')openMatchModal();else if(currentTab==='calendario')openCalModal();}
@@ -1361,7 +1363,7 @@ function renderRank(){
   };
   const rows=list.map((p,i)=>`<tr>
       <td style="text-align:center">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</td>
-      <td><div style="display:flex;align-items:center;gap:8px">${avHtml(p)}<span style="font-weight:600">${esc(p.nome)}</span></div></td>
+      <td><div style="display:flex;align-items:center;gap:8px">${avHtml(p)}<span style="font-weight:600">${esc(dispName(p.nome))}</span></div></td>
       <td style="text-align:center;font-weight:700">${p.pg||0}</td>
       <td style="text-align:center">${normStorico(p.storico)}</td>
       <td style="text-align:center;font-weight:700;color:var(--accent2)">${(p.mg||0).toFixed(2)}</td>
@@ -1551,15 +1553,15 @@ function cmcHtml(m){
     <div class="cmc-time">${m.ora||'—'}</div>
     <div class="cmc-row" style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden">
       <div class="cmc-player cmc-player-1" style="display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden">
-        ${av(p1)}<span class="cmc-name" style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(n1)}</span>
+        ${av(p1)}<span class="cmc-name" style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(dispName(n1))}</span>
         <span class="cmc-vs" style="font-size:11px;color:var(--text2);flex-shrink:0">vs</span>
       </div>
       <div class="cmc-player cmc-player-2" style="display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden">
-        ${av(p2)}<span class="cmc-name" style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(n2)}</span>
+        ${av(p2)}<span class="cmc-name" style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(dispName(n2))}</span>
       </div>
     </div>
     <div class="cmc-right" style="flex-shrink:0">${m.risultato
-      ?`<div class="cmc-res"><div class="cmc-score">${esc(m.risultato)}</div><div class="cmc-winner">${m.winnerId==='draw'?'<span class="cmc-winner-emoji">🤝</span> Pareggio':win?'<span class="cmc-winner-emoji">🏆</span> '+esc(win.nome):'—'}</div></div>`
+      ?`<div class="cmc-res"><div class="cmc-score">${esc(m.risultato)}</div><div class="cmc-winner">${m.winnerId==='draw'?'<span class="cmc-winner-emoji">🤝</span> Pareggio':win?'<span class="cmc-winner-emoji">🏆</span> '+esc(dispName(win.nome)):'—'}</div></div>`
       :`<button class="add-res-btn" onclick="event.stopPropagation();openCalModalRes(${m.id})"><span class="add-res-full">+ Risultato</span><span class="add-res-short">+</span></button>`
     }<div class="cmc-edit" onclick="event.stopPropagation();openCalModal(${m.id})">✏️</div></div>
   </div>`;
@@ -1783,7 +1785,7 @@ function renderRisultati(){
   const makeRow=m=>{
     const isDraw=m.winnerId==='draw'||(!m.winnerId&&!!m.risultato);
     const p1=players.find(p=>p.id===m.p1Id),p2=players.find(p=>p.id===m.p2Id);
-    const _gt=pid=>{const t=m.torneoId?tornei.find(x=>x.id===m.torneoId):null;if(t&&t.format==='doppio'&&t.bracket){for(const rnd of t.bracket.rounds){for(const bm of rnd){const entries=[bm.p1,bm.p2];for(const e of entries){if(!e)continue;const ids=Array.isArray(e)?e:[e];if(ids.includes(pid))return ids.map(id=>{const p=players.find(x=>x.id===id);return p?p.nome:'?';}).join(' / ');}}}};const p=players.find(x=>x.id===pid);return p?p.nome:'?';};
+    const _gt=pid=>{const t=m.torneoId?tornei.find(x=>x.id===m.torneoId):null;if(t&&t.format==='doppio'&&t.bracket){for(const rnd of t.bracket.rounds){for(const bm of rnd){const entries=[bm.p1,bm.p2];for(const e of entries){if(!e)continue;const ids=Array.isArray(e)?e:[e];if(ids.includes(pid))return dispName(ids.map(id=>{const p=players.find(x=>x.id===id);return p?p.nome:'?';}).join(' / '));}}}}const p=players.find(x=>x.id===pid);return dispName(p?p.nome:'?');};
     const winner=isDraw?null:(m.winnerId?players.find(p=>p.id===m.winnerId):null);
     const loser=isDraw?null:(winner?(m.winnerId===m.p1Id?p2:p1):null);
     const d=new Date(m.data+'T12:00:00').toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
@@ -2031,20 +2033,27 @@ function buildPlayerCardHTML(p,opts){
   const ringClick=opts.interactive?` onclick="openProfile(${p.id})" title="Apri profilo"`:'';
   const editBtn=opts.interactive?`<div class="pcrd-edit" onclick="event.stopPropagation();openEditPlayer(${p.id})" title="Modifica">✏️</div>`:'';
   const flg=flag(p.naz);
-  const rowPair=(lbl1,lbl2,valHtml1,valHtml2)=>`<div class="pcrd-row"><span class="pcrd-row-lbl">${lbl1} <span class="pcrd-dot">·</span> ${lbl2}</span><span class="pcrd-row-val">${valHtml1} <span class="pcrd-dot">·</span> ${valHtml2}</span></div>`;
+  const rowItem=(lbl,valHtml)=>`<div class="pcrd-row"><span class="pcrd-row-lbl">${lbl}</span><span class="pcrd-row-val">${valHtml}</span></div>`;
   const valC=(val,col)=>col?`<span style="color:${col}">${val}</span>`:`<span>${val}</span>`;
   const rowsHtml=
-    rowPair('Ranking','Punti',valC(`#${d.rankPos||'-'}`,'var(--accent)'),valC(d.pts,'#9b59b6'))+
-    rowPair('Match','V/P/S',valC(p.pg||0,'var(--accent)'),storicoHtml(p.storico))+
-    rowPair('Game Totali','Media',valC(p.gv||0,'var(--accent2)'),valC((p.mg||0).toFixed(2),'var(--accent2)'));
+    rowItem('Ranking',valC(`#${d.rankPos||'-'}`,'var(--accent)'))+
+    rowItem('Punti',valC(d.pts,'#9b59b6'))+
+    rowItem('Match',valC(p.pg||0,'var(--accent)'))+
+    rowItem('V/P/S',storicoHtml(p.storico))+
+    rowItem('Game Tot.',valC(p.gv||0,'var(--accent2)'))+
+    rowItem('Media',valC((p.mg||0).toFixed(2),'var(--accent2)'));
   return`<div class="pcrd ${d.isFoil?'foil':''}">
-    ${editBtn}
-    <div class="pcrd-top">
-      <div class="pcrd-lv" style="background:${lvColor}26;color:${lvColor};border:1px solid ${lvColor}">LV${p.livello}</div>
-      <div class="pcrd-ring" style="background:${ringBg};cursor:${opts.interactive?'pointer':'default'}"${ringClick}><div class="pcrd-ring-inner">${photoHtml}</div></div>
-      <div class="pcrd-name" style="display:flex;align-items:center;justify-content:center;gap:7px">${flg}<span>${esc(p.nome)}</span></div>
+    <div class="pcrd-ring" style="background:${ringBg};cursor:${opts.interactive?'pointer':'default'}"${ringClick}><div class="pcrd-ring-inner">${photoHtml}</div></div>
+    <div class="pcrd-info">
+      <div class="pcrd-name-row">
+        <div class="pcrd-name">${flg}<span>${esc(p.nome)}</span></div>
+        <div class="pcrd-name-actions">
+          <div class="pcrd-lv" style="background:${lvColor}26;color:${lvColor};border:1px solid ${lvColor}">LV${p.livello}</div>
+          ${editBtn}
+        </div>
+      </div>
+      <div class="pcrd-rows">${rowsHtml}</div>
     </div>
-    <div class="pcrd-rows">${rowsHtml}</div>
   </div>`;
 }
 function openPlayerCard(playerId){
@@ -2760,7 +2769,7 @@ function bracketWinnerLine(match,t){
   let wName;
   if(winEntry&&Array.isArray(winEntry))wName=winEntry.map(id=>{const p=players.find(x=>x.id===id);return p?p.nome:'?';}).join(' / ');
   else{const wp=players.find(p=>p.id===wId);wName=wp?wp.nome:'?';}
-  return{text:'🏆 '+esc(wName)+' '+esc(existingMatch.risultato),wName,existingMatch,isDrw:false};
+  return{text:'🏆 '+esc(dispName(wName))+' '+esc(existingMatch.risultato),wName,existingMatch,isDrw:false};
 }
 function bracketColWidth(t){
   const rounds=t.bracket.rounds,isDoppio=t.format==='doppio';
@@ -2774,7 +2783,7 @@ function bracketColWidth(t){
       let name;
       if(Array.isArray(entry))name=entry.map(id=>{const p=players.find(x=>x.id===id);return p?p.nome:'?';}).join(' / ');
       else{const p=players.find(x=>x.id===entry);name=p?p.nome:'?';}
-      const w=ctx.measureText(name).width+28/*avatar*/+8/*gap*/;
+      const w=ctx.measureText(dispName(name)).width+28/*avatar*/+8/*gap*/;
       if(w>maxW)maxW=w;
     });
   }));
@@ -2849,10 +2858,10 @@ function renderBracketHtml(t){
       const topPx=mi*slotH+(slotH-CARD_H)/2;
       return'<div class="b-match'+(match.winnerId?' done':'')+'" style="position:absolute;top:'+topPx+'px;left:0;width:100%">'
         +'<div class="b-slot'+(win1?' winner':match.winnerId&&!win1?' loser':'')+'" style="min-height:44px;white-space:normal;word-break:break-word">'
-          +av(e1)+'<span class="b-slot-name" style="white-space:nowrap;font-size:'+(isDoppio?'11px':'13px')+';overflow:visible;">'+esc(e1.name)+'</span>'
+          +av(e1)+'<span class="b-slot-name" style="white-space:nowrap;font-size:'+(isDoppio?'11px':'13px')+';overflow:visible;">'+esc(dispName(e1.name))+'</span>'
         +'</div>'
         +'<div class="b-slot'+(win2?' winner':match.winnerId&&!win2?' loser':'')+'" style="min-height:44px;white-space:normal;word-break:break-word">'
-          +av(e2)+'<span class="b-slot-name" style="white-space:nowrap;font-size:'+(isDoppio?'11px':'13px')+';overflow:visible;">'+esc(e2.name)+'</span>'
+          +av(e2)+'<span class="b-slot-name" style="white-space:nowrap;font-size:'+(isDoppio?'11px':'13px')+';overflow:visible;">'+esc(dispName(e2.name))+'</span>'
         +'</div>'
         +calSection
       +'</div>';
@@ -3921,7 +3930,7 @@ function renderGironiMisto(t){
     // HTML classifica
     var clsRows=ranked.map(function(r,i){
       return '<tr><td style="text-align:center;padding:7px 8px">'+(i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1)+'</td>'
-        +'<td style="padding:7px 8px;font-weight:600">'+esc(r.nome)+'</td>'
+        +'<td style="padding:7px 8px;font-weight:600">'+esc(dispName(r.nome))+'</td>'
         +'<td style="text-align:center;padding:7px 8px">'+r.pg+'</td>'
         +'<td style="text-align:center;padding:7px 8px;color:#22c55e;font-weight:700">'+r.v+'</td>'
         +'<td style="text-align:center;padding:7px 8px;color:#f0c040;font-weight:700">'+r.p+'</td>'
@@ -3941,7 +3950,7 @@ function renderGironiMisto(t){
         ?'<button disabled style="background:rgba(80,80,80,.08);border:1px solid rgba(80,80,80,.2);color:var(--text2);border-radius:4px;padding:3px 10px;font-size:11px;cursor:not-allowed;opacity:.5">✓ In Calendario</button>'
         :'<button onclick="addBracketMatchToCal('+t.id+','+pair[0]+','+pair[1]+')" style="background:rgba(232,255,0,.12);border:1px solid rgba(232,255,0,.3);color:var(--accent);border-radius:4px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer">+ Calendario</button>';
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-bottom:1px solid var(--border)">'
-        +'<span style="font-size:13px;font-weight:600">'+esc(n1)+' <span style="color:var(--text2);font-weight:400">vs</span> '+esc(n2)+'</span>'
+        +'<span style="font-size:13px;font-weight:600">'+esc(dispName(n1))+' <span style="color:var(--text2);font-weight:400">vs</span> '+esc(dispName(n2))+'</span>'
         +btn+'</div>';
     }).join('');
 
