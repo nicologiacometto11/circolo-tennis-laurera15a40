@@ -123,7 +123,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .srch-pill input::placeholder{color:var(--text2);}
 .srch-clear{background:none;border:none;color:var(--text2);cursor:pointer;font-size:12px;opacity:.45;flex-shrink:0;padding:2px;line-height:1;transition:opacity .15s,color .15s;}
 .srch-clear:hover{opacity:1;color:var(--accent);}
-.sort-sel{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:7px 11px;color:var(--text);font-family:"DM Sans",sans-serif;font-size:13px;outline:none;cursor:pointer;}.sort-sel:focus{border-color:var(--accent);}
+.sort-sel{background:var(--bg3);border:1.5px solid var(--border2);border-radius:999px;padding:6px 14px;color:var(--text);font-family:"DM Sans",sans-serif;font-size:13px;outline:none;cursor:pointer;}.sort-sel:focus{border-color:var(--accent);}
 
 /* PLAYER CARD — horizontal */
 .cards-grid{padding:16px 12px 24px;display:flex;flex-wrap:wrap;gap:18px;justify-content:center;align-items:flex-start;}
@@ -290,7 +290,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .tabs-mobile{display:block;}
 
   /* TICKER */
-  .ticker-tape-content span{font-size:14px;padding:9px 0;padding-right:30px;}
+  .ticker-tape-content span{font-size:16px;padding:11px 0;padding-right:30px;}
 
   /* QUOTE BAR — in flusso, sopra a ricerca/ordinamento */
   #quote-text-inline{position:static!important;left:auto!important;transform:none!important;order:-1;width:100%;max-width:100%;font-size:12px!important;overflow:hidden;text-overflow:ellipsis;padding:2px 0;}
@@ -315,7 +315,9 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .fgroup{flex-wrap:wrap}
   .srch-pill{order:0;flex:1 1 0;width:auto;max-width:none;min-width:0;}
   .sort-sel{order:1;width:auto;margin-left:0;margin-top:0;flex-shrink:0;}
-  .pdf-btn.icon-only{order:2;margin-left:0!important;flex-shrink:0;}
+
+  /* EXPORT PDF — nascosti su mobile, restano disponibili su desktop */
+  .pdf-btn,[onclick*="openExportCalModal"],#fanta-pdf-row{display:none!important;}
 
   /* FORMS */
   .form-grid{grid-template-columns:1fr}
@@ -335,32 +337,53 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .psbox{padding:10px 4px}
   .psval{font-size:18px}
 
+  /* RISULTATI — più spazio ai nomi, a capo se serve invece di troncare troppo */
+  .rcard{flex-wrap:wrap;row-gap:4px;padding:10px 12px;}
+  .rcard-row{flex-wrap:wrap;row-gap:4px;}
+  .rcard-name{min-width:72px!important;font-size:13px!important;}
+  .rcard-vs{font-size:10px;}
+
+  /* CALENDARIO / PROFILO — card partita, più spazio ai nomi */
+  .cmc{flex-wrap:wrap;row-gap:4px;}
+  .cmc-row{flex-wrap:wrap;row-gap:2px;}
+  .cmc-name{min-width:70px!important;font-size:13px!important;}
+  .cmc-time{min-width:30px;font-size:11px;}
+  .cmc-row{flex-basis:100%;}
+  .cmc-right{flex-basis:100%;justify-content:flex-end;margin-left:0!important;margin-top:2px;}
+
+  /* RANKING (tab Ranking torneo) — nome a capo invece di troncato */
+  .rank-item-name{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.25;}
+
+  /* FANTATENNIS — contatore pronostici sotto al bottone, bottone solo "+" */
+  .fanta-actions{flex-direction:column;align-items:stretch!important;gap:3px!important;}
+  .fanta-pred-count{text-align:center;font-size:10px!important;padding:1px 6px!important;}
+  .fanta-add-btn{padding:5px 10px!important;}
+  .fanta-add-full{display:none!important;}
+  .fanta-add-short{display:inline!important;}
+
   /* RANK TABLE — scroll orizzontale + nascondi colonne non essenziali */
   #rank-body .card{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   .girone-table th:nth-child(5),.girone-table td:nth-child(5){display:none;}
+  .rank-table th:nth-child(5),.rank-table td:nth-child(5){display:table-cell;}
   .girone-table{font-size:12px;min-width:360px;}
   .girone-table th,.girone-table td{padding:7px 6px;}
 
   /* PLAYER CARDS — 2 per riga, ridimensionate automaticamente, centrate */
   .cards-grid{display:grid;grid-template-columns:repeat(2,1fr);padding:8px 8px 100px;gap:10px;justify-content:center;align-items:stretch;}
   .pcrd{width:100%;max-width:100%;clip-path:polygon(0 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%);}
-  .pcrd-bignum{font-size:60px;top:-8px;right:-6px;}
-  .pcrd-top{padding:14px 8px 4px;}
-  .pcrd-ovr{width:30px;height:30px;border-radius:8px;top:8px;left:8px;}
-  .pcrd-ovr b{font-size:12px;}
-  .pcrd-ovr span{font-size:6px;}
+  .pcrd-bignum,.pcrd-ovr,.pcrd-badges{display:none;}
+  .pcrd-top{padding:12px 8px 2px;}
   .pcrd-lv{font-size:9px;padding:2px 6px;top:8px;right:8px;}
   .pcrd-ring{width:64px;height:64px;margin:0 auto 8px;}
   .pcrd-ring-inner{font-size:18px;}
-  .pcrd-name{font-size:13px;}
-  .pcrd-rows{padding:2px 10px;}
+  .pcrd-name{font-size:16px;}
+  .pcrd-name img{width:16px;height:12px;}
+  .pcrd-rows{padding:2px 10px 8px;}
 
   /* PCRD ROW font size */
   .pcrd-row{font-size:11px;padding:7px 0;flex-wrap:wrap;gap:2px;}
   .pcrd-row-lbl{font-size:9px;}
   .pcrd-row-val{font-size:11px;}
-  .pcrd-badges{padding:4px 8px 8px;gap:4px;}
-  .pcrd-badge{width:22px;height:22px;font-size:11px;}
   .pcrd-edit{top:38px;right:8px;font-size:11px;}
 
   /* TORNEO CARDS */
@@ -542,7 +565,7 @@ body.viewer .adm-hint{display:none!important;}
 <body class="viewer">
 <header class="header">
   <div class="hdr">
-    <img src="https://www.laurera15a40.com/uploads/1/5/0/6/150685976/editor/logo-tipo-long-def.png?1725893045" class="logo-img" alt="Laurera 15A40" onerror="this.style.display='none'">
+    <img src="https://www.laurera15a40.com/uploads/1/5/0/6/150685976/editor/logo-tipo-long-def.png?1725893045" class="logo-img" alt="Laurera 15A40" onerror="this.style.display='none'" onclick="switchTab('players')" style="cursor:pointer">
     <div class="hdr-center">
       <div class="hdr-title"><h1>CENTRO SPORTIVO · LAURERA15A40</h1><a class="hdr-addr" href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47881766c48bc33f:0xb7e99e2c09f32821?sa=X&ved=1t:8290&ictx=111" target="_blank" rel="noopener" style="font-size:16px;text-decoration:none;cursor:pointer">📍 Via Ugo Foscolo, 21, 10040 Volvera TO</a></div>
     </div>
@@ -1319,7 +1342,7 @@ function renderRank(){
       <td style="text-align:center;font-weight:700;color:var(--accent2)">${(p.mg||0).toFixed(2)}</td>
       <td style="text-align:center;font-weight:800;color:var(--accent)">${p.gv||0}</td>
     </tr>`).join('');
-  document.getElementById('rank-body').innerHTML=`<div class="card" style="padding:0;overflow:hidden"><table class="girone-table">
+  document.getElementById('rank-body').innerHTML=`<div class="card" style="padding:0;overflow-x:auto;overflow-y:hidden"><table class="girone-table rank-table">
       <thead><tr><th>#</th><th>Giocatore</th><th>PG</th><th>V/P/S</th><th>Media</th><th>Game Totali</th></tr></thead>
       <tbody>${rows||'<tr><td colspan="6" style="text-align:center;color:var(--text2);padding:24px">Nessun giocatore</td></tr>'}</tbody>
     </table></div>`;
@@ -1497,10 +1520,10 @@ function cmcHtml(m){
   const n2=m.teamName2||getTeamName(m.p2Id)||(p2?p2.nome:'?');
   return`<div class="cmc ${m.risultato?'cd':'cs'}" onclick="openCalModal(${m.id})">
     <div class="cmc-time">${m.ora||'—'}</div>
-    <div style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden">
-      ${av(p1)}<span style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(n1)}</span>
+    <div class="cmc-row" style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden">
+      ${av(p1)}<span class="cmc-name" style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(n1)}</span>
       <span style="font-size:11px;color:var(--text2);flex-shrink:0">vs</span>
-      ${av(p2)}<span style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(n2)}</span>
+      ${av(p2)}<span class="cmc-name" style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(n2)}</span>
     </div>
     <div class="cmc-right" style="flex-shrink:0">${m.risultato
       ?`<div class="cmc-res"><div class="cmc-score">${esc(m.risultato)}</div><div class="cmc-winner">${m.winnerId==='draw'?'🤝 Pareggio':win?'🏆 '+esc(win.nome):'—'}</div></div>`
@@ -1716,26 +1739,26 @@ function renderRisultati(){
     if(isDraw){
       return`<div class="rcard">
         <div class="rcard-date">${d}${ora}</div>
-        <div style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden;white-space:nowrap">
+        <div class="rcard-row" style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden">
           ${av(p1)}
-          <span style="font-size:14px;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0">${esc(_gt(m.p1Id))}</span>
-          <span style="font-size:12px;color:var(--text2);flex-shrink:0">ha pareggiato con</span>
+          <span class="rcard-name" style="font-size:14px;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0;white-space:nowrap">${esc(_gt(m.p1Id))}</span>
+          <span class="rcard-vs" style="font-size:12px;color:var(--text2);flex-shrink:0">ha pareggiato con</span>
           ${av(p2)}
-          <span style="font-size:14px;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0">${esc(_gt(m.p2Id))}</span>
-          <span style="font-size:12px;color:var(--accent2);font-weight:700;flex-shrink:0;margin-left:4px">${esc(m.risultato)}</span>
+          <span class="rcard-name" style="font-size:14px;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0;white-space:nowrap">${esc(_gt(m.p2Id))}</span>
+          <span style="font-size:12px;color:var(--accent2);font-weight:700;flex-shrink:0;margin-left:4px;white-space:nowrap">${esc(m.risultato)}</span>
           <span style="font-size:20px;flex-shrink:0;margin-left:auto">🤝</span>
         </div>
       </div>`;
     }
     return`<div class="rcard">
       <div class="rcard-date">${d}${ora}</div>
-      <div style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden;white-space:nowrap">
+      <div class="rcard-row" style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden">
         ${av(winner)}
-        <span style="font-size:14px;font-weight:700;color:var(--green);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0">${esc(winner?_gt(winner.id):'?')}</span>
-        <span style="font-size:12px;color:var(--text2);flex-shrink:0">ha battuto</span>
+        <span class="rcard-name" style="font-size:14px;font-weight:700;color:var(--green);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0;white-space:nowrap">${esc(winner?_gt(winner.id):'?')}</span>
+        <span class="rcard-vs" style="font-size:12px;color:var(--text2);flex-shrink:0">ha battuto</span>
         ${av(loser)}
-        <span style="font-size:14px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0">${esc(loser?_gt(loser.id):'?')}</span>
-        <span style="font-size:12px;color:var(--accent2);font-weight:700;flex-shrink:0;margin-left:4px">${esc(m.risultato)}</span>
+        <span class="rcard-name" style="font-size:14px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0;white-space:nowrap">${esc(loser?_gt(loser.id):'?')}</span>
+        <span style="font-size:12px;color:var(--accent2);font-weight:700;flex-shrink:0;margin-left:4px;white-space:nowrap">${esc(m.risultato)}</span>
         <span style="font-size:20px;flex-shrink:0;margin-left:auto">🏆</span>
       </div>
     </div>`;
@@ -2957,9 +2980,11 @@ function renderFantaPronostici(){
           <div style="font-size:14px;font-weight:700;color:var(--text)">${p1?esc(p1.nome):'?'} <span style="color:var(--text2);font-weight:400">vs</span> ${p2?esc(p2.nome):'?'}</div>
           <div style="font-size:11px;color:var(--text2);margin-top:2px">${d}${m.ora?' · '+m.ora:''}${m.risultato?` · <span style="color:var(--green);font-weight:600">${esc(m.risultato)}</span>`:''}</div>
         </div>
-        <span style="font-size:11px;color:var(--text2);background:var(--bg4);padding:2px 7px;border-radius:5px">${preds.length} pronostici</span>
-        <button class="btn btn-p" style="padding:5px 12px;font-size:12px" onclick="openFantaModal(${m.id})">+ Pronostico</button>
-        <button onclick="toggleFantaPanel('${panelId}')" style="background:var(--bg4);border:1px solid var(--border);color:var(--text2);border-radius:7px;padding:5px 10px;font-size:13px;cursor:pointer" id="btn-${panelId}">▾</button>
+        <div class="fanta-actions" style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+          <span class="fanta-pred-count" style="font-size:11px;color:var(--text2);background:var(--bg4);padding:2px 7px;border-radius:5px;white-space:nowrap">${preds.length} pronostici</span>
+          <button class="btn btn-p fanta-add-btn" style="padding:5px 12px;font-size:12px;white-space:nowrap" onclick="openFantaModal(${m.id})"><span class="fanta-add-full">+ Pronostico</span><span class="fanta-add-short" style="display:none">+</span></button>
+        </div>
+        <button onclick="toggleFantaPanel('${panelId}')" style="background:var(--bg4);border:1px solid var(--border);color:var(--text2);border-radius:7px;padding:5px 10px;font-size:13px;cursor:pointer;flex-shrink:0" id="btn-${panelId}">▾</button>
       </div>
       <!-- Collapsible predictions panel -->
       <div id="${panelId}" style="border-top:1px solid var(--border);padding:8px 12px;flex-direction:column;gap:6px">
@@ -3632,7 +3657,7 @@ function renderRanking() {
           <div style="font-size:${rank<=3?'22':'16'}px;min-width:32px;text-align:center;font-weight:800;color:${rankColor};font-family:'Bebas Neue',sans-serif;">${rankIcon}</div>
           ${av}
           <div style="flex:1;min-width:0;">
-            <div style="font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(p.nome)}</div>
+            <div class="rank-item-name" style="font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(p.nome)}</div>
           </div>
         </div>
         <div style="background:var(--accent);clip-path:polygon(16px 0,100% 0,100% 100%,0 100%);padding:12px 24px 12px 30px;text-align:center;flex-shrink:0;">
@@ -3981,46 +4006,9 @@ function rigeneraGironiBracket(torneoId){
   // Forza rigenerazione svuotando il bracket
   t.bracket=null;
   var classifiche=t.gironi.map(function(grp){return classificaGirone(t,grp);});
-  
-  // Mostra dati RAW per debug
-  var rawMsg='=== DATI GREZZI SCHED PER QUESTO TORNEO ===\n\n';
-  var tSched=sched.filter(function(m){return +m.torneoId===+t.id;});
-  tSched.forEach(function(m){
-    var p1=players.find(function(x){return x.id===+m.p1Id;});
-    var p2=players.find(function(x){return x.id===+m.p2Id;});
-    var w=players.find(function(x){return x.id===+m.winnerId;});
-    rawMsg+=(p1?p1.nome:'?')+' vs '+(p2?p2.nome:'?')+' → '+(m.risultato||'no ris')+' win='+(w?w.nome:m.winnerId)+'\n';
-  });
-  rawMsg+='\n=== GIRONI SALVATI ===\n';
-  t.gironi.forEach(function(grp,gi){
-    var lbl='ABCDEFGHIJKLMNOP'[gi];
-    var nomi=grp.map(function(pid){var p=players.find(function(x){return x.id===+pid;});return (p?p.nome:'?')+'('+pid+')';});
-    rawMsg+='Girone '+lbl+': '+nomi.join(', ')+'\n';
-  });
-  rawMsg+='\n=== CLASSIFICA CALCOLATA ===\n';
-  classifiche.forEach(function(cls,gi){
-    var lbl='ABCDEFGHIJKLMNOP'[gi];
-    cls.forEach(function(pid,pos){
-      var p=players.find(function(x){return x.id===+pid;});
-      rawMsg+=(pos+1)+'° Girone '+lbl+': '+(p?p.nome:'?')+'('+pid+')\n';
-    });
-  });
-  rawMsg+='\n=== INCROCIO ===\n';
-  for(var _g=0;_g<classifiche.length;_g+=2){
-    var _lA='ABCDEFGHIJKLMNOP'[_g];
-    var _lB='ABCDEFGHIJKLMNOP'[_g+1];
-    var _clsA=classifiche[_g]||[];
-    var _clsB=classifiche[_g+1]||[];
-    var _n1A=players.find(function(x){return x.id===_clsA[0];});
-    var _n2A=players.find(function(x){return x.id===_clsA[1];});
-    var _n1B=players.find(function(x){return x.id===_clsB[0];});
-    var _n2B=players.find(function(x){return x.id===_clsB[1];});
-    rawMsg+='1°'+_lA+'='+(_n1A?_n1A.nome:'?')+' vs 2°'+_lB+'='+(_n2B?_n2B.nome:'?')+'\n';
-    rawMsg+='1°'+_lB+'='+(_n1B?_n1B.nome:'?')+' vs 2°'+_lA+'='+(_n2A?_n2A.nome:'?')+'\n';
-  }
-  alert(rawMsg);
+
   if(!confirm('Genera bracket con questi incroci?'))return;
-  
+
   var participants=[];
   var ng=classifiche.length;
   for(var g=0;g<ng;g+=2){
