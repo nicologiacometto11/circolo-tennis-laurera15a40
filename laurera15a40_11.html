@@ -62,21 +62,17 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 @media(max-width:640px){.nav-info .hdr-info-row{font-size:10px;gap:2px;}}
 .tab{flex-shrink:0;padding:9px 16px;font-size:14px;font-weight:600;color:var(--text2);cursor:pointer;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;user-select:none;border-radius:999px;transition:background .15s,color .15s;}
 .tab:hover{background:var(--bg3);color:var(--text);}.tab.active{background:var(--accent);color:#111111;font-weight:700;}
-/* TABS — MOBILE DROPDOWN */
-.tabs-mobile{display:none;position:relative;padding:8px 12px;}
-.tabs-mobile-btn{width:100%;display:flex;flex-direction:column;align-items:stretch;gap:6px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text);cursor:pointer;text-align:left;}
-.tabs-mobile-btn:active{border-color:var(--accent);}
-.tmb-row1{display:flex;align-items:center;justify-content:space-between;width:100%;}
-.tmb-stats{display:flex;flex-wrap:wrap;align-items:center;gap:5px;font-size:10.5px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--text2);}
-.tmb-dot{opacity:.5;margin:0 1px;}
-.tabs-mobile-arrow{font-size:11px;color:var(--text2);transition:transform .15s;flex-shrink:0;}
-.tabs-mobile-btn.open .tabs-mobile-arrow{transform:rotate(180deg);}
-.tabs-mobile-menu{position:fixed;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;box-shadow:0 12px 28px rgba(0,0,0,.5);overflow-y:auto;max-height:70vh;display:none;z-index:1500;padding:10px;box-sizing:border-box;}
-.tabs-mobile-menu.open{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.tabs-mobile-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px 6px;border-radius:12px;background:var(--bg4);border:1px solid var(--border2);cursor:pointer;transition:.15s;}
-.tabs-mobile-item:active{border-color:var(--accent);}
-.tabs-mobile-item .tmi-icon{font-size:20px;line-height:1;}
-.tabs-mobile-item .tmi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--text2);text-align:center;line-height:1.25;}
+/* TABS — MOBILE: barra scorrevole con 2 gruppi a tendina (Eventi, Classifiche) */
+.tabs-mobile2{display:none;align-items:center;gap:5px;padding:8px 12px;overflow-x:auto;scrollbar-width:none;}
+.tabs-mobile2::-webkit-scrollbar{display:none;}
+.tgroup{position:relative;flex-shrink:0;}
+.tgroup-btn{display:inline-flex;align-items:center;gap:4px;border:none;background:var(--bg3);font-family:inherit;}
+.tgroup-btn.active{background:var(--accent);color:#111111;}
+.tgroup-caret{font-size:9px;opacity:.7;}
+.tgroup-menu{display:none;position:absolute;top:calc(100% + 6px);left:0;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;box-shadow:0 12px 28px rgba(0,0,0,.5);z-index:1500;min-width:170px;overflow:hidden;padding:6px;}
+.tgroup-menu.open{display:block;}
+.tgroup-item{padding:10px 12px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;border-radius:8px;white-space:nowrap;}
+.tgroup-item:active{background:var(--bg4);}
 /* UTILS */
 .wrap{max-width:1400px;margin:0 auto;padding:16px 20px}
 .pg-title{display:inline-flex;align-items:center;font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:2px;margin-bottom:14px;color:#111111;background:var(--accent);padding:9px 30px 9px 16px;clip-path:polygon(0 0,100% 0,92% 100%,0 100%);text-transform:uppercase;white-space:nowrap;}
@@ -293,12 +289,13 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .hdr-info-stack{display:none!important;}
   .hdr-chip{display:none!important;}
   #admin-lock-btn{margin-left:0;}
+  #settings-gear-btn{display:inline-block;}
   .hdr-meteo-mobile{display:flex;align-items:center;gap:4px;position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;color:var(--text);background:var(--bg3);border:1px solid var(--border2);border-radius:999px;padding:5px 10px;white-space:nowrap;}
 
-  /* TABS — barra orizzontale scorrevole, tutte le sezioni cliccabili, niente tendina */
-  .tabs-inner{display:flex!important;padding:8px 12px;gap:5px;}
+  /* TABS — barra orizzontale scorrevole; Eventi e Classifiche raggruppano voci correlate in una piccola tendina */
+  .tabs-inner{display:none!important;}
+  .tabs-mobile2{display:flex!important;}
   .tab{padding:7px 13px;font-size:12.5px;}
-  .tabs-mobile{display:none!important;}
 
   /* TICKER */
   .ticker-tape{border-bottom-width:1px;}
@@ -579,6 +576,8 @@ body.viewer .adm-hint{display:none!important;}
 #admin-lock-btn{background:none;border:none;cursor:pointer;font-size:18px;opacity:.45;transition:opacity .2s;padding:4px 6px;line-height:1}
 #admin-lock-btn:hover{opacity:1}
 #admin-lock-btn.is-admin{opacity:1;filter:drop-shadow(0 0 4px var(--accent))}
+#settings-gear-btn{display:none;background:none;border:none;cursor:pointer;font-size:18px;opacity:.45;transition:opacity .2s;padding:4px 6px;line-height:1}
+#settings-gear-btn:hover{opacity:1}
 /* ── ADMIN MODAL ── */
 #modal-admin-login .modal{max-width:340px}
 #admin-pw-err{color:var(--red);font-size:12px;margin-top:6px;display:none}
@@ -600,27 +599,40 @@ body.viewer .adm-hint{display:none!important;}
         <div class="hdr-chip" title="Meteo Volvera"><span id="hdr-meteo">—</span></div>
       </div>
       <button id="admin-lock-btn" onclick="openAdminModal()" title="Admin">🔐</button>
+      <button id="settings-gear-btn" onclick="switchTab('settings')" title="Impostazioni">⚙️</button>
     </div>
   </div>
 </header>
 <nav class="tabs"><div class="tabs-inner">
         <div class="tab active" data-tab="players" onclick="switchTab('players')">🏠 Home</div>
-        <div class="tab" data-tab="tornei" onclick="switchTab('tornei')">🏆 Tornei</div>
+        <div class="tab" data-tab="tornei" onclick="switchTab('tornei')">🎪 Eventi</div>
         <div class="tab" data-tab="calendario" onclick="switchTab('calendario')">📅 Calendario</div>
         <div class="tab" data-tab="risultati" onclick="switchTab('risultati')">🏅 Risultati</div>
         <div class="tab" data-tab="classifiche-torneo" onclick="switchTab('classifiche-torneo')">📈 Ranking</div>
         <div class="tab" data-tab="classifiche" onclick="switchTab('classifiche')">📊 Classifiche</div>
         <div class="tab" data-tab="albo" onclick="switchTab('albo')">👑 Albo d'Oro</div>
-        <div class="tab" data-tab="highlights" onclick="switchTab('highlights')">🎬 Highlights</div>
         <div class="tab" data-tab="fanta" onclick="switchTab('fanta')">🎯 FANTATENNIS</div>
   <div class="tab" data-tab="settings" onclick="switchTab('settings')">⚙️ Impostazioni</div>
       </div>
-      <div class="tabs-mobile">
-        <button type="button" class="tabs-mobile-btn" id="tabs-mobile-btn" onclick="toggleTabsMenu()">
-          <div class="tmb-row1"><span id="tabs-mobile-label">🏠 Home</span><span class="tabs-mobile-arrow">▾</span></div>
-          <div class="tmb-stats">👥 Tot Giocatori <span id="hdr-players2">—</span><span class="tmb-dot">·</span>📅 Tot Partite da giocare oggi <span id="hdr-today2">—</span></div>
-        </button>
-        <div class="tabs-mobile-menu" id="tabs-mobile-menu"></div>
+      <div class="tabs-mobile2">
+        <div class="tab" data-tab="players" onclick="switchTab('players')">🏠 Home</div>
+        <div class="tgroup">
+          <button type="button" class="tab tgroup-btn" data-group-tabs="tornei,calendario,risultati" onclick="toggleTGroup(event,'eventi')">🎪 Eventi<span class="tgroup-caret">▾</span></button>
+          <div class="tgroup-menu" id="tgroup-menu-eventi">
+            <div class="tgroup-item" onclick="switchTab('tornei')">🏆 Tornei</div>
+            <div class="tgroup-item" onclick="switchTab('calendario')">📅 Calendario</div>
+            <div class="tgroup-item" onclick="switchTab('risultati')">🏅 Risultati</div>
+          </div>
+        </div>
+        <div class="tgroup">
+          <button type="button" class="tab tgroup-btn" data-group-tabs="classifiche,classifiche-torneo,albo" onclick="toggleTGroup(event,'classifiche')">📊 Classifiche<span class="tgroup-caret">▾</span></button>
+          <div class="tgroup-menu" id="tgroup-menu-classifiche">
+            <div class="tgroup-item" onclick="switchTab('classifiche')">📊 Classifica</div>
+            <div class="tgroup-item" onclick="switchTab('classifiche-torneo')">📈 Ranking</div>
+            <div class="tgroup-item" onclick="switchTab('albo')">👑 Albo d'Oro</div>
+          </div>
+        </div>
+        <div class="tab" data-tab="fanta" onclick="switchTab('fanta')">🎯 FANTATENNIS</div>
       </div>
       </nav>
 <div class="ticker-tape"><div class="ticker-tape-content" id="ticker-tape-content"></div></div>
@@ -668,16 +680,6 @@ body.viewer .adm-hint{display:none!important;}
     </div>
     <div id="tornei-list"></div>
     <div id="torneo-detail-wrap"></div>
-  </div>
-</div>
-
-<div id="page-highlights" class="page">
-  <div class="wrap">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <div class="pg-title">🎬 Highlights</div>
-      <button class="btn btn-p" onclick="openMatchModal()">+ Aggiungi</button>
-    </div>
-    <div class="match-grid" id="match-grid"></div>
   </div>
 </div>
 
@@ -1181,14 +1183,12 @@ function toast(msg){const t=document.getElementById('toast-el');t.textContent=ms
 function applyTheme(isLight){document.body.classList.toggle('light',isLight);}
 function initTheme(){const saved=localStorage.getItem('laurera_theme');const mq=window.matchMedia('(prefers-color-scheme: light)');applyTheme(saved?saved==='light':mq.matches);mq.addEventListener('change',e=>{if(!localStorage.getItem('laurera_theme'))applyTheme(e.matches);});}
 // ═══ TAB ═══
-function switchTab(t){currentTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+t).classList.add('active');document.getElementById('fab').style.display=['players','highlights','calendario'].includes(t)?'flex':'none';if(t==='classifiche')renderRank();if(t==='highlights')renderMatches();if(t==='fanta'){loadFanta();renderFantaPronostici();}if(t==='calendario'){loadTornei();renderCalTorneoSelector();}if(t==='risultati')renderRisultati();if(t==='tornei'){loadTornei();renderTornei();}if(t==='albo'){renderAlbo();}if(t==='classifiche-torneo'){loadTornei();renderRanking();}if(t==='settings'){renderLog();}if(t==='players')renderTickerTape();updateTabsMobileLabel();closeTabsMenu();}
-// ═══ TABS MOBILE DROPDOWN ═══
-function updateTabsMobileLabel(){const active=document.querySelector('.tabs-inner .tab.active');const lbl=document.getElementById('tabs-mobile-label');if(lbl&&active)lbl.textContent=active.textContent;}
-function buildTabsMobileMenu(){const menu=document.getElementById('tabs-mobile-menu');if(!menu)return;if(menu.parentElement!==document.body)document.body.appendChild(menu);menu.innerHTML='';document.querySelectorAll('.tabs-inner .tab').forEach(tabEl=>{if(getComputedStyle(tabEl).display==='none')return;if(tabEl.classList.contains('active'))return;const txt=tabEl.textContent.trim();const m=txt.match(/^(\S+)\s+(.+)$/);const icon=m?m[1]:'';const label=m?m[2]:txt;const item=document.createElement('div');item.className='tabs-mobile-item';item.innerHTML='<span class="tmi-icon">'+esc(icon)+'</span><span class="tmi-label">'+esc(label)+'</span>';item.onclick=()=>{switchTab(tabEl.dataset.tab);};menu.appendChild(item);});}
-function toggleTabsMenu(){const menu=document.getElementById('tabs-mobile-menu');const btn=document.getElementById('tabs-mobile-btn');const willOpen=!menu.classList.contains('open');if(willOpen){buildTabsMobileMenu();const r=btn.getBoundingClientRect();menu.style.top=(r.bottom+8)+'px';menu.style.left='12px';menu.style.right='12px';menu.style.width='auto';}menu.classList.toggle('open',willOpen);btn.classList.toggle('open',willOpen);}
-function closeTabsMenu(){const menu=document.getElementById('tabs-mobile-menu');const btn=document.getElementById('tabs-mobile-btn');if(menu)menu.classList.remove('open');if(btn)btn.classList.remove('open');}
-document.addEventListener('click',e=>{const wrap=document.querySelector('.tabs-mobile');const menu=document.getElementById('tabs-mobile-menu');const inside=(wrap&&wrap.contains(e.target))||(menu&&menu.contains(e.target));if(!inside)closeTabsMenu();});
-function fabClick(){if(_checkViewer())return;if(currentTab==='players')openNewPlayer();else if(currentTab==='highlights')openMatchModal();else if(currentTab==='calendario')openCalModal();}
+function switchTab(t){currentTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));document.querySelectorAll('.tgroup-btn').forEach(x=>x.classList.toggle('active',(x.dataset.groupTabs||'').split(',').includes(t)));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+t).classList.add('active');document.getElementById('fab').style.display=['players','calendario'].includes(t)?'flex':'none';if(t==='classifiche')renderRank();if(t==='fanta'){loadFanta();renderFantaPronostici();}if(t==='calendario'){loadTornei();renderCalTorneoSelector();}if(t==='risultati')renderRisultati();if(t==='tornei'){loadTornei();renderTornei();}if(t==='albo'){renderAlbo();}if(t==='classifiche-torneo'){loadTornei();renderRanking();}if(t==='settings'){renderLog();}if(t==='players')renderTickerTape();closeAllTGroups();}
+// ═══ TABS MOBILE: gruppi a tendina ═══
+function toggleTGroup(ev,name){ev.stopPropagation();const menu=document.getElementById('tgroup-menu-'+name);if(!menu)return;const willOpen=!menu.classList.contains('open');closeAllTGroups();if(willOpen)menu.classList.add('open');}
+function closeAllTGroups(){document.querySelectorAll('.tgroup-menu.open').forEach(m=>m.classList.remove('open'));}
+document.addEventListener('click',e=>{if(!e.target.closest('.tgroup'))closeAllTGroups();});
+function fabClick(){if(_checkViewer())return;if(currentTab==='players')openNewPlayer();else if(currentTab==='calendario')openCalModal();}
 // ═══ FILTERS ═══
 function clearSearch(){const i=document.getElementById('srch-input');i.value='';renderCards();i.focus();}
 function getFiltered(){const q=(document.getElementById('srch-input')||{value:''}).value.toLowerCase(),s=(document.getElementById('sort-sel')||{value:'name'}).value;let list=players.filter(p=>{if(gF!=='ALL'&&p.sesso!==gF)return false;if(!lvF.includes(p.livello))return false;if(q&&!p.nome.toLowerCase().includes(q))return false;return true;});list.sort((a,b)=>s==='name'?a.nome.localeCompare(b.nome):s==='gv'?b.gv-a.gv:s==='mg'?b.mg-a.mg:s==='age'?a.eta-b.eta:wr(b.storico)-wr(a.storico));return list;}
