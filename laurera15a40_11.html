@@ -41,8 +41,9 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .theme-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .theme-btn:hover{border-color:var(--accent);color:var(--accent2)}
 /* HEADER INFO PANEL */
-.hdr-info{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:auto;}
-.hdr-chip{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border2);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;line-height:1;transition:border-color .15s;}
+.hdr-info{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto;}
+.hdr-info-stack{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.hdr-chip{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border2);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;line-height:1;transition:border-color .15s;}
 .hdr-chip:hover{border-color:var(--accent);}
 .hdr-chip-icon{width:15px;height:15px;flex-shrink:0;color:var(--accent2);}
 .hdr-chip strong{color:var(--text2);font-weight:500;font-size:11px;margin-left:3px;text-transform:uppercase;letter-spacing:.3px;}
@@ -226,7 +227,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .pcrd-badges{display:flex;gap:8px;justify-content:center;padding:6px 16px 12px;flex-wrap:wrap;position:relative;z-index:1;}
 .pcrd-badge{width:34px;height:34px;border-radius:50%;background:var(--bg4);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:16px;}
 .pcrd-badge.locked{opacity:.25;filter:grayscale(1);}
-.pcrd-edit{position:absolute;top:68px;right:18px;z-index:2;font-size:13px;opacity:.4;cursor:pointer;transition:opacity .15s;}
+.pcrd-edit{position:absolute;top:16px;left:16px;z-index:2;font-size:13px;opacity:.4;cursor:pointer;transition:opacity .15s;}
 .pcrd-edit:hover{opacity:1;}
 
 .profile-modal.open{display:flex;transform:translateY(0)}
@@ -286,6 +287,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .hdr{padding:6px 12px;gap:8px;justify-content:center;}
   .hdr-center{display:none!important;}
   .hdr-info{position:absolute;right:10px;top:50%;transform:translateY(-50%);min-width:auto!important;gap:6px;align-items:center;padding-bottom:0;}
+  .hdr-info-stack{display:none!important;}
   .hdr-chip{display:none!important;}
   #admin-lock-btn{margin-left:0;}
 
@@ -398,15 +400,17 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .pcrd-row{font-size:11px;padding:7px 0;flex-wrap:wrap;gap:2px;}
   .pcrd-row-lbl{font-size:9px;}
   .pcrd-row-val{font-size:11px;}
-  .pcrd-edit{top:38px;right:8px;font-size:11px;}
+  .pcrd-edit{top:8px;left:8px;right:auto;font-size:11px;}
 
   /* TORNEO CARDS */
   .torneo-grid{grid-template-columns:1fr}
   .b-match{min-width:140px}
   .bracket-wrap{-webkit-overflow-scrolling:touch}
 
-  /* FANTA */
-  .fanta-rank-row{flex-wrap:wrap;gap:6px}
+  /* FANTA — Vincitore/Risultato impilati a destra invece di sforare in larghezza */
+  .fanta-rank-row{gap:6px}
+  .fanta-rank-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .fanta-rank-stats{flex-direction:column;align-items:flex-end;gap:1px;}
 
   /* BUTTONS */
   .btn{padding:8px 12px;font-size:12px}
@@ -478,7 +482,8 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .fanta-rank-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;margin-bottom:6px;}
 .fanta-rank-pos{font-family:'Bebas Neue',sans-serif;font-size:20px;width:28px;text-align:center;flex-shrink:0;}
 .fanta-rank-name{flex:1;font-size:14px;font-weight:600;}
-.fanta-rank-pts{font-size:18px;font-weight:800;color:var(--accent2);}
+.fanta-rank-stats{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text2);text-align:right;white-space:nowrap;flex-shrink:0;}
+.fanta-rank-pts{font-size:18px;font-weight:800;color:var(--accent2);flex-shrink:0;}
 
 /* ═══ REGISTRO ═══ */
 .log-entry{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border);}
@@ -584,9 +589,11 @@ body.viewer .adm-hint{display:none!important;}
       <div class="hdr-title"><h1>CENTRO SPORTIVO · LAURERA15A40</h1><a class="hdr-addr" href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47881766c48bc33f:0xb7e99e2c09f32821?sa=X&ved=1t:8290&ictx=111" target="_blank" rel="noopener" style="font-size:16px;text-decoration:none;cursor:pointer">📍 Via Ugo Foscolo, 21, 10040 Volvera TO</a></div>
     </div>
     <div class="hdr-info">
-      <div class="hdr-chip" title="Giocatori registrati"><svg class="hdr-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span id="hdr-players">—</span><strong>Giocatori</strong></div>
-      <div class="hdr-chip" title="Partite in programma oggi"><svg class="hdr-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span id="hdr-today">—</span><strong>Oggi</strong></div>
-      <div class="hdr-chip" title="Meteo Volvera"><span id="hdr-meteo">—</span></div>
+      <div class="hdr-info-stack">
+        <div class="hdr-chip" title="Giocatori registrati"><svg class="hdr-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span id="hdr-players">—</span><strong>Giocatori</strong></div>
+        <div class="hdr-chip" title="Partite in programma oggi"><svg class="hdr-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span id="hdr-today">—</span><strong>Oggi</strong></div>
+        <div class="hdr-chip" title="Meteo Volvera"><span id="hdr-meteo">—</span></div>
+      </div>
       <button id="admin-lock-btn" onclick="openAdminModal()" title="Admin">🔐</button>
     </div>
   </div>
@@ -1115,7 +1122,7 @@ function save(){
   const data={players:players.map(p=>{const{photoUrl,...r}=p;return r;}),matches,sched,nextId,matchNextId,schedNextId};
   _lsCache();
   _skipNextSnap.main=true;
-  _doc('main').set(data).catch(()=>{});
+  _doc('main').set(data).catch(e=>{console.error('save() failed:',e);toast('⚠️ Salvataggio non riuscito: '+(e&&e.message?e.message:'errore sconosciuto'));});
 }
 async function load(){
   if(typeof __EMBEDDED__!=='undefined'&&__EMBEDDED__&&__EMBEDDED__.players){try{const d=__EMBEDDED__;players=d.players||[];matches=d.matches||[];sched=d.sched||[];nextId=d.nextId||100;matchNextId=d.matchNextId||200;schedNextId=d.schedNextId||300;save();_attachPhotos();return;}catch(e){}}
@@ -2400,7 +2407,7 @@ async function loadTornei(){
 function saveTornei(){
   try{localStorage.setItem('laurera_tornei',JSON.stringify(tornei));localStorage.setItem('laurera_torn_id',tNextId);}catch(e){}
   _skipNextSnap.tornei=true;
-  _doc('tornei').set({tornei,tNextId}).catch(()=>{});
+  _doc('tornei').set({tornei,tNextId}).catch(e=>{console.error('saveTornei() failed:',e);toast('⚠️ Salvataggio torneo non riuscito: '+(e&&e.message?e.message:'errore sconosciuto'));});
 }
 
 function getTorneoEsito(t){
@@ -2651,6 +2658,10 @@ function deleteTorneo(){
   renderTornei();toast('🗑️ Eliminato');
 }
 function openTorneoDetail(id){
+  try{_openTorneoDetail(id);}
+  catch(e){console.error('openTorneoDetail() failed:',e);toast('⚠️ Errore apertura torneo: '+(e&&e.message?e.message:'errore sconosciuto'));}
+}
+function _openTorneoDetail(id){
   const t=tornei.find(x=>x.id===id);if(!t)return;
   const el=document.getElementById('torneo-detail-wrap');
   const tipo=t.tipo==='girone'?'🔄 Campionato':t.tipo==='misto'?'🔀 Girone+Eliminazione':'⚡ Eliminazione';
@@ -2818,6 +2829,10 @@ function renderBracketHtml(t){
 }
 
 function generateBracket(torneoId){
+  try{_generateBracket(torneoId);}
+  catch(e){console.error('generateBracket() failed:',e);toast('⚠️ Errore generazione tabellone: '+(e&&e.message?e.message:'errore sconosciuto'));}
+}
+function _generateBracket(torneoId){
   const t=tornei.find(x=>x.id===torneoId);if(!t)return;
   if(t.bracket&&t.bracket.rounds&&t.bracket.rounds.length){
     if(!confirm('Rigenerare il tabellone? Le abbinamenti cambieranno.'))return;
@@ -2935,7 +2950,7 @@ async function loadFanta(){
 function saveFanta(){
   try{localStorage.setItem('laurera_fanta',JSON.stringify(fantaData));}catch(e){}
   _skipNextSnap.fanta=true;
-  _doc('fanta').set({fantaData}).catch(()=>{});
+  _doc('fanta').set({fantaData}).catch(e=>{console.error('saveFanta() failed:',e);toast('⚠️ Salvataggio pronostici non riuscito: '+(e&&e.message?e.message:'errore sconosciuto'));});
 }
 
 function fantaTab(tab,btn){
@@ -3092,7 +3107,7 @@ function renderFantaClassifica(){
     `<div class="fanta-rank-row">
       <span class="fanta-rank-pos" style="color:${i===0?'var(--gold)':i===1?'var(--silver)':i===2?'var(--bronze)':'var(--text2)'}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</span>
       <span class="fanta-rank-name">${esc(name)}</span>
-      <span style="font-size:11px;color:var(--text2)">🎯${s.perfect} ✅${s.correct} (${s.total} partite)</span>
+      <div class="fanta-rank-stats"><span>Vincitore ${s.correct}</span><span>Risultato ${s.perfect}</span></div>
       <span class="fanta-rank-pts">${s.pts} pts</span>
     </div>`
   ).join('')+'</div>';
@@ -3384,7 +3399,7 @@ async function loadAlbo(){
 function saveAlboData(){
   try{localStorage.setItem('laurera_albo',JSON.stringify(alboData));}catch(e){}
   _skipNextSnap.albo=true;
-  _doc('albo').set({alboData}).catch(()=>{});
+  _doc('albo').set({alboData}).catch(e=>{console.error('saveAlboData() failed:',e);toast('⚠️ Salvataggio albo d\'oro non riuscito: '+(e&&e.message?e.message:'errore sconosciuto'));});
 }
 function renderAlbo(){
   var el=document.getElementById('albo-list');if(!el)return;
@@ -3759,6 +3774,10 @@ function exportAlboPDF(){
 var _gironiTorneoId=null;
 
 function generateGironiRandom(torneoId){
+  try{_generateGironiRandom(torneoId);}
+  catch(e){console.error('generateGironiRandom() failed:',e);toast('⚠️ Errore generazione gironi: '+(e&&e.message?e.message:'errore sconosciuto'));}
+}
+function _generateGironiRandom(torneoId){
   if(_checkViewer())return;
   var t=tornei.find(function(x){return x.id===torneoId;});
   if(!t)return;
