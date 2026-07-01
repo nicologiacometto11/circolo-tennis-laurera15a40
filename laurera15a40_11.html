@@ -64,12 +64,13 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .tab:hover{background:var(--bg3);color:var(--text);}.tab.active{background:var(--accent);color:#111111;font-weight:700;}
 /* TABS — MOBILE DROPDOWN */
 .tabs-mobile{display:none;position:relative;padding:8px 12px;}
-.tabs-mobile-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text);cursor:pointer;position:relative;}
+.tabs-mobile-btn{width:100%;display:flex;flex-direction:column;align-items:stretch;gap:6px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text);cursor:pointer;text-align:left;}
 .tabs-mobile-btn:active{border-color:var(--accent);}
-.tmb-stats{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--text2);padding-left:10px;border-left:1px solid var(--border2);}
-.tmb-dot{opacity:.5;}
-.tabs-mobile-arrow{font-size:11px;color:var(--text2);transition:transform .15s;position:absolute;right:14px;top:50%;transform:translateY(-50%);}
-.tabs-mobile-btn.open .tabs-mobile-arrow{transform:translateY(-50%) rotate(180deg);}
+.tmb-row1{display:flex;align-items:center;justify-content:space-between;width:100%;}
+.tmb-stats{display:flex;flex-wrap:wrap;align-items:center;gap:5px;font-size:10.5px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--text2);}
+.tmb-dot{opacity:.5;margin:0 1px;}
+.tabs-mobile-arrow{font-size:11px;color:var(--text2);transition:transform .15s;flex-shrink:0;}
+.tabs-mobile-btn.open .tabs-mobile-arrow{transform:rotate(180deg);}
 .tabs-mobile-menu{position:fixed;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;box-shadow:0 12px 28px rgba(0,0,0,.5);overflow-y:auto;max-height:70vh;display:none;z-index:1500;padding:10px;box-sizing:border-box;}
 .tabs-mobile-menu.open{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .tabs-mobile-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px 6px;border-radius:12px;background:var(--bg4);border:1px solid var(--border2);cursor:pointer;transition:.15s;}
@@ -233,6 +234,8 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .profile-back:hover{background:var(--bg4);border-color:var(--border2)}
 .profile-body{flex:1;overflow-y:auto;padding:16px 20px 40px;max-width:960px;margin:0 auto;width:100%;}
 .profile-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+.profile-section{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin:26px 0 10px;}
+#profile-played{margin-bottom:26px;}
 .psbox{background:var(--bg4);border:1px solid var(--border2);border-top:2px solid var(--accent);border-radius:4px;padding:12px 6px;text-align:center;}
 .psval{font-size:22px;font-weight:700;display:block;line-height:1}
 .pslbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-top:4px;display:block}
@@ -601,15 +604,18 @@ body.viewer .adm-hint{display:none!important;}
         <div class="tab" data-tab="tornei" onclick="switchTab('tornei')">🏆 Tornei</div>
         <div class="tab" data-tab="calendario" onclick="switchTab('calendario')">📅 Calendario</div>
         <div class="tab" data-tab="risultati" onclick="switchTab('risultati')">🏅 Risultati</div>
-        <div class="tab" data-tab="classifiche-torneo" onclick="switchTab('classifiche-torneo')">🏅 Ranking</div>
+        <div class="tab" data-tab="classifiche-torneo" onclick="switchTab('classifiche-torneo')">📈 Ranking</div>
         <div class="tab" data-tab="classifiche" onclick="switchTab('classifiche')">📊 Classifiche</div>
-        <div class="tab" data-tab="albo" onclick="switchTab('albo')">🏅 Albo d'Oro</div>
+        <div class="tab" data-tab="albo" onclick="switchTab('albo')">🏆 Albo d'Oro</div>
         <div class="tab" data-tab="highlights" onclick="switchTab('highlights')">🎬 Highlights</div>
         <div class="tab" data-tab="fanta" onclick="switchTab('fanta')">🎯 FANTATENNIS</div>
   <div class="tab" data-tab="settings" onclick="switchTab('settings')">⚙️ Impostazioni</div>
       </div>
       <div class="tabs-mobile">
-        <button type="button" class="tabs-mobile-btn" id="tabs-mobile-btn" onclick="toggleTabsMenu()"><span id="tabs-mobile-label">🏠 Home</span><span class="tmb-stats">👥 <span id="hdr-players2">—</span> <span class="tmb-dot">·</span> 📅 <span id="hdr-today2">—</span></span><span class="tabs-mobile-arrow">▾</span></button>
+        <button type="button" class="tabs-mobile-btn" id="tabs-mobile-btn" onclick="toggleTabsMenu()">
+          <div class="tmb-row1"><span id="tabs-mobile-label">🏠 Home</span><span class="tabs-mobile-arrow">▾</span></div>
+          <div class="tmb-stats">👥 Tot Giocatori <span id="hdr-players2">—</span><span class="tmb-dot">·</span>📅 Tot Partite da giocare oggi <span id="hdr-today2">—</span></div>
+        </button>
         <div class="tabs-mobile-menu" id="tabs-mobile-menu"></div>
       </div>
       </nav>
@@ -731,7 +737,7 @@ body.viewer .adm-hint{display:none!important;}
 </div>
 
 <div id="page-albo" class="page">
-  <div class="wrap"><div class="pg-hd" style="display:flex;align-items:center;justify-content:space-between"><span class="pg-title">🏅 Albo d'Oro</span><div style="display:flex;gap:8px"><button class="pdf-btn" onclick="exportAlboPDF()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PDF</button><button class="btn btn-p" onclick="openAlboModal()">+ Aggiungi Trofeo</button></div></div><div id="albo-list"></div></div>
+  <div class="wrap"><div class="pg-hd" style="display:flex;align-items:center;justify-content:space-between"><span class="pg-title">🏆 Albo d'Oro</span><div style="display:flex;gap:8px"><button class="pdf-btn" onclick="exportAlboPDF()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PDF</button><button class="btn btn-p" onclick="openAlboModal()">+ Aggiungi Trofeo</button></div></div><div id="albo-list"></div></div>
 </div>
 
 <div id="page-settings" class="page">
@@ -1036,7 +1042,7 @@ body.viewer .adm-hint{display:none!important;}
     </div>
   </div>
 </div>
-<div class="modal-bg" id="modal-albo" onclick="if(event.target===this)this.classList.remove('open')"><div class="modal" onclick="event.stopPropagation()"><h2 id="albo-modal-title">🏅 Nuovo Trofeo</h2><div class="form-grid"><div class="fg fg-full"><label>Trofeo / Titolo</label><input id="albo-titolo" type="text" placeholder="es. Campione E.R.A.D Tour"></div><div class="fg"><label>Vincitore / Coppia</label><input id="albo-vincitore" type="text" placeholder="es. Barzon / Dellerba"></div><div class="fg"><label>Anno</label><input id="albo-anno" type="number" placeholder="2026" min="1900" max="2100"></div><div class="fg fg-full"><label>Torneo / Evento</label><input id="albo-torneo" type="text" placeholder="es. E.R.A.D Tour"></div><div class="fg fg-full"><label>Note (opzionale)</label><input id="albo-note" type="text" placeholder="es. Finale 6-4 7-5"></div></div><div class="modal-actions"><button class="btn btn-d" id="albo-del-btn" onclick="deleteAlbo()" style="display:none">🗑 Elimina</button><button class="btn btn-g" onclick="document.getElementById('modal-albo').classList.remove('open')">Annulla</button><button class="btn btn-p" onclick="saveAlbo()">💾 Salva</button></div></div></div>
+<div class="modal-bg" id="modal-albo" onclick="if(event.target===this)this.classList.remove('open')"><div class="modal" onclick="event.stopPropagation()"><h2 id="albo-modal-title">🏆 Nuovo Trofeo</h2><div class="form-grid"><div class="fg fg-full"><label>Trofeo / Titolo</label><input id="albo-titolo" type="text" placeholder="es. Campione E.R.A.D Tour"></div><div class="fg"><label>Vincitore / Coppia</label><input id="albo-vincitore" type="text" placeholder="es. Barzon / Dellerba"></div><div class="fg"><label>Anno</label><input id="albo-anno" type="number" placeholder="2026" min="1900" max="2100"></div><div class="fg fg-full"><label>Torneo / Evento</label><input id="albo-torneo" type="text" placeholder="es. E.R.A.D Tour"></div><div class="fg fg-full"><label>Note (opzionale)</label><input id="albo-note" type="text" placeholder="es. Finale 6-4 7-5"></div></div><div class="modal-actions"><button class="btn btn-d" id="albo-del-btn" onclick="deleteAlbo()" style="display:none">🗑 Elimina</button><button class="btn btn-g" onclick="document.getElementById('modal-albo').classList.remove('open')">Annulla</button><button class="btn btn-p" onclick="saveAlbo()">💾 Salva</button></div></div></div>
 
 <!-- MODAL ESPORTA GIOCATORI PDF -->
 <div class="modal-bg" id="modal-export-players" onclick="if(event.target===this)this.classList.remove('open')">
@@ -1456,7 +1462,8 @@ function renderTickerTape(){
     if(isDraw){items.push(`🤝 ${esc(n1.toUpperCase())} - ${esc(n2.toUpperCase())} PAREGGIO ${esc(m.risultato)}`);return;}
     const winnerIsP1=+m.winnerId===m.p1Id;
     const wName=winnerIsP1?n1:n2,lName=winnerIsP1?n2:n1;
-    items.push(`🏆 ${esc(wName.toUpperCase())} BATTE ${esc(lName.toUpperCase())} ${esc(m.risultato)}`);
+    const winVerb=wName.includes(' / ')?'BATTONO':'BATTE';
+    items.push(`🏆 ${esc(wName.toUpperCase())} ${winVerb} ${esc(lName.toUpperCase())} ${esc(m.risultato)}`);
   });
   const tod=new Date();tod.setHours(0,0,0,0);
   sched.filter(m=>m.data&&new Date(m.data+'T12:00:00')>=tod&&!m.risultato&&m.p1Id&&m.p2Id).sort((a,b)=>a.data.localeCompare(b.data)).slice(0,6).forEach(m=>{
@@ -1799,14 +1806,15 @@ function renderRisultati(){
     const d=new Date(m.data+'T12:00:00').toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
     const ora=m.ora?`<span style="font-size:10px;color:var(--text2)"> ${m.ora}</span>`:'';
     if(isDraw){
+      const n1t=_gt(m.p1Id);
       return`<div class="rcard">
         <div class="rcard-date">${d}${ora}</div>
         <div class="rcard-row" style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden">
           <div class="rcard-player rcard-player-w" style="display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden">
             ${av(p1)}
-            <span class="rcard-name" style="font-size:14px;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0;white-space:nowrap">${esc(_gt(m.p1Id))}</span>
+            <span class="rcard-name" style="font-size:14px;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0;white-space:nowrap">${esc(n1t)}</span>
           </div>
-          <span class="rcard-vs" style="font-size:12px;color:var(--text2);flex-shrink:0">ha pareggiato con</span>
+          <span class="rcard-vs" style="font-size:12px;color:var(--text2);flex-shrink:0">${n1t.includes(' / ')?'hanno pareggiato con':'ha pareggiato con'}</span>
           <div class="rcard-player rcard-player-l" style="display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden">
             ${av(p2)}
             <span class="rcard-name" style="font-size:14px;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0;white-space:nowrap">${esc(_gt(m.p2Id))}</span>
@@ -1816,14 +1824,15 @@ function renderRisultati(){
         </div>
       </div>`;
     }
+    const wNameT=winner?_gt(winner.id):'?';
     return`<div class="rcard">
       <div class="rcard-date">${d}${ora}</div>
       <div class="rcard-row" style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden">
         <div class="rcard-player rcard-player-w" style="display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden">
           ${av(winner)}
-          <span class="rcard-name" style="font-size:14px;font-weight:700;color:var(--green);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0;white-space:nowrap">${esc(winner?_gt(winner.id):'?')}</span>
+          <span class="rcard-name" style="font-size:14px;font-weight:700;color:var(--green);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0;white-space:nowrap">${esc(wNameT)}</span>
         </div>
-        <span class="rcard-vs" style="font-size:12px;color:var(--text2);flex-shrink:0">ha battuto</span>
+        <span class="rcard-vs" style="font-size:12px;color:var(--text2);flex-shrink:0">${wNameT.includes(' / ')?'hanno battuto':'ha battuto'}</span>
         <div class="rcard-player rcard-player-l" style="display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden">
           ${av(loser)}
           <span class="rcard-name" style="font-size:14px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0;white-space:nowrap">${esc(loser?_gt(loser.id):'?')}</span>
@@ -3459,7 +3468,7 @@ function saveAlboData(){
 }
 function renderAlbo(){
   var el=document.getElementById('albo-list');if(!el)return;
-  if(!alboData.length){el.innerHTML='<div class="empty"><span class="empty-icon">🏅</span>Nessun trofeo ancora.'+(_checkViewer()?'':`<br><button class="btn btn-p" style="margin-top:14px" onclick="openAlboModal()">+ Aggiungi Trofeo</button>`)+'</div>';return;}
+  if(!alboData.length){el.innerHTML='<div class="empty"><span class="empty-icon">🏆</span>Nessun trofeo ancora.'+(_checkViewer()?'':`<br><button class="btn btn-p" style="margin-top:14px" onclick="openAlboModal()">+ Aggiungi Trofeo</button>`)+'</div>';return;}
   var byYear={};
   for(var i=0;i<alboData.length;i++){var a=alboData[i];var y=a.anno||'—';if(!byYear[y])byYear[y]=[];byYear[y].push(a);}
   var years=Object.keys(byYear).sort(function(a,b){return b-a;});
@@ -3724,10 +3733,10 @@ function renderRanking() {
   let html = '<div class="wrap" style="padding-bottom:80px;">';
   let _hasReset=false;
   try{_hasReset=!!localStorage.getItem('laurera_ranking_reset');}catch(e){}
-  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><span class="pg-title" style="margin-bottom:0">🏅 Ranking</span><div style="display:flex;gap:8px">'+(_hasReset?'<button class="btn btn-g" onclick="annullaResetRanking()" style="font-size:12px;padding:6px 14px;border-color:var(--green);color:var(--green)">↩ Annulla Reset</button>':'')+'<button class="btn btn-g" onclick="resetPuntiRanking()" style="font-size:12px;padding:6px 14px">🔄 Azzera Punti</button><button class="pdf-btn" onclick="exportRankingPDF()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PDF</button></div></div>';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><span class="pg-title" style="margin-bottom:0">📈 Ranking</span><div style="display:flex;gap:8px">'+(_hasReset?'<button class="btn btn-g" onclick="annullaResetRanking()" style="font-size:12px;padding:6px 14px;border-color:var(--green);color:var(--green)">↩ Annulla Reset</button>':'')+'<button class="btn btn-g" onclick="resetPuntiRanking()" style="font-size:12px;padding:6px 14px">🔄 Azzera Punti</button><button class="pdf-btn" onclick="exportRankingPDF()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PDF</button></div></div>';
 
   if (!sorted.length) {
-    html += '<div class="empty"><span class="empty-icon">🏅</span>Nessun giocatore.</div>';
+    html += '<div class="empty"><span class="empty-icon">📈</span>Nessun giocatore.</div>';
   } else {
     sorted.forEach((p, i) => {
       const pts = punti[p.id] || 0;
