@@ -1102,6 +1102,7 @@ function delPh(id){try{localStorage.removeItem('laurera_ph_'+id);}catch(e){}}
 function saveVid(id,u){try{localStorage.setItem('laurera_vid_'+id,u);}catch(e){toast('⚠️ Video troppo grande');}}
 function delVid(id){try{localStorage.removeItem('laurera_vid_'+id);}catch(e){}}
 // ═══ HELPERS ═══
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ini=n=>{const p=(n||'?').trim().split(/[\s.]+/);return p.length>1?p[0][0]+p[p.length-1][0]:(n||'?').slice(0,2).toUpperCase()};
 const avc=id=>`av-${id%8}`;
 const caC={1:'#22c55e',2:'#9b59b6',3:'#f59e0b'};
@@ -1320,7 +1321,7 @@ function renderRank(){
   };
   const rows=list.map((p,i)=>`<tr>
       <td style="text-align:center">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</td>
-      <td><div style="display:flex;align-items:center;gap:8px">${avHtml(p)}<span style="font-weight:600">${p.nome}</span></div></td>
+      <td><div style="display:flex;align-items:center;gap:8px">${avHtml(p)}<span style="font-weight:600">${esc(p.nome)}</span></div></td>
       <td style="text-align:center;font-weight:700">${p.pg||0}</td>
       <td style="text-align:center">${normStorico(p.storico)}</td>
       <td style="text-align:center;font-weight:700;color:var(--accent2)">${(p.mg||0).toFixed(2)}</td>
@@ -1380,7 +1381,7 @@ function exportRankPDF(){
   else list.sort((a,b)=>(+b[sortKey]||0)-(+a[sortKey]||0));
   const rows=list.map((p,i)=>`<tr>
       <td style="font-size:15px;font-weight:800;text-align:center;color:${i===0?'#f0c040':i===1?'#9ca3b0':i===2?'#cd7c3f':'#888888'}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</td>
-      <td style="font-size:15px;font-weight:700">${p.nome}</td>
+      <td style="font-size:15px;font-weight:700">${esc(p.nome)}</td>
       <td style="font-size:13px;text-align:center">${p.pg||0}</td>
       <td style="font-size:13px;text-align:center">${storicoHtml(p.storico)}</td>
       <td style="font-size:13px;text-align:center;color:#b8860b;font-weight:700">${(p.mg||0).toFixed(2)}</td>
@@ -1423,8 +1424,8 @@ function renderTickerTape(){
   el.innerHTML=`<span>${text}</span><span>${text}</span>`;
 }
 // ═══ HIGHLIGHTS ═══
-function fillMSelects(){const opts='<option value="">— Seleziona —</option>'+[...players].sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');document.getElementById('mm-p1').innerHTML=opts;document.getElementById('mm-p2').innerHTML=opts;}
-function renderMatches(){const grid=document.getElementById('match-grid');if(!matches.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1"><span class="empty-icon">🎬</span>Nessun highlight ancora</div>';return;}grid.innerHTML=matches.map(m=>{const p1=players.find(p=>p.id===m.p1Id),p2=players.find(p=>p.id===m.p2Id);const ds=m.data?new Date(m.data).toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'}):'—';const hv=!!m.videoUrl;return`<div class="mcard"><div class="mthumb" onclick="${hv?`playVid(${m.id})`:''}"> ${hv?`<video src="${m.videoUrl}" preload="metadata"></video><div class="moverlay"><div class="mplay">▶</div></div>`:`<div class="mthumb-ph"><span>🎾</span><span>Nessun video</span></div>`}</div><div class="mbody"><div class="mtitle">${m.titolo||'Partita'}</div><div class="mmeta"><span>${p1?p1.nome:'—'}</span><span style="color:var(--text2)">vs</span><span>${p2?p2.nome:'—'}</span>${m.risultato?`<span style="color:var(--accent2);font-weight:700">${m.risultato}</span>`:''}</div><div class="mmeta" style="margin-top:4px"><span style="background:var(--bg4);padding:2px 7px;border-radius:5px;font-size:11px">📅 ${ds}</span></div><div class="mactions"><label class="mbtn mbtn-p" style="cursor:pointer">📹 ${hv?'Sostituisci':'Carica Video'}<input type="file" accept="video/*" style="display:none" onchange="uploadVid(this,${m.id})"></label><button class="mbtn mbtn-g" onclick="openMatchModal(${m.id})">✏️</button>${hv?`<button class="mbtn mbtn-d" onclick="removeVid(${m.id})">🗑</button>`:''}</div><div class="vprog" id="vp-${m.id}"><div class="vprog-fill" id="vpf-${m.id}" style="width:0%"></div></div></div></div>`;}).join('');}
+function fillMSelects(){const opts='<option value="">— Seleziona —</option>'+[...players].sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('');document.getElementById('mm-p1').innerHTML=opts;document.getElementById('mm-p2').innerHTML=opts;}
+function renderMatches(){const grid=document.getElementById('match-grid');if(!matches.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1"><span class="empty-icon">🎬</span>Nessun highlight ancora</div>';return;}grid.innerHTML=matches.map(m=>{const p1=players.find(p=>p.id===m.p1Id),p2=players.find(p=>p.id===m.p2Id);const ds=m.data?new Date(m.data).toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'}):'—';const hv=!!m.videoUrl;return`<div class="mcard"><div class="mthumb" onclick="${hv?`playVid(${m.id})`:''}"> ${hv?`<video src="${m.videoUrl}" preload="metadata"></video><div class="moverlay"><div class="mplay">▶</div></div>`:`<div class="mthumb-ph"><span>🎾</span><span>Nessun video</span></div>`}</div><div class="mbody"><div class="mtitle">${esc(m.titolo)||'Partita'}</div><div class="mmeta"><span>${p1?esc(p1.nome):'—'}</span><span style="color:var(--text2)">vs</span><span>${p2?esc(p2.nome):'—'}</span>${m.risultato?`<span style="color:var(--accent2);font-weight:700">${esc(m.risultato)}</span>`:''}</div><div class="mmeta" style="margin-top:4px"><span style="background:var(--bg4);padding:2px 7px;border-radius:5px;font-size:11px">📅 ${ds}</span></div><div class="mactions"><label class="mbtn mbtn-p" style="cursor:pointer">📹 ${hv?'Sostituisci':'Carica Video'}<input type="file" accept="video/*" style="display:none" onchange="uploadVid(this,${m.id})"></label><button class="mbtn mbtn-g" onclick="openMatchModal(${m.id})">✏️</button>${hv?`<button class="mbtn mbtn-d" onclick="removeVid(${m.id})">🗑</button>`:''}</div><div class="vprog" id="vp-${m.id}"><div class="vprog-fill" id="vpf-${m.id}" style="width:0%"></div></div></div></div>`;}).join('');}
 function openMatchModal(id){if(_checkViewer())return;editMatchId=id||null;fillMSelects();if(id){const m=matches.find(x=>x.id===id);document.getElementById('mm-title').textContent='Modifica';document.getElementById('mm-titolo').value=m.titolo||'';document.getElementById('mm-p1').value=m.p1Id||'';document.getElementById('mm-p2').value=m.p2Id||'';document.getElementById('mm-data').value=m.data||'';document.getElementById('mm-risultato').value=m.risultato||'';document.getElementById('mm-note').value=m.note||'';document.getElementById('mm-del-btn').style.display='';}else{document.getElementById('mm-title').textContent='Nuovo';['mm-titolo','mm-data','mm-risultato','mm-note'].forEach(x=>document.getElementById(x).value='');document.getElementById('mm-p1').value='';document.getElementById('mm-p2').value='';document.getElementById('mm-del-btn').style.display='none';}document.getElementById('modal-match').classList.add('open');}
 function saveMatch(){const data={titolo:document.getElementById('mm-titolo').value.trim(),p1Id:+document.getElementById('mm-p1').value||null,p2Id:+document.getElementById('mm-p2').value||null,data:document.getElementById('mm-data').value,risultato:document.getElementById('mm-risultato').value.trim(),note:document.getElementById('mm-note').value.trim()};if(editMatchId){const idx=matches.findIndex(m=>m.id===editMatchId);matches[idx]={...matches[idx],...data};toast('✅ Aggiornato!');}else{matches.push({id:matchNextId++,...data});toast('✅ Aggiunto!');}save();document.getElementById('modal-match').classList.remove('open');renderMatches();}
 function deleteMatch(){if(!editMatchId)return;delVid(editMatchId);matches=matches.filter(m=>m.id!==editMatchId);save();document.getElementById('modal-match').classList.remove('open');renderMatches();toast('🗑️ Eliminato');}
@@ -1461,7 +1462,7 @@ function renderCalTorneoSelector(){
     const doneCount=sched.filter(m=>m.torneoId===t.id&&m.risultato).length;
     return`<div class="torneo-card" onclick="selectCalTorneo(${t.id})" style="display:flex;align-items:center;gap:12px;padding:14px 16px">
       <div style="flex:1">
-        <div style="font-size:16px;font-weight:700;color:var(--text)">${t.nome}</div>
+        <div style="font-size:16px;font-weight:700;color:var(--text)">${esc(t.nome)}</div>
         <div style="font-size:12px;color:var(--text2);margin-top:3px">${t.tipo==='girone'?'🔄 Campionato':'⚡ Eliminazione'} · ${t.players.length} giocatori · ${matchCount} partite (${doneCount} giocate)</div>
       </div>
       <span style="font-size:22px">›</span>
@@ -1506,12 +1507,12 @@ function cmcHtml(m){
   return`<div class="cmc ${m.risultato?'cd':'cs'}" onclick="openCalModal(${m.id})">
     <div class="cmc-time">${m.ora||'—'}</div>
     <div style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden">
-      ${av(p1)}<span style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${n1}</span>
+      ${av(p1)}<span style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(n1)}</span>
       <span style="font-size:11px;color:var(--text2);flex-shrink:0">vs</span>
-      ${av(p2)}<span style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${n2}</span>
+      ${av(p2)}<span style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(n2)}</span>
     </div>
     <div class="cmc-right" style="flex-shrink:0">${m.risultato
-      ?`<div class="cmc-res"><div class="cmc-score">${m.risultato}</div><div class="cmc-winner">${m.winnerId==='draw'?'🤝 Pareggio':win?'🏆 '+win.nome:'—'}</div></div>`
+      ?`<div class="cmc-res"><div class="cmc-score">${esc(m.risultato)}</div><div class="cmc-winner">${m.winnerId==='draw'?'🤝 Pareggio':win?'🏆 '+esc(win.nome):'—'}</div></div>`
       :`<button class="add-res-btn" onclick="event.stopPropagation();openCalModalRes(${m.id})">+ Risultato</button>`
     }<div class="cmc-edit" onclick="event.stopPropagation();openCalModal(${m.id})">✏️</div></div>
   </div>`;
@@ -1544,14 +1545,14 @@ function fillCalSelects(){
   const opts='<option value="">— Seleziona —</option>'+
     [...players].filter(p=>!eligibleIds||eligibleIds.includes(p.id))
     .sort((a,b)=>a.nome.localeCompare(b.nome))
-    .map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
+    .map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('');
   document.getElementById('mc-p1').innerHTML=opts;
   document.getElementById('mc-p2').innerHTML=opts;
 }
 function fillCalTorneoSelect(){
   const sel=document.getElementById('mc-torneo-id');if(!sel)return;
   sel.innerHTML='<option value="">— Nessun torneo —</option>'+
-    tornei.map(t=>`<option value="${t.id}">${t.nome}</option>`).join('');
+    tornei.map(t=>`<option value="${t.id}">${esc(t.nome)}</option>`).join('');
   if(calActiveTorneoId)sel.value=calActiveTorneoId;
 }
 function openCalModal(id){if(_checkViewer())return;editSchedId=id?+id:null;const rb=document.getElementById('mc-res-block'),rt=document.getElementById('mc-res-toggle'),drb=document.getElementById('mc-del-res-btn');if(editSchedId){const m=sched.find(x=>x.id===editSchedId);if(!m)return;if(m.torneoId)calActiveTorneoId=m.torneoId;fillCalSelects();document.getElementById('mc-title').textContent='Modifica Incontro';document.getElementById('mc-titolo').value=m.titolo||'';fillCalTorneoSelect();const _ts=document.getElementById('mc-torneo-id');if(_ts)_ts.value=m.torneoId||'';updateCalStatsVisibility();document.getElementById('mc-p1').value=m.p1Id||'';document.getElementById('mc-p2').value=m.p2Id||'';document.getElementById('mc-data').value=m.data||'';document.getElementById('mc-ora').value=m.ora||'10:00';document.getElementById('mc-note').value=m.note||'';document.getElementById('mc-del-btn').style.display='';drb.style.display=m.risultato?'':'none';if(m.risultato){rb.style.display='';rt.textContent='– Nascondi';document.getElementById('mc-winner').innerHTML=buildWinOpts(m.p1Id,m.p2Id);document.getElementById('mc-winner').value=m.winnerId||'';document.getElementById('mc-risultato').value=m.risultato||'';document.getElementById('mc-gv1').value=m.gv1||0;document.getElementById('mc-gv2').value=m.gv2||0;calAutoMedia();}else{rb.style.display='none';rt.textContent='+ Risultato';}}else{fillCalTorneoSelect();fillCalSelects();document.getElementById('mc-title').textContent='Nuovo Incontro';['mc-titolo','mc-risultato','mc-note'].forEach(x=>document.getElementById(x).value='');document.getElementById('mc-p1').value='';document.getElementById('mc-p2').value='';document.getElementById('mc-data').value=calSelDate;document.getElementById('mc-ora').value='10:00';document.getElementById('mc-del-btn').style.display='none';drb.style.display='none';rb.style.display='none';rt.textContent='+ Risultato';document.getElementById('mc-winner').innerHTML='<option value="">—</option>';['mc-risultato','mc-gv1','mc-gv2','mc-mg1','mc-mg2'].forEach(x=>document.getElementById(x).value='');if(calActiveTorneoId){const _ts=document.getElementById('mc-torneo-id');if(_ts)_ts.value=calActiveTorneoId;}updateCalStatsVisibility();}document.getElementById('modal-cal').classList.add('open');}
@@ -1726,11 +1727,11 @@ function renderRisultati(){
         <div class="rcard-date">${d}${ora}</div>
         <div style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden;white-space:nowrap">
           ${av(p1)}
-          <span style="font-size:14px;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0">${_gt(m.p1Id)}</span>
+          <span style="font-size:14px;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0">${esc(_gt(m.p1Id))}</span>
           <span style="font-size:12px;color:var(--text2);flex-shrink:0">ha pareggiato con</span>
           ${av(p2)}
-          <span style="font-size:14px;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0">${_gt(m.p2Id)}</span>
-          <span style="font-size:12px;color:var(--accent2);font-weight:700;flex-shrink:0;margin-left:4px">${m.risultato}</span>
+          <span style="font-size:14px;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0">${esc(_gt(m.p2Id))}</span>
+          <span style="font-size:12px;color:var(--accent2);font-weight:700;flex-shrink:0;margin-left:4px">${esc(m.risultato)}</span>
           <span style="font-size:20px;flex-shrink:0;margin-left:auto">🤝</span>
         </div>
       </div>`;
@@ -1739,11 +1740,11 @@ function renderRisultati(){
       <div class="rcard-date">${d}${ora}</div>
       <div style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden;white-space:nowrap">
         ${av(winner)}
-        <span style="font-size:14px;font-weight:700;color:var(--green);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0">${winner?_gt(winner.id):'?'}</span>
+        <span style="font-size:14px;font-weight:700;color:var(--green);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0">${esc(winner?_gt(winner.id):'?')}</span>
         <span style="font-size:12px;color:var(--text2);flex-shrink:0">ha battuto</span>
         ${av(loser)}
-        <span style="font-size:14px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0">${loser?_gt(loser.id):'?'}</span>
-        <span style="font-size:12px;color:var(--accent2);font-weight:700;flex-shrink:0;margin-left:4px">${m.risultato}</span>
+        <span style="font-size:14px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0">${esc(loser?_gt(loser.id):'?')}</span>
+        <span style="font-size:12px;color:var(--accent2);font-weight:700;flex-shrink:0;margin-left:4px">${esc(m.risultato)}</span>
         <span style="font-size:20px;flex-shrink:0;margin-left:auto">🏆</span>
       </div>
     </div>`;
@@ -1855,7 +1856,7 @@ function importBackup(input){
   r.readAsText(input.files[0]);
 }
 async function importExcel(input){if(!input.files||!input.files[0])return;const log=document.getElementById('xlsx-log');log.style.display='block';log.innerHTML='⏳ Caricamento...';if(!window.XLSX){try{await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s);});}catch(e){log.innerHTML='❌ Impossibile caricare SheetJS';return;}}const reader=new FileReader();reader.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});let hIdx=-1;for(let i=0;i<raw.length;i++){if(raw[i].some(c=>(c||'').toString().trim().toUpperCase()==='GIOCATORE')){hIdx=i;break;}}if(hIdx<0){const preview=raw.slice(0,5).map((r,i)=>`R${i}: ${r.slice(0,6).map(c=>(c||'').toString().slice(0,15)).join(' | ')}`).join('<br>');log.innerHTML='❌ Colonna GIOCATORE non trovata.<br><br>'+preview;return;}const headers=raw[hIdx].map(h=>(h||'').toString().trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''));const findCol=(...cands)=>{for(const c of cands){const i=headers.findIndex(h=>h===c.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''));if(i>=0)return i;}return -1;};const CI={nome:findCol('GIOCATORE','NOME'),eta:findCol("ETA'","ETA"),sesso:findCol('SESSO'),lv:findCol('LIVELLO','LV'),naz:findCol("NAZIONALITA'","NAZIONALITA","NAZ","NAZIONE"),mano:findCol('MANO'),stor:findCol('STORICO'),gv:findCol('GAME VINTI','GV'),pg:findCol('PARTITE GIOCATE','PG','PARTITE'),mg:findCol('MEDIA GAME VINTI','MEDIA','MG')};if(CI.nome<0){log.innerHTML='❌ Colonna GIOCATORE non trovata. Trovate: '+headers.filter(Boolean).join(', ');return;}const np=[];let nid=Math.max(100,...players.map(p=>p.id+1),100);for(const row of raw.slice(hIdx+1)){const nome=(row[CI.nome]||'').toString().trim().toUpperCase();if(!nome||nome.length<2)continue;const gv=CI.gv>=0?+row[CI.gv]||0:0,pg=CI.pg>=0?+row[CI.pg]||0:0;const ex=players.find(p=>p.nome===nome);const id=ex?ex.id:nid++;const p={id,nome,eta:CI.eta>=0?+row[CI.eta]||0:0,sesso:CI.sesso>=0?(row[CI.sesso]||'UOMO').toString().trim().toUpperCase():'UOMO',livello:CI.lv>=0?+row[CI.lv]||1:1,naz:CI.naz>=0?(row[CI.naz]||'ITALIA').toString().trim().toUpperCase():'ITALIA',mano:CI.mano>=0?(row[CI.mano]||'DESTRA').toString().trim().toUpperCase():'DESTRA',storico:normStorico(CI.stor>=0?(row[CI.stor]||'0-0-0').toString().trim():'0-0-0'),gv,pg,mg:CI.mg>=0?+row[CI.mg]||calcMg(gv,pg):calcMg(gv,pg)};if(ex&&ex.photoUrl)p.photoUrl=ex.photoUrl;np.push(p);}if(!np.length){log.innerHTML='❌ Nessun giocatore trovato.';return;}players=np;nextId=Math.max(100,...players.map(p=>p.id+1));save();renderCards();log.innerHTML=`✅ <strong>${np.length} giocatori importati</strong>!`;toast('✅ '+np.length+' giocatori!');} catch(err){log.innerHTML='❌ Errore: '+err.message;}};reader.readAsArrayBuffer(input.files[0]);}
-function importPhotos(input){if(!input.files||!input.files.length)return;const log=document.getElementById('photo-log');log.style.display='block';log.innerHTML='⏳...';const files=Array.from(input.files);let ok=0,miss=0,done=0,logs=[];const norm=n=>n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,' ').trim().replace(/\s+/g,'.');files.forEach(file=>{const raw=file.name.toLowerCase().replace(/\.[^.]+$/,'');const hit=players.find(p=>{const pn=norm(p.nome);const pts=pn.split('.');return raw===pn||pts.every(pt=>raw.includes(pt));});if(hit){const r=new FileReader();r.onload=e=>{hit.photoUrl=e.target.result;savePh(hit.id,e.target.result);ok++;done++;logs.push(`✅ ${file.name} → ${hit.nome}`);if(done===files.length){save();renderCards();log.innerHTML=`<strong style="color:var(--green)">${ok} abbinate</strong>, ${miss} non trovate<br>`+logs.join('<br>');toast('✅ '+ok+' foto!');}};r.readAsDataURL(file);}else{miss++;done++;logs.push(`⚠️ ${file.name} → non trovato`);}});}
+function importPhotos(input){if(!input.files||!input.files.length)return;const log=document.getElementById('photo-log');log.style.display='block';log.innerHTML='⏳...';const files=Array.from(input.files);let ok=0,miss=0,done=0,logs=[];const norm=n=>n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,' ').trim().replace(/\s+/g,'.');files.forEach(file=>{const raw=file.name.toLowerCase().replace(/\.[^.]+$/,'');const hit=players.find(p=>{const pn=norm(p.nome);const pts=pn.split('.');return raw===pn||pts.every(pt=>raw.includes(pt));});if(hit){const r=new FileReader();r.onload=e=>{hit.photoUrl=e.target.result;savePh(hit.id,e.target.result);ok++;done++;logs.push(`✅ ${esc(file.name)} → ${esc(hit.nome)}`);if(done===files.length){save();renderCards();log.innerHTML=`<strong style="color:var(--green)">${ok} abbinate</strong>, ${miss} non trovate<br>`+logs.join('<br>');toast('✅ '+ok+' foto!');}};r.readAsDataURL(file);}else{miss++;done++;logs.push(`⚠️ ${esc(file.name)} → non trovato`);}});}
 function resetData(){if(!confirm('Sei sicuro? Tutte le modifiche andranno perse.'))return;players=[];matches=[];sched=[];nextId=100;matchNextId=200;schedNextId=300;for(const k of Object.keys(localStorage)){if(k.startsWith('laurera_'))localStorage.removeItem(k);}save();renderCards();renderTickerTape();toast('🔄 Ripristinato');}
 function recalcStats(){
   // Reset all player stats and recompute from sched ground truth
@@ -1971,7 +1972,7 @@ function buildPlayerCardHTML(p,opts){
       <div class="pcrd-ovr"><b>${d.ovr}</b><span>OVR</span></div>
       <div class="pcrd-lv" style="background:${lvColor}26;color:${lvColor};border:1px solid ${lvColor}">LV${p.livello}</div>
       <div class="pcrd-ring" style="background:${ringBg};cursor:${opts.interactive?'pointer':'default'}"${ringClick}><div class="pcrd-ring-inner">${photoHtml}</div></div>
-      <div class="pcrd-name" style="display:flex;align-items:center;justify-content:center;gap:7px"><span>${p.nome}</span>${flg}</div>
+      <div class="pcrd-name" style="display:flex;align-items:center;justify-content:center;gap:7px"><span>${esc(p.nome)}</span>${flg}</div>
     </div>
     <div class="pcrd-badges">${badgesHtml}</div>
     <div class="pcrd-rows">${rowsHtml}</div>
@@ -2120,7 +2121,7 @@ function openH2H(){
   const sel=document.getElementById('h2h-select');
   sel.innerHTML='<option value="">— Scegli avversario —</option>'+
     [...players].filter(p=>p.id!==profilePlayerId).sort((a,b)=>a.nome.localeCompare(b.nome))
-    .map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
+    .map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('');
   sel.value='';
   document.getElementById('h2h-content').innerHTML='';
   panel.style.display='block';
@@ -2141,7 +2142,7 @@ function renderH2H(){
   // Get all direct matches between the two
   const matches=sched.filter(m=>m.risultato&&((m.p1Id===p1.id&&m.p2Id===p2.id)||(m.p1Id===p2.id&&m.p2Id===p1.id))).sort((a,b)=>b.data.localeCompare(a.data));
   if(!matches.length){
-    cont.innerHTML=`<div style="text-align:center;padding:16px;color:var(--text2);font-size:13px">Nessuna partita diretta tra ${p1.nome} e ${p2.nome}.</div>`;
+    cont.innerHTML=`<div style="text-align:center;padding:16px;color:var(--text2);font-size:13px">Nessuna partita diretta tra ${esc(p1.nome)} e ${esc(p2.nome)}.</div>`;
     return;
   }
   // Count results
@@ -2164,9 +2165,9 @@ function renderH2H(){
         ${av(p1)}
         <div style="flex:1;min-width:0">
           <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-            <span style="font-size:13px;font-weight:700;color:var(--green)">${p1.nome}: ${w1}V</span>
+            <span style="font-size:13px;font-weight:700;color:var(--green)">${esc(p1.nome)}: ${w1}V</span>
             <span style="font-size:13px;font-weight:700;color:var(--accent2)">${draws}P</span>
-            <span style="font-size:13px;font-weight:700;color:var(--red)">${p2.nome}: ${w2}V</span>
+            <span style="font-size:13px;font-weight:700;color:var(--red)">${esc(p2.nome)}: ${w2}V</span>
           </div>
           <div style="height:8px;background:var(--bg4);border-radius:99px;overflow:hidden;display:flex">
             <div style="width:${pct1}%;background:var(--green);transition:width .6s"></div>
@@ -2347,7 +2348,7 @@ function renderLog(){
   try{
     const logs=JSON.parse(localStorage.getItem('laurera_log')||'[]');
     if(!logs.length){el.innerHTML='<div class="log-entry"><span class="log-icon">ℹ️</span><span class="log-text">Nessuna modifica registrata.</span></div>';return;}
-    el.innerHTML=logs.map(l=>`<div class="log-entry"><span class="log-icon">${l.icon}</span><span class="log-text">${l.text}</span><span class="log-time">${l.time}</span></div>`).join('');
+    el.innerHTML=logs.map(l=>`<div class="log-entry"><span class="log-icon">${l.icon}</span><span class="log-text">${esc(l.text)}</span><span class="log-time">${l.time}</span></div>`).join('');
   }catch(e){}
 }
 function clearLog(){if(!confirm('Cancellare il registro?'))return;localStorage.removeItem('laurera_log');renderLog();}
@@ -2468,9 +2469,9 @@ function renderTornei(){
     const esito=getTorneoEsito(t);
     const stato=esito.finished?'tb-done':'tb-active';
     const statoLbl=esito.finished?'Concluso':'LIVE';
-    const winnerHtml=esito.winnerName?`<div style="margin-top:8px;font-size:13px;font-weight:700;color:var(--gold)">🏆 ${esito.winnerName}</div>`:'';
+    const winnerHtml=esito.winnerName?`<div style="margin-top:8px;font-size:13px;font-weight:700;color:var(--gold)">🏆 ${esc(esito.winnerName)}</div>`:'';
     return`<div class="torneo-card" onclick="openTorneoDetail(${t.id})">
-      <div class="torneo-card-title">${t.nome}</div>
+      <div class="torneo-card-title">${esc(t.nome)}</div>
       <div class="torneo-card-meta">${tipo} · ${t.format==='doppio'?'👥 Doppio':'🎾 Singolo'} · ${t.players.length} iscritti</div>
       <div class="torneo-card-meta">${t.dataStart||'—'} → ${t.dataEnd||'—'}</div>
       <span class="torneo-card-badge ${stato}">${statoLbl}</span>
@@ -2523,7 +2524,7 @@ function fillMtPlayers(selected){
   el.innerHTML=[...players].sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>{
     const checked=selected.includes(p.id);
     const ini=p.nome.split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
-    return`<label class="mt-player-chip"><input type="checkbox" value="${p.id}" ${checked?'checked':''} onchange="updateMtCount()"><div class="mt-chip-av av-${p.id%8}">${ini}</div><span class="mt-chip-name">${p.nome}</span><div class="mt-chip-check">✓</div></label>`;
+    return`<label class="mt-player-chip"><input type="checkbox" value="${p.id}" ${checked?'checked':''} onchange="updateMtCount()"><div class="mt-chip-av av-${p.id%8}">${ini}</div><span class="mt-chip-name">${esc(p.nome)}</span><div class="mt-chip-check">✓</div></label>`;
   }).join('');
   updateMtCount();
 }
@@ -2652,7 +2653,7 @@ function openTorneoDetail(id){
   el.innerHTML=`<div style="background:var(--bg3);border:1px solid var(--accent);border-radius:var(--r);padding:16px;margin-top:14px">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px">
       <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px">${t.nome}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px">${esc(t.nome)}</div>
         <div style="font-size:12px;color:var(--text2)">${tipo} · ${fmt} · ${t.players.length} partecipanti</div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -2678,7 +2679,7 @@ function bracketWinnerLine(match,t){
   let wName;
   if(winEntry&&Array.isArray(winEntry))wName=winEntry.map(id=>{const p=players.find(x=>x.id===id);return p?p.nome:'?';}).join(' / ');
   else{const wp=players.find(p=>p.id===wId);wName=wp?wp.nome:'?';}
-  return{text:'🏆 '+wName+' '+existingMatch.risultato,wName,existingMatch,isDrw:false};
+  return{text:'🏆 '+esc(wName)+' '+esc(existingMatch.risultato),wName,existingMatch,isDrw:false};
 }
 function bracketColWidth(t){
   const rounds=t.bracket.rounds,isDoppio=t.format==='doppio';
@@ -2767,10 +2768,10 @@ function renderBracketHtml(t){
       const topPx=mi*slotH+(slotH-CARD_H)/2;
       return'<div class="b-match'+(match.winnerId?' done':'')+'" style="position:absolute;top:'+topPx+'px;left:0;width:100%">'
         +'<div class="b-slot'+(win1?' winner':match.winnerId&&!win1?' loser':'')+'" style="min-height:44px;white-space:normal;word-break:break-word">'
-          +av(e1)+'<span class="b-slot-name" style="white-space:nowrap;font-size:'+(isDoppio?'11px':'13px')+';overflow:visible;">'+e1.name+'</span>'
+          +av(e1)+'<span class="b-slot-name" style="white-space:nowrap;font-size:'+(isDoppio?'11px':'13px')+';overflow:visible;">'+esc(e1.name)+'</span>'
         +'</div>'
         +'<div class="b-slot'+(win2?' winner':match.winnerId&&!win2?' loser':'')+'" style="min-height:44px;white-space:normal;word-break:break-word">'
-          +av(e2)+'<span class="b-slot-name" style="white-space:nowrap;font-size:'+(isDoppio?'11px':'13px')+';overflow:visible;">'+e2.name+'</span>'
+          +av(e2)+'<span class="b-slot-name" style="white-space:nowrap;font-size:'+(isDoppio?'11px':'13px')+';overflow:visible;">'+esc(e2.name)+'</span>'
         +'</div>'
         +calSection
       +'</div>';
@@ -2944,10 +2945,10 @@ function renderFantaPronostici(){
       return`<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg4);border-radius:9px;flex-wrap:wrap">
         <span style="font-size:16px">${m.risultato?(pts==='+5'?'🎯':pts==='+2'?'✅':'❌'):'🎲'}</span>
         <span style="font-size:13px;flex:1;min-width:180px;line-height:1.6">
-          <strong style="color:var(--accent2)">${pr.username}</strong>
+          <strong style="color:var(--accent2)">${esc(pr.username)}</strong>
           <span style="color:var(--text2)"> ha pronosticato che </span>
-          <strong style="color:var(--text)">${pr.winnerName==='Pareggio'?'🤝 Pareggiare':'🏆 '+pr.winnerName}</strong>
-          ${pr.score?`<span style="color:var(--text2)"> con risultato di </span><strong style="color:var(--text)">${pr.score}</strong>`:''}
+          <strong style="color:var(--text)">${pr.winnerName==='Pareggio'?'🤝 Pareggiare':'🏆 '+esc(pr.winnerName)}</strong>
+          ${pr.score?`<span style="color:var(--text2)"> con risultato di </span><strong style="color:var(--text)">${esc(pr.score)}</strong>`:''}
         </span>
         <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
           ${badge}
@@ -3011,7 +3012,7 @@ function exportFantaPDF(){
   const ranked=Object.entries(totals).sort((a,b)=>b[1].pts-a[1].pts);
   const rows=ranked.map(([name,s],i)=>`<tr>
     <td style="font-size:15px;font-weight:800;text-align:center;color:${i===0?'#f0c040':i===1?'#9ca3b0':i===2?'#cd7c3f':'#888888'}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</td>
-    <td style="font-weight:700">${name}</td>
+    <td style="font-weight:700">${esc(name)}</td>
     <td style="text-align:center">${s.total}</td>
     <td style="text-align:center;color:#22c55e;font-weight:700">${s.correct}</td>
     <td style="text-align:center;color:#f0c040;font-weight:700">${s.perfect}</td>
@@ -3057,7 +3058,7 @@ function renderFantaClassifica(){
   el.innerHTML='<div style="display:flex;flex-direction:column;gap:6px">'+ranked.map(([name,s],i)=>
     `<div class="fanta-rank-row">
       <span class="fanta-rank-pos" style="color:${i===0?'var(--gold)':i===1?'var(--silver)':i===2?'var(--bronze)':'var(--text2)'}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</span>
-      <span class="fanta-rank-name">${name}</span>
+      <span class="fanta-rank-name">${esc(name)}</span>
       <span style="font-size:11px;color:var(--text2)">🎯${s.perfect} ✅${s.correct} (${s.total} partite)</span>
       <span class="fanta-rank-pts">${s.pts} pts</span>
     </div>`
@@ -3088,11 +3089,11 @@ function openFantaModal(matchId){if(_checkViewer())return;
   document.getElementById('mf-score').value='';
   // Fill winner select
   document.getElementById('mf-winner').innerHTML=`<option value="">— Vincitore —</option>`+
-    (p1?`<option value="${p1.nome}">${p1.nome}</option>`:'')+
-    (p2?`<option value="${p2.nome}">${p2.nome}</option>`:'')+
+    (p1?`<option value="${esc(p1.nome)}">${esc(p1.nome)}</option>`:'')+
+    (p2?`<option value="${esc(p2.nome)}">${esc(p2.nome)}</option>`:'')+
     `<option value="Pareggio">🤝 Pareggio</option>`;
   // Fill datalist with player names for username
-  document.getElementById('mf-players-list').innerHTML=players.map(p=>`<option value="${p.nome}">`).join('');
+  document.getElementById('mf-players-list').innerHTML=players.map(p=>`<option value="${esc(p.nome)}">`).join('');
   document.getElementById('modal-fanta').classList.add('open');
 }
 function saveFantaPrediction(){
@@ -3378,16 +3379,16 @@ function renderAlbo(){
 +'<div style="flex:1;min-width:0">'
 +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;letter-spacing:2px;line-height:1.1">'
 +'<span style="color:var(--text2)">Vincitore&nbsp;</span>'
-+'<span style="color:var(--accent)">'+a.vincitore+'</span>'
++'<span style="color:var(--accent)">'+esc(a.vincitore)+'</span>'
 +'</div>'
-+(a.torneo?'<div style="font-size:12px;color:var(--text2);margin-top:3px;letter-spacing:.5px">'+a.torneo+'</div>':'')
++(a.torneo?'<div style="font-size:12px;color:var(--text2);margin-top:3px;letter-spacing:.5px">'+esc(a.torneo)+'</div>':'')
 +(a.note?(function(_n){
   var _i=_n.indexOf(' VS ');
-  if(_i<0)return '<div style="font-size:12px;color:var(--text2);margin-top:4px;">'+_n+'</div>';
+  if(_i<0)return '<div style="font-size:12px;color:var(--text2);margin-top:4px;">'+esc(_n)+'</div>';
   return '<div style="font-size:12px;margin-top:4px;">'
-    +'<span style="color:var(--text2)">'+_n.slice(0,_i)+'</span>'
+    +'<span style="color:var(--text2)">'+esc(_n.slice(0,_i))+'</span>'
     +'<span style="color:var(--text2)"> vs </span>'
-    +'<span style="color:#ffffff;font-weight:700;">'+_n.slice(_i+4)+'</span>'
+    +'<span style="color:#ffffff;font-weight:700;">'+esc(_n.slice(_i+4))+'</span>'
     +'</div>';
 })(a.note):'')
 +'</div>'
@@ -3506,7 +3507,7 @@ function openExportPlayersModal(){
     const checked=true;
     return`<label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:5px;border-radius:4px;background:rgba(232,255,0,.06);border:1px solid transparent;" id="ep-lbl-${p.id}">
       <input type="checkbox" value="${p.id}" checked onchange="updateExportCount()" style="accent-color:var(--accent)">
-      <span style="font-size:12px;font-weight:600">${p.nome}</span>
+      <span style="font-size:12px;font-weight:600">${esc(p.nome)}</span>
     </label>`;
   }).join('');
   updateExportCount();
@@ -3541,7 +3542,7 @@ function exportPlayersPDF(){
     return`<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #e5e5e5;">
       <span style="font-size:11px;color:#999999;min-width:20px;font-weight:600;">${num}</span>
       ${ph}
-      <span style="font-size:15px;font-weight:700;color:#111111;letter-spacing:.3px;">${p.nome}</span>
+      <span style="font-size:15px;font-weight:700;color:#111111;letter-spacing:.3px;">${esc(p.nome)}</span>
       <span style="margin-left:auto;font-family:'Bebas Neue',Arial,sans-serif;font-size:11px;color:#9b59b6;border:1px solid #9b59b6;border-radius:5px;padding:1px 7px;">LV${p.livello}</span>
     </div>`;
   }).join('');
@@ -3641,7 +3642,7 @@ function renderRanking() {
           <div style="font-size:${rank<=3?'22':'16'}px;min-width:32px;text-align:center;font-weight:800;color:${rankColor};font-family:'Bebas Neue',sans-serif;">${rankIcon}</div>
           ${av}
           <div style="flex:1;min-width:0;">
-            <div style="font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.nome}</div>
+            <div style="font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(p.nome)}</div>
           </div>
         </div>
         <div style="background:var(--accent);clip-path:polygon(16px 0,100% 0,100% 100%,0 100%);padding:12px 24px 12px 30px;text-align:center;flex-shrink:0;">

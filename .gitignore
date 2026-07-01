@@ -1,2 +1,13 @@
 .claude/
 .DS_Store
+
+# Segreti e credenziali — non committare mai
+.env
+.env.*
+*.pem
+*.key
+*.p12
+credentials.json
+serviceAccountKey.json
+firebase-debug.log
+.firebase/
