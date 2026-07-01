@@ -572,6 +572,7 @@ body.viewer .btn-p:not(#modal-admin-login .btn-p),body.viewer .btn-d,body.viewer
 body.viewer .fab,body.viewer .mactions,body.viewer button[onclick*="savePlayer"],body.viewer button[onclick*="saveCalMatch"],body.viewer button[onclick*="saveTorneo"],body.viewer button[onclick*="saveManualBracket"],body.viewer button[onclick*="saveFantaPrediction"]{display:none!important;}
 body.viewer .tab[data-tab="settings"]{display:none!important;}
 body.viewer .tab[data-tab="fanta"]{display:none!important;}
+body.viewer #settings-gear-btn{display:none!important;}
 body.viewer .adm-hint{display:none!important;}
 /* ── ADMIN LOCK ICON ── */
 #admin-lock-btn{background:none;border:none;cursor:pointer;font-size:18px;opacity:.45;transition:opacity .2s;padding:4px 6px;line-height:1}
@@ -609,7 +610,7 @@ body.viewer .adm-hint{display:none!important;}
 </header>
 <nav class="tabs"><div class="tabs-inner">
         <div class="tab active" data-tab="players" onclick="switchTab('players')">🏠 Home</div>
-        <div class="tab" data-tab="tornei" onclick="switchTab('tornei')">🎪 Eventi</div>
+        <div class="tab" data-tab="tornei" onclick="switchTab('tornei')">🎟️ Eventi</div>
         <div class="tab" data-tab="calendario" onclick="switchTab('calendario')">📅 Calendario</div>
         <div class="tab" data-tab="risultati" onclick="switchTab('risultati')">🏅 Risultati</div>
         <div class="tab" data-tab="classifiche-torneo" onclick="switchTab('classifiche-torneo')">📈 Ranking</div>
@@ -619,19 +620,19 @@ body.viewer .adm-hint{display:none!important;}
   <div class="tab" data-tab="settings" onclick="switchTab('settings')">⚙️ Impostazioni</div>
       </div>
       <div class="tabs-mobile2">
-        <div class="tab" data-tab="players" onclick="switchTab('players')">🏠 Home</div>
         <div class="tgroup">
-          <button type="button" class="tab tgroup-btn" data-group-tabs="tornei,calendario,risultati" onclick="toggleTGroup(event,'eventi')">🎪 Eventi<span class="tgroup-caret">▾</span></button>
+          <button type="button" class="tab tgroup-btn" data-group-tabs="tornei,calendario,risultati" onclick="toggleTGroup(event,'eventi')">🎟️ Eventi<span class="tgroup-caret">▾</span></button>
           <div class="tgroup-menu" id="tgroup-menu-eventi">
             <div class="tgroup-item" onclick="switchTab('tornei')">🏆 Tornei</div>
             <div class="tgroup-item" onclick="switchTab('calendario')">📅 Calendario</div>
             <div class="tgroup-item" onclick="switchTab('risultati')">🏅 Risultati</div>
           </div>
         </div>
+        <div class="tab" data-tab="players" onclick="switchTab('players')">🏠 Home</div>
         <div class="tgroup">
           <button type="button" class="tab tgroup-btn" data-group-tabs="classifiche,classifiche-torneo,albo" onclick="toggleTGroup(event,'classifiche')">📊 Classifiche<span class="tgroup-caret">▾</span></button>
           <div class="tgroup-menu" id="tgroup-menu-classifiche">
-            <div class="tgroup-item" onclick="switchTab('classifiche')">📊 Classifica</div>
+            <div class="tgroup-item" onclick="switchTab('classifiche')">⭐ Master</div>
             <div class="tgroup-item" onclick="switchTab('classifiche-torneo')">📈 Ranking</div>
             <div class="tgroup-item" onclick="switchTab('albo')">👑 Albo d'Oro</div>
           </div>
