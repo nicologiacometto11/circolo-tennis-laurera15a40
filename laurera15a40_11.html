@@ -57,13 +57,13 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .tab:hover{background:var(--bg3);color:var(--text);}.tab.active{background:var(--accent);color:#111111;font-weight:700;}
 /* TABS — MOBILE DROPDOWN */
 .tabs-mobile{display:none;position:relative;padding:8px 12px;}
-.tabs-mobile-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text);cursor:pointer;}
+.tabs-mobile-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text);cursor:pointer;position:relative;}
 .tabs-mobile-btn:active{border-color:var(--accent);}
-.tabs-mobile-arrow{font-size:11px;color:var(--text2);transition:transform .15s;}
-.tabs-mobile-btn.open .tabs-mobile-arrow{transform:rotate(180deg);}
+.tabs-mobile-arrow{font-size:11px;color:var(--text2);transition:transform .15s;position:absolute;right:14px;top:50%;transform:translateY(-50%);}
+.tabs-mobile-btn.open .tabs-mobile-arrow{transform:translateY(-50%) rotate(180deg);}
 .tabs-mobile-menu{position:fixed;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;box-shadow:0 12px 28px rgba(0,0,0,.5);overflow-y:auto;max-height:70vh;display:none;z-index:1500;}
 .tabs-mobile-menu.open{display:block;}
-.tabs-mobile-item{padding:12px 16px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;color:var(--text2);cursor:pointer;border-bottom:1px solid var(--border);}
+.tabs-mobile-item{padding:12px 16px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;color:var(--text2);cursor:pointer;border-bottom:1px solid var(--border);text-align:center;}
 .tabs-mobile-item:last-child{border-bottom:none;}
 .tabs-mobile-item:active{background:var(--bg4);}
 .tabs-mobile-item.active{color:#111111;background:var(--accent);font-weight:700;}
@@ -291,8 +291,8 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   /* TICKER */
   .ticker-tape-content span{font-size:14px;padding:9px 0;padding-right:30px;}
 
-  /* QUOTE BAR — in flusso, non più sovrapposta a ricerca/ordinamento */
-  #quote-text-inline{position:static!important;left:auto!important;transform:none!important;order:1;width:100%;max-width:100%;font-size:12px!important;overflow:hidden;text-overflow:ellipsis;padding:2px 0;}
+  /* QUOTE BAR — in flusso, sopra a ricerca/ordinamento */
+  #quote-text-inline{position:static!important;left:auto!important;transform:none!important;order:-1;width:100%;max-width:100%;font-size:12px!important;overflow:hidden;text-overflow:ellipsis;padding:2px 0;}
   .quote-text{font-size:11px}
 
   /* LAYOUT */
@@ -300,7 +300,6 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .pg-title{font-size:17px;margin-bottom:10px}
 
   /* PLAYER CARDS — single column, more compact */
-  .cards-grid{padding:8px 8px 100px;gap:12px}
   .pc-body{padding:10px;gap:10px}
   .pc-av{width:64px;height:64px;font-size:24px}
   .pc-name{font-size:15px}
@@ -310,10 +309,12 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 
   /* TICKER */
 
-  /* FILTERS */
+  /* FILTERS — ricerca e ordinamento sulla stessa riga, sotto le citazioni */
   .filters{padding:8px 12px;gap:6px}
   .fgroup{flex-wrap:wrap}
-  .sort-sel{margin-left:0;width:100%;margin-top:4px;order:2}
+  .srch-pill{order:0;flex:1 1 0;width:auto;max-width:none;min-width:0;}
+  .sort-sel{order:1;width:auto;margin-left:0;margin-top:0;flex-shrink:0;}
+  .pdf-btn.icon-only{order:2;margin-left:0!important;flex-shrink:0;}
 
   /* FORMS */
   .form-grid{grid-template-columns:1fr}
@@ -339,14 +340,27 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .girone-table{font-size:12px;min-width:360px;}
   .girone-table th,.girone-table td{padding:7px 6px;}
 
-  /* PLAYER CARDS — full width su mobile */
-  .cards-grid{justify-content:flex-start;}
-  .pcrd{width:100%;max-width:100%;}
+  /* PLAYER CARDS — 2 per riga, ridimensionate automaticamente, centrate */
+  .cards-grid{display:grid;grid-template-columns:repeat(2,1fr);padding:8px 8px 100px;gap:10px;justify-content:center;align-items:stretch;}
+  .pcrd{width:100%;max-width:100%;clip-path:polygon(0 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%);}
+  .pcrd-bignum{font-size:60px;top:-8px;right:-6px;}
+  .pcrd-top{padding:14px 8px 4px;}
+  .pcrd-ovr{width:30px;height:30px;border-radius:8px;top:8px;left:8px;}
+  .pcrd-ovr b{font-size:12px;}
+  .pcrd-ovr span{font-size:6px;}
+  .pcrd-lv{font-size:9px;padding:2px 6px;top:8px;right:8px;}
+  .pcrd-ring{width:64px;height:64px;margin:0 auto 8px;}
+  .pcrd-ring-inner{font-size:18px;}
+  .pcrd-name{font-size:13px;}
+  .pcrd-rows{padding:2px 10px;}
 
   /* PCRD ROW font size */
-  .pcrd-row{font-size:13px;padding:9px 0;}
-  .pcrd-row-lbl{font-size:12px;}
-  .pcrd-row-val{font-size:14px;}
+  .pcrd-row{font-size:11px;padding:7px 0;flex-wrap:wrap;gap:2px;}
+  .pcrd-row-lbl{font-size:9px;}
+  .pcrd-row-val{font-size:11px;}
+  .pcrd-badges{padding:4px 8px 8px;gap:4px;}
+  .pcrd-badge{width:22px;height:22px;font-size:11px;}
+  .pcrd-edit{top:38px;right:8px;font-size:11px;}
 
   /* TORNEO CARDS */
   .torneo-grid{grid-template-columns:1fr}
