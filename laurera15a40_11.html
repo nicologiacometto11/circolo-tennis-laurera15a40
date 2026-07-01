@@ -47,6 +47,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .hdr-chip:hover{border-color:var(--accent);}
 .hdr-chip-icon{width:15px;height:15px;flex-shrink:0;color:var(--accent2);}
 .hdr-chip strong{color:var(--text2);font-weight:500;font-size:11px;margin-left:3px;text-transform:uppercase;letter-spacing:.3px;}
+.hdr-meteo-mobile{display:none;}
 @media(max-width:640px){.hdr-info{min-width:auto;}}
 /* TABS */
 .tabs{background:var(--bg2);border-top:3px solid var(--accent);border-bottom:3px solid var(--accent);overflow-x:auto;scrollbar-width:none;position:sticky;top:var(--header-h,0px);z-index:999;backdrop-filter:blur(20px);letter-spacing:.5px;}
@@ -65,16 +66,16 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .tabs-mobile{display:none;position:relative;padding:8px 12px;}
 .tabs-mobile-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text);cursor:pointer;position:relative;}
 .tabs-mobile-btn:active{border-color:var(--accent);}
+.tmb-stats{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--text2);padding-left:10px;border-left:1px solid var(--border2);}
+.tmb-dot{opacity:.5;}
 .tabs-mobile-arrow{font-size:11px;color:var(--text2);transition:transform .15s;position:absolute;right:14px;top:50%;transform:translateY(-50%);}
 .tabs-mobile-btn.open .tabs-mobile-arrow{transform:translateY(-50%) rotate(180deg);}
 .tabs-mobile-menu{position:fixed;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;box-shadow:0 12px 28px rgba(0,0,0,.5);overflow-y:auto;max-height:70vh;display:none;z-index:1500;padding:10px;box-sizing:border-box;}
-.tabs-mobile-menu.open{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.tabs-mobile-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 8px;border-radius:12px;background:var(--bg4);border:1px solid var(--border2);cursor:pointer;transition:.15s;}
+.tabs-mobile-menu.open{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.tabs-mobile-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px 6px;border-radius:12px;background:var(--bg4);border:1px solid var(--border2);cursor:pointer;transition:.15s;}
 .tabs-mobile-item:active{border-color:var(--accent);}
-.tabs-mobile-item.active{background:var(--accent);border-color:var(--accent);}
-.tabs-mobile-item .tmi-icon{font-size:22px;line-height:1;}
-.tabs-mobile-item .tmi-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--text2);text-align:center;line-height:1.25;}
-.tabs-mobile-item.active .tmi-label{color:#111111;}
+.tabs-mobile-item .tmi-icon{font-size:20px;line-height:1;}
+.tabs-mobile-item .tmi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--text2);text-align:center;line-height:1.25;}
 /* UTILS */
 .wrap{max-width:1400px;margin:0 auto;padding:16px 20px}
 .pg-title{display:inline-flex;align-items:center;font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:2px;margin-bottom:14px;color:#111111;background:var(--accent);padding:9px 30px 9px 16px;clip-path:polygon(0 0,100% 0,92% 100%,0 100%);text-transform:uppercase;white-space:nowrap;}
@@ -286,6 +287,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .hdr-info-stack{display:none!important;}
   .hdr-chip{display:none!important;}
   #admin-lock-btn{margin-left:0;}
+  .hdr-meteo-mobile{display:flex;align-items:center;gap:4px;position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;color:var(--text);background:var(--bg3);border:1px solid var(--border2);border-radius:999px;padding:5px 10px;white-space:nowrap;}
 
   /* TABS — sostituite dal menu a tendina */
   .tabs-inner{display:none!important;}
@@ -295,8 +297,8 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .ticker-tape{border-bottom-width:1px;}
   .ticker-tape-content span{font-size:10px;padding:4px 0;padding-right:14px;}
 
-  /* QUOTE BAR — in flusso, sopra a ricerca/ordinamento */
-  #quote-text-inline{position:static!important;left:auto!important;transform:none!important;order:-1;width:100%;max-width:100%;font-size:12px!important;overflow:visible;text-overflow:clip;white-space:normal!important;text-align:center!important;line-height:1.35;padding:2px 0;}
+  /* QUOTE BAR — in flusso, sopra a ricerca/ordinamento, altezza fissa (1 o 2 righe sempre centrate) */
+  #quote-text-inline{position:static!important;left:auto!important;transform:none!important;order:-1;width:100%;max-width:100%;font-size:12px!important;overflow:hidden;text-overflow:clip;white-space:normal!important;text-align:center!important;line-height:1.35;padding:2px 0;min-height:2.7em;display:flex!important;align-items:center;justify-content:center;}
   .quote-text{font-size:11px}
 
   /* LAYOUT */
@@ -579,6 +581,7 @@ body.viewer .adm-hint{display:none!important;}
 <body class="viewer">
 <header class="header">
   <div class="hdr">
+    <div class="hdr-meteo-mobile" id="hdr-meteo2" title="Meteo Volvera">—</div>
     <img src="https://www.laurera15a40.com/uploads/1/5/0/6/150685976/editor/logo-tipo-long-def.png?1725893045" class="logo-img" alt="Laurera 15A40" onerror="this.style.display='none'" onclick="switchTab('players')" style="cursor:pointer">
     <div class="hdr-center">
       <div class="hdr-title"><h1>CENTRO SPORTIVO · LAURERA15A40</h1><a class="hdr-addr" href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47881766c48bc33f:0xb7e99e2c09f32821?sa=X&ved=1t:8290&ictx=111" target="_blank" rel="noopener" style="font-size:16px;text-decoration:none;cursor:pointer">📍 Via Ugo Foscolo, 21, 10040 Volvera TO</a></div>
@@ -606,7 +609,7 @@ body.viewer .adm-hint{display:none!important;}
   <div class="tab" data-tab="settings" onclick="switchTab('settings')">⚙️ Impostazioni</div>
       </div>
       <div class="tabs-mobile">
-        <button type="button" class="tabs-mobile-btn" id="tabs-mobile-btn" onclick="toggleTabsMenu()"><span id="tabs-mobile-label">🏠 Home</span><span class="tabs-mobile-arrow">▾</span></button>
+        <button type="button" class="tabs-mobile-btn" id="tabs-mobile-btn" onclick="toggleTabsMenu()"><span id="tabs-mobile-label">🏠 Home</span><span class="tmb-stats">👥 <span id="hdr-players2">—</span> <span class="tmb-dot">·</span> 📅 <span id="hdr-today2">—</span></span><span class="tabs-mobile-arrow">▾</span></button>
         <div class="tabs-mobile-menu" id="tabs-mobile-menu"></div>
       </div>
       </nav>
@@ -1168,7 +1171,7 @@ function initTheme(){const saved=localStorage.getItem('laurera_theme');const mq=
 function switchTab(t){currentTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+t).classList.add('active');document.getElementById('fab').style.display=['players','highlights','calendario'].includes(t)?'flex':'none';if(t==='classifiche')renderRank();if(t==='highlights')renderMatches();if(t==='fanta'){loadFanta();renderFantaPronostici();}if(t==='calendario'){loadTornei();renderCalTorneoSelector();}if(t==='risultati')renderRisultati();if(t==='tornei'){loadTornei();renderTornei();}if(t==='albo'){renderAlbo();}if(t==='classifiche-torneo'){loadTornei();renderRanking();}if(t==='settings'){renderLog();}if(t==='players')renderTickerTape();updateTabsMobileLabel();closeTabsMenu();}
 // ═══ TABS MOBILE DROPDOWN ═══
 function updateTabsMobileLabel(){const active=document.querySelector('.tabs-inner .tab.active');const lbl=document.getElementById('tabs-mobile-label');if(lbl&&active)lbl.textContent=active.textContent;}
-function buildTabsMobileMenu(){const menu=document.getElementById('tabs-mobile-menu');if(!menu)return;if(menu.parentElement!==document.body)document.body.appendChild(menu);menu.innerHTML='';document.querySelectorAll('.tabs-inner .tab').forEach(tabEl=>{if(getComputedStyle(tabEl).display==='none')return;const txt=tabEl.textContent.trim();const m=txt.match(/^(\S+)\s+(.+)$/);const icon=m?m[1]:'';const label=m?m[2]:txt;const item=document.createElement('div');item.className='tabs-mobile-item'+(tabEl.classList.contains('active')?' active':'');item.innerHTML='<span class="tmi-icon">'+esc(icon)+'</span><span class="tmi-label">'+esc(label)+'</span>';item.onclick=()=>{switchTab(tabEl.dataset.tab);};menu.appendChild(item);});}
+function buildTabsMobileMenu(){const menu=document.getElementById('tabs-mobile-menu');if(!menu)return;if(menu.parentElement!==document.body)document.body.appendChild(menu);menu.innerHTML='';document.querySelectorAll('.tabs-inner .tab').forEach(tabEl=>{if(getComputedStyle(tabEl).display==='none')return;if(tabEl.classList.contains('active'))return;const txt=tabEl.textContent.trim();const m=txt.match(/^(\S+)\s+(.+)$/);const icon=m?m[1]:'';const label=m?m[2]:txt;const item=document.createElement('div');item.className='tabs-mobile-item';item.innerHTML='<span class="tmi-icon">'+esc(icon)+'</span><span class="tmi-label">'+esc(label)+'</span>';item.onclick=()=>{switchTab(tabEl.dataset.tab);};menu.appendChild(item);});}
 function toggleTabsMenu(){const menu=document.getElementById('tabs-mobile-menu');const btn=document.getElementById('tabs-mobile-btn');const willOpen=!menu.classList.contains('open');if(willOpen){buildTabsMobileMenu();const r=btn.getBoundingClientRect();menu.style.top=(r.bottom+8)+'px';menu.style.left='12px';menu.style.right='12px';menu.style.width='auto';}menu.classList.toggle('open',willOpen);btn.classList.toggle('open',willOpen);}
 function closeTabsMenu(){const menu=document.getElementById('tabs-mobile-menu');const btn=document.getElementById('tabs-mobile-btn');if(menu)menu.classList.remove('open');if(btn)btn.classList.remove('open');}
 document.addEventListener('click',e=>{const wrap=document.querySelector('.tabs-mobile');const menu=document.getElementById('tabs-mobile-menu');const inside=(wrap&&wrap.contains(e.target))||(menu&&menu.contains(e.target));if(!inside)closeTabsMenu();});
@@ -1468,6 +1471,11 @@ function renderTickerTape(){
   let text=base;
   while(text.length<500)text+='    •    '+base;
   el.innerHTML=`<span>${text}</span><span>${text}</span>`;
+  // Safari mobile a volte non avvia l'animazione CSS al primo render (parte solo dopo un resize, es. rotazione):
+  // forziamo un reflow per far ripartire l'animazione subito.
+  el.style.animation='none';
+  void el.offsetWidth;
+  el.style.animation='';
 }
 // ═══ HIGHLIGHTS ═══
 function fillMSelects(){const opts='<option value="">— Seleziona —</option>'+[...players].sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('');document.getElementById('mm-p1').innerHTML=opts;document.getElementById('mm-p2').innerHTML=opts;}
@@ -1561,7 +1569,7 @@ function cmcHtml(m){
       </div>
     </div>
     <div class="cmc-right" style="flex-shrink:0">${m.risultato
-      ?`<div class="cmc-res"><div class="cmc-score">${esc(m.risultato)}</div><div class="cmc-winner">${m.winnerId==='draw'?'<span class="cmc-winner-emoji">🤝</span> Pareggio':win?'<span class="cmc-winner-emoji">🏆</span> '+esc(dispName(win.nome)):'—'}</div></div>`
+      ?`<div class="cmc-res"><div class="cmc-score">${esc(m.risultato)}</div><div class="cmc-winner">${m.winnerId==='draw'?'<span class="cmc-winner-emoji">🤝</span> Pareggio':win?'<span class="cmc-winner-emoji">🏆</span> '+esc(dispName(+m.winnerId===m.p1Id?n1:n2)):'—'}</div></div>`
       :`<button class="add-res-btn" onclick="event.stopPropagation();openCalModalRes(${m.id})"><span class="add-res-full">+ Risultato</span><span class="add-res-short">+</span></button>`
     }<div class="cmc-edit" onclick="event.stopPropagation();openCalModal(${m.id})">✏️</div></div>
   </div>`;
@@ -2036,12 +2044,12 @@ function buildPlayerCardHTML(p,opts){
   const rowItem=(lbl,valHtml)=>`<div class="pcrd-row"><span class="pcrd-row-lbl">${lbl}</span><span class="pcrd-row-val">${valHtml}</span></div>`;
   const valC=(val,col)=>col?`<span style="color:${col}">${val}</span>`:`<span>${val}</span>`;
   const rowsHtml=
-    rowItem('Ranking',valC(`#${d.rankPos||'-'}`,'var(--accent)'))+
+    rowItem('Ranking',valC(`#${d.rankPos||'-'}`,'#38bdf8'))+
     rowItem('Punti',valC(d.pts,'#9b59b6'))+
     rowItem('Match',valC(p.pg||0,'var(--accent)'))+
     rowItem('V/P/S',storicoHtml(p.storico))+
-    rowItem('Game Tot.',valC(p.gv||0,'var(--accent2)'))+
-    rowItem('Media',valC((p.mg||0).toFixed(2),'var(--accent2)'));
+    rowItem('Game Tot.',valC(p.gv||0,'#e620a0'))+
+    rowItem('Media',valC((p.mg||0).toFixed(2),'#ff7a00'));
   return`<div class="pcrd ${d.isFoil?'foil':''}">
     <div class="pcrd-ring" style="background:${ringBg};cursor:${opts.interactive?'pointer':'default'}"${ringClick}><div class="pcrd-ring-inner">${photoHtml}</div></div>
     <div class="pcrd-info">
