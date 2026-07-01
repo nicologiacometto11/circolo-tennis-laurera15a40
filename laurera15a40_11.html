@@ -296,7 +296,8 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .tabs-mobile{display:block;}
 
   /* TICKER */
-  .ticker-tape-content span{font-size:14px;padding:9px 0;padding-right:26px;}
+  .ticker-tape{border-bottom-width:2px;}
+  .ticker-tape-content span{font-size:12px;padding:6px 0;padding-right:18px;}
 
   /* QUOTE BAR — in flusso, sopra a ricerca/ordinamento */
   #quote-text-inline{position:static!important;left:auto!important;transform:none!important;order:-1;width:100%;max-width:100%;font-size:12px!important;overflow:visible;text-overflow:clip;white-space:normal!important;text-align:center!important;line-height:1.35;padding:2px 0;}
@@ -356,14 +357,16 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .rcard-vs{display:none!important;}
   .rcard-name{font-size:13px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
-  /* CALENDARIO / PROFILO — card partita, più spazio ai nomi */
-  .cmc{flex-wrap:wrap;row-gap:4px;}
-  .cmc-row{flex-wrap:wrap;row-gap:2px;}
-  .cmc-name{font-size:13px!important;}
+  /* CALENDARIO / PROFILO — niente avatar, Nome1 VS sopra e Nome2 sotto, esito in verde a destra */
+  .cmc .av{display:none!important;}
   .cmc-time{min-width:30px;font-size:11px;}
-  .cmc-row{flex-basis:100%;}
-  .cmc-right{flex-basis:100%;justify-content:flex-start;margin-left:37px!important;margin-top:2px;}
-  .cmc-res{text-align:left;}
+  .cmc-row{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:2px!important;}
+  .cmc-name{font-size:13px!important;}
+  .cmc-res{text-align:right;}
+  .cmc-winner{color:var(--green)!important;font-weight:700;font-size:12px!important;}
+  .cmc-winner-emoji{display:none;}
+  .add-res-full{display:none!important;}
+  .add-res-short{display:inline!important;}
 
   /* RANKING (tab Ranking torneo) — nome a capo invece di troncato, cognome sempre su riga propria */
   .rank-item-name{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.25;}
@@ -440,6 +443,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .cmc-edit{font-size:13px;opacity:.35;cursor:pointer;padding:3px}
 .cmc-edit:hover{opacity:1;color:var(--accent2)}
 .add-res-btn{padding:4px 8px;border-radius:4px;border:1px solid rgba(232,255,0,.4);background:rgba(232,255,0,.12);color:var(--accent);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;text-transform:uppercase;letter-spacing:.3px;}
+.add-res-short{display:none;}
 
 /* ═══ QUOTE TICKER ═══ */
 
@@ -1456,7 +1460,11 @@ function renderTickerTape(){
     items.push(`📅 ${esc(n1.toUpperCase())} VS ${esc(n2.toUpperCase())} · ${d}${m.ora?' '+m.ora:''}`);
   });
   if(!items.length)items.push('🎾 LAURERA 15A40 — LA NUOVA ERA DEL TENNIS INIZIA QUI!');
-  const text=items.join('    •    ');
+  const base=items.join('    •    ');
+  // Ripete il testo finché non è abbastanza lungo da riempire lo schermo più largo,
+  // altrimenti con poco contenuto lo scroll (duplicato al 50%) lascia uno spazio vuoto (giallo pieno)
+  let text=base;
+  while(text.length<500)text+='    •    '+base;
   el.innerHTML=`<span>${text}</span><span>${text}</span>`;
 }
 // ═══ HIGHLIGHTS ═══
@@ -1542,13 +1550,17 @@ function cmcHtml(m){
   return`<div class="cmc ${m.risultato?'cd':'cs'}" onclick="openCalModal(${m.id})">
     <div class="cmc-time">${m.ora||'—'}</div>
     <div class="cmc-row" style="display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden">
-      ${av(p1)}<span class="cmc-name" style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(n1)}</span>
-      <span style="font-size:11px;color:var(--text2);flex-shrink:0">vs</span>
-      ${av(p2)}<span class="cmc-name" style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(n2)}</span>
+      <div class="cmc-player cmc-player-1" style="display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden">
+        ${av(p1)}<span class="cmc-name" style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(n1)}</span>
+        <span class="cmc-vs" style="font-size:11px;color:var(--text2);flex-shrink:0">vs</span>
+      </div>
+      <div class="cmc-player cmc-player-2" style="display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden">
+        ${av(p2)}<span class="cmc-name" style="font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0">${esc(n2)}</span>
+      </div>
     </div>
     <div class="cmc-right" style="flex-shrink:0">${m.risultato
-      ?`<div class="cmc-res"><div class="cmc-score">${esc(m.risultato)}</div><div class="cmc-winner">${m.winnerId==='draw'?'🤝 Pareggio':win?'🏆 '+esc(win.nome):'—'}</div></div>`
-      :`<button class="add-res-btn" onclick="event.stopPropagation();openCalModalRes(${m.id})">+ Risultato</button>`
+      ?`<div class="cmc-res"><div class="cmc-score">${esc(m.risultato)}</div><div class="cmc-winner">${m.winnerId==='draw'?'<span class="cmc-winner-emoji">🤝</span> Pareggio':win?'<span class="cmc-winner-emoji">🏆</span> '+esc(win.nome):'—'}</div></div>`
+      :`<button class="add-res-btn" onclick="event.stopPropagation();openCalModalRes(${m.id})"><span class="add-res-full">+ Risultato</span><span class="add-res-short">+</span></button>`
     }<div class="cmc-edit" onclick="event.stopPropagation();openCalModal(${m.id})">✏️</div></div>
   </div>`;
 }
@@ -2396,18 +2408,24 @@ function clearLog(){if(!confirm('Cancellare il registro?'))return;localStorage.r
 // ═══════════════════════════════════════════════
 let tornei=[],editTorneoId=null;
 let tNextId=1000;
+// Firestore non supporta array annidati (array dentro array, es. bracket.rounds e gironi):
+// il campo tornei viene quindi salvato come stringa JSON e riletto/parsato qui.
+function _decodeTorneiField(v){
+  if(typeof v==='string'){try{return JSON.parse(v)||[];}catch(e){return[];}}
+  return v||[];
+}
 
 async function loadTornei(){
   try{
     const snap=await _doc('tornei').get();
-    if(snap.exists){const d=snap.data();tornei=d.tornei||[];tNextId=d.tNextId||1000;}
+    if(snap.exists){const d=snap.data();tornei=_decodeTorneiField(d.tornei);tNextId=d.tNextId||1000;}
     else{try{const r=localStorage.getItem('laurera_tornei');if(r)tornei=JSON.parse(r);const ri=localStorage.getItem('laurera_torn_id');if(ri)tNextId=+ri;}catch(e){} if(tornei.length)saveTornei();}
   }catch(e){try{const r=localStorage.getItem('laurera_tornei');if(r)tornei=JSON.parse(r);const ri=localStorage.getItem('laurera_torn_id');if(ri)tNextId=+ri;}catch(e2){}}
 }
 function saveTornei(){
   try{localStorage.setItem('laurera_tornei',JSON.stringify(tornei));localStorage.setItem('laurera_torn_id',tNextId);}catch(e){}
   _skipNextSnap.tornei=true;
-  _doc('tornei').set({tornei,tNextId}).catch(e=>{console.error('saveTornei() failed:',e);toast('⚠️ Salvataggio torneo non riuscito: '+(e&&e.message?e.message:'errore sconosciuto'));});
+  _doc('tornei').set({tornei:JSON.stringify(tornei),tNextId}).catch(e=>{console.error('saveTornei() failed:',e);toast('⚠️ Salvataggio torneo non riuscito: '+(e&&e.message?e.message:'errore sconosciuto'));});
 }
 
 function getTorneoEsito(t){
@@ -3198,7 +3216,7 @@ initTheme();initAdmin();
   _doc('tornei').onSnapshot(snap=>{
     if(_skipNextSnap.tornei){_skipNextSnap.tornei=false;return;}
     if(!snap.exists)return;
-    const d=snap.data();tornei=d.tornei||[];tNextId=d.tNextId||1000;
+    const d=snap.data();tornei=_decodeTorneiField(d.tornei);tNextId=d.tNextId||1000;
     if(currentTab==='tornei')renderTornei();
     if(currentTab==='calendario')renderCalTorneoSelector();
     if(currentTab==='classifiche-torneo')renderRanking();
