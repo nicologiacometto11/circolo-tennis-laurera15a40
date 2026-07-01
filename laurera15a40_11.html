@@ -37,10 +37,11 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .theme-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .theme-btn:hover{border-color:var(--accent);color:var(--accent2)}
 /* HEADER INFO PANEL */
-.hdr-info{display:flex;flex-direction:column;gap:2px;flex-shrink:0;align-items:flex-end;min-width:130px;margin-left:auto;padding-bottom:6px;}
-.hdr-info-row{display:flex;align-items:center;justify-content:flex-end;gap:5px;font-size:13px;color:var(--text2);white-space:nowrap;line-height:1.6;}
-.hdr-info-row strong{color:var(--text);font-weight:600;font-size:12px;}
-.hdr-info-icon{font-size:12px;flex-shrink:0}
+.hdr-info{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:auto;}
+.hdr-chip{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border2);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;line-height:1;transition:border-color .15s;}
+.hdr-chip:hover{border-color:var(--accent);}
+.hdr-chip-icon{width:15px;height:15px;flex-shrink:0;color:var(--accent2);}
+.hdr-chip strong{color:var(--text2);font-weight:500;font-size:11px;margin-left:3px;text-transform:uppercase;letter-spacing:.3px;}
 @media(max-width:640px){.hdr-info{min-width:auto;}}
 /* TABS */
 .tabs{background:var(--bg2);border-top:3px solid var(--accent);border-bottom:3px solid var(--accent);overflow-x:auto;scrollbar-width:none;position:sticky;top:var(--header-h,0px);z-index:999;backdrop-filter:blur(20px);letter-spacing:.5px;}
@@ -280,8 +281,8 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .logo-img{height:40px;width:auto;max-width:160px;}
   .hdr{padding:6px 12px;gap:8px;justify-content:center;}
   .hdr-center{display:none!important;}
-  .hdr-info{position:absolute;right:10px;top:50%;transform:translateY(-50%);min-width:auto!important;flex-direction:row;gap:6px;align-items:center;padding-bottom:0;}
-  .hdr-info-row{display:none!important;}
+  .hdr-info{position:absolute;right:10px;top:50%;transform:translateY(-50%);min-width:auto!important;gap:6px;align-items:center;padding-bottom:0;}
+  .hdr-chip{display:none!important;}
   #admin-lock-btn{margin-left:0;}
 
   /* TABS — sostituite dal menu a tendina */
@@ -546,9 +547,9 @@ body.viewer .adm-hint{display:none!important;}
       <div class="hdr-title"><h1>CENTRO SPORTIVO · LAURERA15A40</h1><a class="hdr-addr" href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47881766c48bc33f:0xb7e99e2c09f32821?sa=X&ved=1t:8290&ictx=111" target="_blank" rel="noopener" style="font-size:16px;text-decoration:none;cursor:pointer">📍 Via Ugo Foscolo, 21, 10040 Volvera TO</a></div>
     </div>
     <div class="hdr-info">
-      <div class="hdr-info-row"><span id="hdr-players">—</span><strong> GIOCATORI</strong><span class="hdr-info-icon">👤</span></div>
-      <div class="hdr-info-row"><span id="hdr-today">—</span><strong> OGGI</strong><span class="hdr-info-icon">📅</span></div>
-      <div class="hdr-info-row"><span id="hdr-meteo">—</span><span class="hdr-info-icon">🌡️</span></div>
+      <div class="hdr-chip" title="Giocatori registrati"><svg class="hdr-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span id="hdr-players">—</span><strong>Giocatori</strong></div>
+      <div class="hdr-chip" title="Partite in programma oggi"><svg class="hdr-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span id="hdr-today">—</span><strong>Oggi</strong></div>
+      <div class="hdr-chip" title="Meteo Volvera"><span id="hdr-meteo">—</span></div>
       <button id="admin-lock-btn" onclick="openAdminModal()" title="Admin">🔐</button>
     </div>
   </div>
