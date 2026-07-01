@@ -990,7 +990,7 @@ body.viewer .adm-hint{display:none!important;}
       </div>
     </div>
 
-    <div class="mt-section">
+    <div class="mt-section" id="mt-players-section">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div class="mt-section-label" style="margin-bottom:0">Seleziona Giocatori</div>
         <button type="button" onclick="selectAllPlayers()" style="background:rgba(124,92,252,.15);border:1px solid var(--accent);color:var(--accent2);border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">✅ Seleziona Tutto</button>
@@ -1639,6 +1639,21 @@ function buildWinOpts(p1Id,p2Id){
   return'<option value="">— Vincitore —</option>'+(p1?`<option value="${p1.id}">${esc(p1.nome)}</option>`:'')+( p2?`<option value="${p2.id}">${esc(p2.nome)}</option>`:'')+'<option value="draw">🤝 Pareggio</option>';
 }
 function calAutoMedia(){const p1=players.find(p=>p.id===+document.getElementById('mc-p1').value),p2=players.find(p=>p.id===+document.getElementById('mc-p2').value);const gv1=+document.getElementById('mc-gv1').value||0,gv2=+document.getElementById('mc-gv2').value||0;if(p1){const np=p1.pg+1;document.getElementById('mc-mg1').value=np?((p1.gv+gv1)/np).toFixed(2):'—';}if(p2){const np=p2.pg+1;document.getElementById('mc-mg2').value=np?((p2.gv+gv2)/np).toFixed(2):'—';}}
+// Torneo Doppio: dato l'ID di un giocatore (rappresentante della coppia nel form), trova il partner nel tabellone
+function getTeamPartnerId(t,pid){
+  if(!t||t.format!=='doppio'||!t.bracket||!t.bracket.rounds||!pid)return null;
+  for(const rnd of t.bracket.rounds){
+    for(const bm of rnd){
+      for(const entry of[bm.p1,bm.p2]){
+        if(Array.isArray(entry)&&entry.includes(pid)){
+          const other=entry.find(id=>id!=null&&id!==pid);
+          return other!=null?other:null;
+        }
+      }
+    }
+  }
+  return null;
+}
 function undoResult(m){
   if(!m||!m.risultato)return;
   const isDraw=m.winnerId==='draw'||m.winnerId==='DRAW'||!m.winnerId;
@@ -1653,10 +1668,11 @@ function undoResult(m){
     players[idx]={...p,storico:newStor,gv:nGv,pg:nPg,mg:calcMg(nGv,nPg)};
     if(p.photoUrl)players[idx].photoUrl=p.photoUrl;
   };
-  if(isDraw){undoPlayer(m.p1Id,+(m.gv1)||0,'d');undoPlayer(m.p2Id,+(m.gv2)||0,'d');}
-  else{const loserId=m.winnerId===m.p1Id?m.p2Id:m.p1Id;const wGv=+(m.winnerId===m.p1Id?m.gv1:m.gv2)||0,lGv=+(m.winnerId===m.p1Id?m.gv2:m.gv1)||0;undoPlayer(+m.winnerId,wGv,'w');undoPlayer(loserId,lGv,'l');}
+  const team1=[m.p1Id,m.p1Id2].filter(id=>id!=null),team2=[m.p2Id,m.p2Id2].filter(id=>id!=null);
+  if(isDraw){team1.forEach(id=>undoPlayer(id,+(m.gv1)||0,'d'));team2.forEach(id=>undoPlayer(id,+(m.gv2)||0,'d'));}
+  else{const winTeam=m.winnerId===m.p1Id?team1:team2,loseTeam=m.winnerId===m.p1Id?team2:team1;const wGv=+(m.winnerId===m.p1Id?m.gv1:m.gv2)||0,lGv=+(m.winnerId===m.p1Id?m.gv2:m.gv1)||0;winTeam.forEach(id=>undoPlayer(id,wGv,'w'));loseTeam.forEach(id=>undoPlayer(id,lGv,'l'));}
 }
-function applyResult(p1Id,p2Id,winnerId,gv1,gv2){
+function applyResult(p1Id,p2Id,winnerId,gv1,gv2,p1Id2,p2Id2){
   const isDraw=winnerId==='draw'||winnerId==='DRAW'||!winnerId;
   const updatePlayer=(id,gvD,outcome)=>{
     const idx=players.findIndex(p=>p.id===id);if(idx<0)return;
@@ -1669,8 +1685,9 @@ function applyResult(p1Id,p2Id,winnerId,gv1,gv2){
     players[idx]={...p,storico:newStor,gv:nGv,pg:nPg,mg:calcMg(nGv,nPg)};
     if(p.photoUrl)players[idx].photoUrl=p.photoUrl;
   };
-  if(isDraw){updatePlayer(p1Id,gv1,'d');updatePlayer(p2Id,gv2,'d');}
-  else{const loserId=winnerId===p1Id?p2Id:p1Id;const wGv=winnerId===p1Id?gv1:gv2,lGv=winnerId===p1Id?gv2:gv1;updatePlayer(+winnerId,wGv,'w');updatePlayer(loserId,lGv,'l');}
+  const team1=[p1Id,p1Id2].filter(id=>id!=null),team2=[p2Id,p2Id2].filter(id=>id!=null);
+  if(isDraw){team1.forEach(id=>updatePlayer(id,gv1,'d'));team2.forEach(id=>updatePlayer(id,gv2,'d'));}
+  else{const winTeam=winnerId===p1Id?team1:team2,loseTeam=winnerId===p1Id?team2:team1;const wGv=winnerId===p1Id?gv1:gv2,lGv=winnerId===p1Id?gv2:gv1;winTeam.forEach(id=>updatePlayer(id,wGv,'w'));loseTeam.forEach(id=>updatePlayer(id,lGv,'l'));}
 }
 function refreshAll(){
   save();
@@ -1688,9 +1705,12 @@ function saveCalMatch(){
   if(p1Id===p2Id){toast('❌ Scegli due giocatori diversi');return;}
   const _tEl=document.getElementById('mc-torneo-id');
   const _tId=_tEl&&_tEl.value?(+_tEl.value||null):null;
+  const _ct=_tId?tornei.find(t=>t.id===_tId):null;
+  const p1Id2=getTeamPartnerId(_ct,p1Id);
+  const p2Id2=getTeamPartnerId(_ct,p2Id);
   const data={
     titolo:document.getElementById('mc-titolo').value.trim(),
-    torneoId:_tId,p1Id,p2Id,
+    torneoId:_tId,p1Id,p2Id,p1Id2,p2Id2,
     teamName1:(()=>{const s=document.getElementById('mc-p1');return s&&s.selectedOptions[0]?s.selectedOptions[0].text:'';})(),
     teamName2:(()=>{const s=document.getElementById('mc-p2');return s&&s.selectedOptions[0]?s.selectedOptions[0].text:'';})(),
     data:document.getElementById('mc-data').value,
@@ -1711,15 +1731,14 @@ function saveCalMatch(){
     data.risultato=risultato;data.winnerId=winnerId;data.gv1=gv1;data.gv2=gv2;
     if(editSchedId){const prev=sched.find(m=>m.id===editSchedId);undoMatchStats(prev);if(prev&&prev.winnerId&&prev.risultato&&prev.torneoId)advanceBracket(prev.torneoId,prev.p1Id,prev.p2Id,null,null);}
     if((winnerId||winnerId==='draw')&&risultato){
-      const _ct=_tId?tornei.find(t=>t.id===_tId):null;
       if(!_ct||_ct.classifica!=='no'){
         const _lo=_ct&&_ct.liberoOpts;
         if(_lo){
           // Libero: applica solo le stats selezionate
-          if(_lo.vps)applyResultVPS(p1Id,p2Id,winnerId);
-          if(_lo.mediagame)applyResultGames(p1Id,p2Id,gv1,gv2);
+          if(_lo.vps)applyResultVPS(p1Id,p2Id,winnerId,p1Id2,p2Id2);
+          if(_lo.mediagame)applyResultGames(p1Id,p2Id,gv1,gv2,p1Id2,p2Id2);
         } else {
-          applyResult(p1Id,p2Id,winnerId,gv1,gv2);
+          applyResult(p1Id,p2Id,winnerId,gv1,gv2,p1Id2,p2Id2);
         }
       }
       const _wn=winnerId==='draw'?null:players.find(p=>p.id===+winnerId);
@@ -2552,6 +2571,7 @@ function openNewTorneoModal(){if(_checkViewer())return;
   document.getElementById('mt-data-end').value='';
   document.getElementById('mt-del-btn').style.display='none';
   fillMtPlayers([]);
+  document.getElementById('mt-players-section').style.display='none';
   document.getElementById('modal-torneo').classList.add('open');
 }
 function openEditTorneo(id){if(_checkViewer())return;
@@ -2572,6 +2592,7 @@ function openEditTorneo(id){if(_checkViewer())return;
   document.getElementById('mt-data-end').value=t.dataEnd||'';if(document.getElementById('mt-format'))document.getElementById('mt-format').value=t.format||'singolo';
   document.getElementById('mt-del-btn').style.display='';if(document.getElementById('mt-classifica'))document.getElementById('mt-classifica').value=t.classifica||'si';
   fillMtPlayers(t.players||[]);
+  document.getElementById('mt-players-section').style.display='';
   document.getElementById('modal-torneo').classList.add('open');
 }
 function fillMtPlayers(selected){
@@ -2634,7 +2655,7 @@ function saveTorneo(){
   const nome=document.getElementById('mt-nome').value.trim();
   if(!nome){toast('❌ Inserisci il nome del torneo');return;}
   const selPlayers=Array.from(document.querySelectorAll('#mt-players-list input:checked')).map(cb=>+cb.value);
-  if(selPlayers.length<2){toast('❌ Seleziona almeno 2 giocatori');return;}
+  if(editTorneoId&&selPlayers.length<2){toast('❌ Seleziona almeno 2 giocatori');return;}
   const torneo={
     id:editTorneoId||tNextId++,
     nome,tipo:document.getElementById('mt-tipo').value,
@@ -3800,7 +3821,7 @@ function _generateGironiRandom(torneoId){
   var t=tornei.find(function(x){return x.id===torneoId;});
   if(!t)return;
   if(t.gironi&&t.gironi.length){
-    if(!confirm('Rigenerare i gironi? Gli incontri esistenti non verranno eliminati.'))return;
+    if(!confirm('Rigenerare i gironi? I gruppi precedenti e il bracket eliminazione (se generato) verranno annullati. Gli incontri già in calendario resteranno, ma andranno verificati.'))return;
   }
   var size=4; // default girone da 4
   var pids=[].concat(t.players).sort(function(){return Math.random()-.5;});
@@ -3809,6 +3830,7 @@ function _generateGironiRandom(torneoId){
     gruppi.push(pids.slice(i,i+size));
   }
   t.gironi=gruppi;
+  t.bracket=null; // il bracket eliminazione, se presente, si basava sui gruppi precedenti: non è più valido
   saveTornei();
   openTorneoDetail(torneoId);
   toast('✅ Gironi generati!');
@@ -3864,6 +3886,7 @@ function saveManualGironi(){
     if(grp.length)gironi.push(grp);
   }
   t.gironi=gironi;
+  t.bracket=null; // i gruppi sono cambiati: un eventuale bracket eliminazione precedente non è più valido
   saveTornei();
   document.getElementById('modal-gironi-manual').classList.remove('open');
   openTorneoDetail(_gironiTorneoId);
@@ -4132,31 +4155,29 @@ function resetPuntiRanking(){
 }
 
 
-function applyResultVPS(p1Id,p2Id,winnerId){
-  const p1=players.find(p=>p.id===p1Id),p2=players.find(p=>p.id===p2Id);
-  if(!p1||!p2)return;
-  p1.pg=(p1.pg||0)+1;p2.pg=(p2.pg||0)+1;
-  const bump=(p,outcome)=>{
+function applyResultVPS(p1Id,p2Id,winnerId,p1Id2,p2Id2){
+  const team1=[p1Id,p1Id2].filter(id=>id!=null),team2=[p2Id,p2Id2].filter(id=>id!=null);
+  const bumpPg=id=>{const p=players.find(x=>x.id===id);if(p)p.pg=(p.pg||0)+1;};
+  team1.concat(team2).forEach(bumpPg);
+  const bump=(id,outcome)=>{
+    const p=players.find(x=>x.id===id);if(!p)return;
     const m=normStorico(p.storico).split('-').map(Number);
     const w=m[0],pv=m[1],l=m[2];
     p.storico=`${w+(outcome==='w'?1:0)}-${pv+(outcome==='d'?1:0)}-${l+(outcome==='l'?1:0)}`;
+    p.mg=calcMg(p.gv||0,p.pg);
   };
-  if(winnerId==='draw'){bump(p1,'d');bump(p2,'d');}
-  else{const w=+winnerId===p1Id?p1:p2,l=+winnerId===p1Id?p2:p1;bump(w,'w');bump(l,'l');}
-  p1.mg=calcMg(p1.gv||0,p1.pg);
-  p2.mg=calcMg(p2.gv||0,p2.pg);
+  if(winnerId==='draw'){team1.forEach(id=>bump(id,'d'));team2.forEach(id=>bump(id,'d'));}
+  else{const winTeam=+winnerId===p1Id?team1:team2,loseTeam=+winnerId===p1Id?team2:team1;winTeam.forEach(id=>bump(id,'w'));loseTeam.forEach(id=>bump(id,'l'));}
 }
-function applyResultGames(p1Id,p2Id,gv1,gv2){
-  const p1=players.find(p=>p.id===p1Id),p2=players.find(p=>p.id===p2Id);
-  if(!p1||!p2)return;
-  p1.gv=(p1.gv||0)+gv1;
-  p2.gv=(p2.gv||0)+gv2;
-  p1.mg=calcMg(p1.gv,p1.pg||0);
-  p2.mg=calcMg(p2.gv,p2.pg||0);
+function applyResultGames(p1Id,p2Id,gv1,gv2,p1Id2,p2Id2){
+  const team1=[p1Id,p1Id2].filter(id=>id!=null),team2=[p2Id,p2Id2].filter(id=>id!=null);
+  const bump=(id,gvD)=>{const p=players.find(x=>x.id===id);if(!p)return;p.gv=(p.gv||0)+gvD;p.mg=calcMg(p.gv,p.pg||0);};
+  team1.forEach(id=>bump(id,gv1));team2.forEach(id=>bump(id,gv2));
 }
 function undoResultVPS(m){
   const p1Id=m.p1Id,p2Id=m.p2Id,winnerId=m.winnerId;
   const isDraw=winnerId==='draw'||winnerId==='DRAW'||!winnerId;
+  const team1=[m.p1Id,m.p1Id2].filter(id=>id!=null),team2=[m.p2Id,m.p2Id2].filter(id=>id!=null);
   const undo=(id,outcome)=>{
     const idx=players.findIndex(p=>p.id===id);if(idx<0)return;
     const p=players[idx];
@@ -4167,13 +4188,13 @@ function undoResultVPS(m){
     const newStor=`${nW}-${nD}-${nL}`;
     players[idx]={...p,storico:newStor,pg:nPg,mg:calcMg(p.gv||0,nPg)};
   };
-  if(isDraw){undo(p1Id,'d');undo(p2Id,'d');}
-  else{const loserId=winnerId===p1Id?p2Id:p1Id;undo(+winnerId,'w');undo(loserId,'l');}
+  if(isDraw){team1.forEach(id=>undo(id,'d'));team2.forEach(id=>undo(id,'d'));}
+  else{const winTeam=winnerId===p1Id?team1:team2,loseTeam=winnerId===p1Id?team2:team1;winTeam.forEach(id=>undo(id,'w'));loseTeam.forEach(id=>undo(id,'l'));}
 }
 function undoResultGames(m){
-  const p1=players.find(p=>p.id===m.p1Id),p2=players.find(p=>p.id===m.p2Id);
-  if(p1){p1.gv=Math.max(0,(p1.gv||0)-(+m.gv1||0));p1.mg=calcMg(p1.gv,p1.pg||0);}
-  if(p2){p2.gv=Math.max(0,(p2.gv||0)-(+m.gv2||0));p2.mg=calcMg(p2.gv,p2.pg||0);}
+  const team1=[m.p1Id,m.p1Id2].filter(id=>id!=null),team2=[m.p2Id,m.p2Id2].filter(id=>id!=null);
+  const undo=(id,gvD)=>{const p=players.find(x=>x.id===id);if(!p)return;p.gv=Math.max(0,(p.gv||0)-gvD);p.mg=calcMg(p.gv,p.pg||0);};
+  team1.forEach(id=>undo(id,+m.gv1||0));team2.forEach(id=>undo(id,+m.gv2||0));
 }
 function undoMatchStats(m){
   if(!m||!m.risultato)return;
