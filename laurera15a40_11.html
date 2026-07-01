@@ -55,7 +55,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .ticker-tape-content{display:inline-flex;animation:tickerScroll 44s linear infinite;}
 .ticker-tape-content span{display:inline-block;padding:13px 0;font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:1px;color:#111111;font-weight:700;padding-right:46px;}
 @keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.tabs-inner{display:flex;align-items:center;gap:6px;max-width:1400px;margin:0 auto;padding:10px 20px;}
+.tabs-inner{display:flex;align-items:center;justify-content:center;gap:6px;max-width:1400px;margin:0 auto;padding:10px 20px;}
 .tabs::-webkit-scrollbar{display:none}
 
 
@@ -63,13 +63,13 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .tab{flex-shrink:0;padding:9px 16px;font-size:14px;font-weight:600;color:var(--text2);cursor:pointer;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;user-select:none;border-radius:999px;transition:background .15s,color .15s;}
 .tab:hover{background:var(--bg3);color:var(--text);}.tab.active{background:var(--accent);color:#111111;font-weight:700;}
 /* TABS — MOBILE: barra scorrevole con 2 gruppi a tendina (Eventi, Classifiche) */
-.tabs-mobile2{display:none;align-items:center;gap:5px;padding:8px 12px;overflow-x:auto;scrollbar-width:none;}
+.tabs-mobile2{display:none;align-items:center;justify-content:center;gap:5px;padding:8px 12px;overflow-x:auto;scrollbar-width:none;}
 .tabs-mobile2::-webkit-scrollbar{display:none;}
 .tgroup{position:relative;flex-shrink:0;}
 .tgroup-btn{display:inline-flex;align-items:center;gap:4px;border:none;background:var(--bg3);font-family:inherit;}
 .tgroup-btn.active{background:var(--accent);color:#111111;}
 .tgroup-caret{font-size:9px;opacity:.7;}
-.tgroup-menu{display:none;position:absolute;top:calc(100% + 6px);left:0;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;box-shadow:0 12px 28px rgba(0,0,0,.5);z-index:1500;min-width:170px;overflow:hidden;padding:6px;}
+.tgroup-menu{display:none;position:fixed;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;box-shadow:0 12px 28px rgba(0,0,0,.5);z-index:1500;min-width:170px;overflow:hidden;padding:6px;box-sizing:border-box;}
 .tgroup-menu.open{display:block;}
 .tgroup-item{padding:10px 12px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;border-radius:8px;white-space:nowrap;}
 .tgroup-item:active{background:var(--bg4);}
@@ -289,7 +289,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .hdr-info-stack{display:none!important;}
   .hdr-chip{display:none!important;}
   #admin-lock-btn{margin-left:0;}
-  #settings-gear-btn{display:inline-block;}
+  .hdr-admin-col{flex-direction:row!important;gap:6px!important;}
   .hdr-meteo-mobile{display:flex;align-items:center;gap:4px;position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;color:var(--text);background:var(--bg3);border:1px solid var(--border2);border-radius:999px;padding:5px 10px;white-space:nowrap;}
 
   /* TABS — barra orizzontale scorrevole; Eventi e Classifiche raggruppano voci correlate in una piccola tendina */
@@ -571,12 +571,14 @@ body.light .mt-toggle:has(input:checked){background:rgba(80,60,220,.1);border-co
 body.viewer .btn-p:not(#modal-admin-login .btn-p),body.viewer .btn-d,body.viewer [onclick*="openNew"],body.viewer [onclick*="openEdit"],body.viewer [onclick*="openFanta"],body.viewer [onclick*="addLog"],body.viewer [onclick*="deleteP"],body.viewer [onclick*="clearLog"],body.viewer [onclick*="resetData"],body.viewer [onclick*="importBackup"],body.viewer [onclick*="importExcel"],body.viewer [onclick*="recalcStats"],body.viewer [onclick*="generateBracket"],body.viewer [onclick*="openManualBracket"],body.viewer [onclick*="exportHTMLWithData"],body.viewer [onclick*="addBracketMatchToCal"],body.viewer [onclick*="openManualGironi"],body.viewer [onclick*="rigeneraGironi"],body.viewer [onclick*="resetPuntiRanking"],body.viewer [onclick*="annullaResetRanking"],body.viewer [onclick*="openAlboEdit"]{display:none!important;}
 body.viewer .fab,body.viewer .mactions,body.viewer button[onclick*="savePlayer"],body.viewer button[onclick*="saveCalMatch"],body.viewer button[onclick*="saveTorneo"],body.viewer button[onclick*="saveManualBracket"],body.viewer button[onclick*="saveFantaPrediction"]{display:none!important;}
 body.viewer .tab[data-tab="settings"]{display:none!important;}
+body.viewer .tab[data-tab="fanta"]{display:none!important;}
 body.viewer .adm-hint{display:none!important;}
 /* ── ADMIN LOCK ICON ── */
 #admin-lock-btn{background:none;border:none;cursor:pointer;font-size:18px;opacity:.45;transition:opacity .2s;padding:4px 6px;line-height:1}
 #admin-lock-btn:hover{opacity:1}
 #admin-lock-btn.is-admin{opacity:1;filter:drop-shadow(0 0 4px var(--accent))}
-#settings-gear-btn{display:none;background:none;border:none;cursor:pointer;font-size:18px;opacity:.45;transition:opacity .2s;padding:4px 6px;line-height:1}
+.hdr-admin-col{display:flex;flex-direction:column;align-items:center;gap:2px;}
+#settings-gear-btn{background:none;border:none;cursor:pointer;font-size:16px;opacity:.45;transition:opacity .2s;padding:4px 6px;line-height:1}
 #settings-gear-btn:hover{opacity:1}
 /* ── ADMIN MODAL ── */
 #modal-admin-login .modal{max-width:340px}
@@ -598,8 +600,10 @@ body.viewer .adm-hint{display:none!important;}
         <div class="hdr-chip" title="Partite in programma oggi"><svg class="hdr-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span id="hdr-today">—</span><strong>Oggi</strong></div>
         <div class="hdr-chip" title="Meteo Volvera"><span id="hdr-meteo">—</span></div>
       </div>
-      <button id="admin-lock-btn" onclick="openAdminModal()" title="Admin">🔐</button>
-      <button id="settings-gear-btn" onclick="switchTab('settings')" title="Impostazioni">⚙️</button>
+      <div class="hdr-admin-col">
+        <button id="admin-lock-btn" onclick="openAdminModal()" title="Admin">🔐</button>
+        <button id="settings-gear-btn" onclick="switchTab('settings')" title="Impostazioni">⚙️</button>
+      </div>
     </div>
   </div>
 </header>
@@ -632,7 +636,6 @@ body.viewer .adm-hint{display:none!important;}
             <div class="tgroup-item" onclick="switchTab('albo')">👑 Albo d'Oro</div>
           </div>
         </div>
-        <div class="tab" data-tab="fanta" onclick="switchTab('fanta')">🎯 FANTATENNIS</div>
       </div>
       </nav>
 <div class="ticker-tape"><div class="ticker-tape-content" id="ticker-tape-content"></div></div>
@@ -1185,7 +1188,23 @@ function initTheme(){const saved=localStorage.getItem('laurera_theme');const mq=
 // ═══ TAB ═══
 function switchTab(t){currentTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));document.querySelectorAll('.tgroup-btn').forEach(x=>x.classList.toggle('active',(x.dataset.groupTabs||'').split(',').includes(t)));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+t).classList.add('active');document.getElementById('fab').style.display=['players','calendario'].includes(t)?'flex':'none';if(t==='classifiche')renderRank();if(t==='fanta'){loadFanta();renderFantaPronostici();}if(t==='calendario'){loadTornei();renderCalTorneoSelector();}if(t==='risultati')renderRisultati();if(t==='tornei'){loadTornei();renderTornei();}if(t==='albo'){renderAlbo();}if(t==='classifiche-torneo'){loadTornei();renderRanking();}if(t==='settings'){renderLog();}if(t==='players')renderTickerTape();closeAllTGroups();}
 // ═══ TABS MOBILE: gruppi a tendina ═══
-function toggleTGroup(ev,name){ev.stopPropagation();const menu=document.getElementById('tgroup-menu-'+name);if(!menu)return;const willOpen=!menu.classList.contains('open');closeAllTGroups();if(willOpen)menu.classList.add('open');}
+function toggleTGroup(ev,name){
+  ev.stopPropagation();
+  const menu=document.getElementById('tgroup-menu-'+name);
+  if(!menu)return;
+  const willOpen=!menu.classList.contains('open');
+  closeAllTGroups();
+  if(willOpen){
+    if(menu.parentElement!==document.body)document.body.appendChild(menu);
+    const btn=ev.currentTarget.closest('.tgroup-btn')||ev.currentTarget;
+    const r=btn.getBoundingClientRect();
+    const menuW=180;
+    let left=Math.max(8,Math.min(r.left,window.innerWidth-8-menuW));
+    menu.style.top=(r.bottom+6)+'px';
+    menu.style.left=left+'px';
+    menu.classList.add('open');
+  }
+}
 function closeAllTGroups(){document.querySelectorAll('.tgroup-menu.open').forEach(m=>m.classList.remove('open'));}
 document.addEventListener('click',e=>{if(!e.target.closest('.tgroup'))closeAllTGroups();});
 function fabClick(){if(_checkViewer())return;if(currentTab==='players')openNewPlayer();else if(currentTab==='calendario')openCalModal();}
