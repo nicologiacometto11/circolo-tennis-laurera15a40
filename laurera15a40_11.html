@@ -548,7 +548,7 @@ body.viewer .adm-hint{display:none!important;}
   <div class="filters">
     <div class="srch-pill">
       <span class="srch-icon">🔍</span>
-      <input type="text" id="srch-input" placeholder="Cerca giocatore..." oninput="renderCards()">
+      <input type="text" id="srch-input" placeholder="Cerca giocatore..." autocomplete="off" oninput="renderCards()">
       <button class="srch-clear" onclick="clearSearch()" title="Pulisci">✕</button>
     </div>
     <div id="quote-text-inline" style="position:absolute;left:50%;transform:translateX(-50%);text-align:center;font-size:17px;font-style:italic;color:#ffffff;white-space:nowrap;pointer-events:none;transition:opacity .4s;"></div>
@@ -926,7 +926,7 @@ body.viewer .adm-hint{display:none!important;}
         <div class="mt-section-label" style="margin-bottom:0">Seleziona Giocatori</div>
         <button type="button" onclick="selectAllPlayers()" style="background:rgba(124,92,252,.15);border:1px solid var(--accent);color:var(--accent2);border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">✅ Seleziona Tutto</button>
       </div>
-      <input type="text" id="mt-search" placeholder="🔍 Cerca giocatore…" oninput="filterMtPlayers(this.value)" style="width:100%;box-sizing:border-box;background:var(--bg4);border:1px solid var(--border);border-radius:9px;padding:8px 11px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;margin-bottom:8px">
+      <input type="text" id="mt-search" placeholder="🔍 Cerca giocatore…" autocomplete="off" oninput="filterMtPlayers(this.value)" style="width:100%;box-sizing:border-box;background:var(--bg4);border:1px solid var(--border);border-radius:9px;padding:8px 11px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;margin-bottom:8px">
       <div id="mt-players-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;max-height:210px;overflow-y:auto"></div>
       <div style="font-size:11px;color:var(--text2);margin-top:6px" id="mt-count">0 selezionati</div>
     </div>
