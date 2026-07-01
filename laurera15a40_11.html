@@ -291,8 +291,8 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   /* TICKER */
   .ticker-tape-content span{font-size:14px;padding:9px 0;padding-right:30px;}
 
-  /* QUOTE BAR */
-  
+  /* QUOTE BAR — in flusso, non più sovrapposta a ricerca/ordinamento */
+  #quote-text-inline{position:static!important;left:auto!important;transform:none!important;order:1;width:100%;max-width:100%;font-size:12px!important;overflow:hidden;text-overflow:ellipsis;padding:2px 0;}
   .quote-text{font-size:11px}
 
   /* LAYOUT */
@@ -313,7 +313,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   /* FILTERS */
   .filters{padding:8px 12px;gap:6px}
   .fgroup{flex-wrap:wrap}
-  .sort-sel{margin-left:0;width:100%;margin-top:4px}
+  .sort-sel{margin-left:0;width:100%;margin-top:4px;order:2}
 
   /* FORMS */
   .form-grid{grid-template-columns:1fr}
