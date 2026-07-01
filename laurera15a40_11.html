@@ -1400,16 +1400,16 @@ function renderTickerTape(){
     if(!m.p1Id||!m.p2Id)return;
     const n1=_gtn(m,m.p1Id),n2=_gtn(m,m.p2Id);
     const isDraw=m.winnerId==='draw'||!m.winnerId;
-    if(isDraw){items.push(`🤝 ${n1.toUpperCase()} - ${n2.toUpperCase()} PAREGGIO ${m.risultato}`);return;}
+    if(isDraw){items.push(`🤝 ${esc(n1.toUpperCase())} - ${esc(n2.toUpperCase())} PAREGGIO ${esc(m.risultato)}`);return;}
     const winnerIsP1=+m.winnerId===m.p1Id;
     const wName=winnerIsP1?n1:n2,lName=winnerIsP1?n2:n1;
-    items.push(`🏆 ${wName.toUpperCase()} BATTE ${lName.toUpperCase()} ${m.risultato}`);
+    items.push(`🏆 ${esc(wName.toUpperCase())} BATTE ${esc(lName.toUpperCase())} ${esc(m.risultato)}`);
   });
   const tod=new Date();tod.setHours(0,0,0,0);
   sched.filter(m=>m.data&&new Date(m.data+'T12:00:00')>=tod&&!m.risultato&&m.p1Id&&m.p2Id).sort((a,b)=>a.data.localeCompare(b.data)).slice(0,6).forEach(m=>{
     const n1=_gtn(m,m.p1Id),n2=_gtn(m,m.p2Id);
     const d=new Date(m.data+'T12:00:00').toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
-    items.push(`📅 ${n1.toUpperCase()} VS ${n2.toUpperCase()} · ${d}${m.ora?' '+m.ora:''}`);
+    items.push(`📅 ${esc(n1.toUpperCase())} VS ${esc(n2.toUpperCase())} · ${d}${m.ora?' '+m.ora:''}`);
   });
   if(!items.length)items.push('🎾 LAURERA 15A40 — LA NUOVA ERA DEL TENNIS INIZIA QUI!');
   const text=items.join('    •    ');
@@ -1443,7 +1443,6 @@ function renderCalTorneoSelector(){
       document.getElementById('cal-torneo-tipo').textContent=t.tipo==='girone'?'🔄 Campionato tutti vs tutti':t.tipo==='misto'?'🔀 Girone + Eliminazione':'⚡ Eliminazione Diretta';
     }
     calRender();
-    renderCalClassifica();
     return;
   }
   sel.style.display='';view.style.display='none';
@@ -1576,12 +1575,12 @@ function buildWinOpts(p1Id,p2Id){
     const v1=tm1?.id||p1Id;
     const v2=tm2?.id||p2Id;
     return'<option value="">— Vincitore —</option>'
-      +(v1?`<option value="${v1}">${n1}</option>`:'')
-      +(v2?`<option value="${v2}">${n2}</option>`:'')
+      +(v1?`<option value="${v1}">${esc(n1)}</option>`:'')
+      +(v2?`<option value="${v2}">${esc(n2)}</option>`:'')
       +'<option value="draw">🤝 Pareggio</option>';
   }
   const p1=players.find(p=>p.id===+p1Id),p2=players.find(p=>p.id===+p2Id);
-  return'<option value="">— Vincitore —</option>'+(p1?`<option value="${p1.id}">${p1.nome}</option>`:'')+( p2?`<option value="${p2.id}">${p2.nome}</option>`:'')+'<option value="draw">🤝 Pareggio</option>';
+  return'<option value="">— Vincitore —</option>'+(p1?`<option value="${p1.id}">${esc(p1.nome)}</option>`:'')+( p2?`<option value="${p2.id}">${esc(p2.nome)}</option>`:'')+'<option value="draw">🤝 Pareggio</option>';
 }
 function calAutoMedia(){const p1=players.find(p=>p.id===+document.getElementById('mc-p1').value),p2=players.find(p=>p.id===+document.getElementById('mc-p2').value);const gv1=+document.getElementById('mc-gv1').value||0,gv2=+document.getElementById('mc-gv2').value||0;if(p1){const np=p1.pg+1;document.getElementById('mc-mg1').value=np?((p1.gv+gv1)/np).toFixed(2):'—';}if(p2){const np=p2.pg+1;document.getElementById('mc-mg2').value=np?((p2.gv+gv2)/np).toFixed(2):'—';}}
 function undoResult(m){
@@ -2177,11 +2176,11 @@ function renderH2H(){
           const winner=isDraw?null:players.find(p=>p.id===m.winnerId);
           const d=new Date(m.data+'T12:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'short',year:'numeric'});
           const col=isDraw?'var(--gold)':m.winnerId===p1.id?'var(--green)':'var(--red)';
-          const lbl=isDraw?'🤝 Pareggio':`🏆 ${winner?winner.nome:'?'}`;
+          const lbl=isDraw?'🤝 Pareggio':`🏆 ${winner?esc(winner.nome):'?'}`;
           return`<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg4);border-radius:8px">
             <span style="font-size:11px;color:var(--text2);min-width:80px">${d}</span>
             <span style="font-size:13px;font-weight:700;color:${col};flex:1">${lbl}</span>
-            <span style="font-size:13px;font-weight:700;color:var(--accent2)">${m.risultato}</span>
+            <span style="font-size:13px;font-weight:700;color:var(--accent2)">${esc(m.risultato)}</span>
           </div>`;
         }).join('')}
       </div>
@@ -2847,12 +2846,12 @@ function exportBracketPDF(torneoId){
       const score2=sm&&win2?scoreStr:'';
       return'<div style="position:absolute;top:'+topPx+'px;left:0;right:0;border:1px solid '+(match.winnerId?'#b8860b':'#dddddd')+';border-radius:3px;overflow:hidden;background:#ffffff">'
         +'<div style="padding:'+pad+';font-size:'+fs+';font-weight:'+(win1?'700':'400')+';background:'+(win1?'#fdf6e3':'#ffffff')+';border-bottom:1px solid #eeeeee;display:flex;justify-content:space-between;align-items:center">'
-          +'<span style="color:'+(n1==='BYE'?'#aaaaaa':win1?'#8a6d00':'#111111')+'">'+n1+'</span>'
-          +(score1!==''?'<span style="font-weight:700;color:'+(win1?'#8a6d00':'#888888')+'">'+score1+'</span>':'')
+          +'<span style="color:'+(n1==='BYE'?'#aaaaaa':win1?'#8a6d00':'#111111')+'">'+esc(n1)+'</span>'
+          +(score1!==''?'<span style="font-weight:700;color:'+(win1?'#8a6d00':'#888888')+'">'+esc(score1)+'</span>':'')
         +'</div>'
         +'<div style="padding:'+pad+';font-size:'+fs+';font-weight:'+(win2?'700':'400')+';background:'+(win2?'#fdf6e3':'#ffffff')+';display:flex;justify-content:space-between;align-items:center">'
-          +'<span style="color:'+(n2==='BYE'?'#aaaaaa':win2?'#8a6d00':'#111111')+'">'+n2+'</span>'
-          +(score2!==''?'<span style="font-weight:700;color:'+(win2?'#8a6d00':'#888888')+'">'+score2+'</span>':'')
+          +'<span style="color:'+(n2==='BYE'?'#aaaaaa':win2?'#8a6d00':'#111111')+'">'+esc(n2)+'</span>'
+          +(score2!==''?'<span style="font-weight:700;color:'+(win2?'#8a6d00':'#888888')+'">'+esc(score2)+'</span>':'')
         +'</div>'
       +'</div>';
     }).join('');
@@ -2862,7 +2861,7 @@ function exportBracketPDF(torneoId){
     +'</div>';
   }).join('');
 
-  const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+t.nome+'</title>'
+  const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(t.nome)+'</title>'
     +pdfFontsLink()
     +'<style>'
     +'*{box-sizing:border-box}'
@@ -2876,7 +2875,7 @@ function exportBracketPDF(torneoId){
     +'}'
     +'</style></head><body>'
     +'<div style="text-align:center;margin-bottom:8px;padding-bottom:5px;border-bottom:2px solid #b8860b">'
-      +'<div style="font-family:\'Bebas Neue\',Arial,sans-serif;font-size:15px;letter-spacing:1px;color:#111111;margin:0 0 1px">'+t.nome+' — Tabellone</div>'
+      +'<div style="font-family:\'Bebas Neue\',Arial,sans-serif;font-size:15px;letter-spacing:1px;color:#111111;margin:0 0 1px">'+esc(t.nome)+' — Tabellone</div>'
       +'<div style="font-size:8px;color:#888888">LAURERA 15A40 · '+date+'</div>'
     +'</div>'
     +'<div class="bracket-wrap" style="display:flex;align-items:flex-start;width:100%">'+cols+'</div>'
@@ -2955,8 +2954,8 @@ function renderFantaPronostici(){
       <!-- Match summary row -->
       <div style="display:flex;align-items:center;gap:10px;padding:12px 14px">
         <div style="flex:1;min-width:0">
-          <div style="font-size:14px;font-weight:700;color:var(--text)">${p1?p1.nome:'?'} <span style="color:var(--text2);font-weight:400">vs</span> ${p2?p2.nome:'?'}</div>
-          <div style="font-size:11px;color:var(--text2);margin-top:2px">${d}${m.ora?' · '+m.ora:''}${m.risultato?` · <span style="color:var(--green);font-weight:600">${m.risultato}</span>`:''}</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text)">${p1?esc(p1.nome):'?'} <span style="color:var(--text2);font-weight:400">vs</span> ${p2?esc(p2.nome):'?'}</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px">${d}${m.ora?' · '+m.ora:''}${m.risultato?` · <span style="color:var(--green);font-weight:600">${esc(m.risultato)}</span>`:''}</div>
         </div>
         <span style="font-size:11px;color:var(--text2);background:var(--bg4);padding:2px 7px;border-radius:5px">${preds.length} pronostici</span>
         <button class="btn btn-p" style="padding:5px 12px;font-size:12px" onclick="openFantaModal(${m.id})">+ Pronostico</button>
@@ -3221,7 +3220,7 @@ function openManualBracket(torneoId){
   let n=1;while(n<teamCount)n*=2;
   const mc=n/2;
   const sel='style="background:var(--bg4);border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--text);font-size:13px;outline:none;width:100%"';
-  const opts='<option value="">—</option>'+[...players].filter(p=>t.players.includes(p.id)).sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>'<option value="'+p.id+'">'+p.nome+'</option>').join('');
+  const opts='<option value="">—</option>'+[...players].filter(p=>t.players.includes(p.id)).sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>'<option value="'+p.id+'">'+esc(p.nome)+'</option>').join('');
   document.getElementById('mbm-desc').textContent=(isDoppio?'4 giocatori per incontro':'2 giocatori per incontro')+' — '+mc+' incontri.';
   let h='';
   for(let i=0;i<mc;i++){
@@ -3661,7 +3660,7 @@ function exportRankingPDF(){
     return '<tr style="border-bottom:1px solid #e5e5e5;'+(rank<=3?'background:#fdf6e3':'')+'">'
       +'<td style="padding:10px 14px;font-size:'+(rank<=3?20:15)+'px;font-weight:800;color:'+mc+';text-align:center;min-width:44px">'+medal+'</td>'
       +'<td style="padding:10px 8px;text-align:center;width:56px">'+av+'</td>'
-      +'<td style="padding:10px 14px;font-size:17px;font-weight:700;color:#111111">'+p.nome+'</td>'
+      +'<td style="padding:10px 14px;font-size:17px;font-weight:700;color:#111111">'+esc(p.nome)+'</td>'
       +'<td style="padding:10px 20px;font-size:28px;font-weight:900;color:#111111;text-align:right;white-space:nowrap;font-family:\'Bebas Neue\',Arial,sans-serif">'+pts+' <span style="font-size:11px;color:#888888;font-weight:400;font-family:\'DM Sans\',Arial,sans-serif">pt</span></td>'
       +'</tr>';
   }).join('');
@@ -3689,12 +3688,12 @@ function exportAlboPDF(){
         :('<div style="width:50px;height:50px;border-radius:50%;background:#f5f5f5;border:2px solid #b8860b;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#8a6d00;font-family:\'Bebas Neue\',Arial,sans-serif;">'+ini+'</div>');
       var vi=a.note?a.note.indexOf(' VS '):-1;
       var noteHtml='';
-      if(a.note){if(vi>=0){noteHtml='<span style="color:#888888">'+a.note.slice(0,vi)+'</span> <span style="color:#666666">vs</span> <strong style="color:#111111">'+a.note.slice(vi+4)+'</strong>';}else{noteHtml='<span style="color:#888888">'+a.note+'</span>';}}
+      if(a.note){if(vi>=0){noteHtml='<span style="color:#888888">'+esc(a.note.slice(0,vi))+'</span> <span style="color:#666666">vs</span> <strong style="color:#111111">'+esc(a.note.slice(vi+4))+'</strong>';}else{noteHtml='<span style="color:#888888">'+esc(a.note)+'</span>';}}
       return '<tr style="border-bottom:1px solid #e5e5e5">'
         +'<td style="padding:12px 8px;text-align:center;width:62px">'+av+'</td>'
         +'<td style="padding:12px 12px"><div style="font-size:11px;color:#888888;text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px">Vincitore</div>'
-        +'<div style="font-size:18px;font-weight:900;color:#111111;font-family:\'Bebas Neue\',Arial,sans-serif;letter-spacing:1px">'+a.vincitore+'</div>'
-        +(a.torneo?'<div style="font-size:11px;color:#888888;margin-top:2px">'+a.torneo+'</div>':'')
+        +'<div style="font-size:18px;font-weight:900;color:#111111;font-family:\'Bebas Neue\',Arial,sans-serif;letter-spacing:1px">'+esc(a.vincitore)+'</div>'
+        +(a.torneo?'<div style="font-size:11px;color:#888888;margin-top:2px">'+esc(a.torneo)+'</div>':'')
         +'</td><td style="padding:12px 12px;font-size:13px">'+noteHtml+'</td></tr>';
     }).join('');
     return '<div style="margin-bottom:24px;padding:0 24px"><div style="font-family:\'Bebas Neue\',Arial,sans-serif;font-size:24px;letter-spacing:3px;color:#111111;border-bottom:2px solid #b8860b;padding-bottom:4px">'+year+'</div>'
@@ -3816,7 +3815,7 @@ function renderGironiMisto(t){
     // HTML classifica
     var clsRows=ranked.map(function(r,i){
       return '<tr><td style="text-align:center;padding:7px 8px">'+(i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1)+'</td>'
-        +'<td style="padding:7px 8px;font-weight:600">'+r.nome+'</td>'
+        +'<td style="padding:7px 8px;font-weight:600">'+esc(r.nome)+'</td>'
         +'<td style="text-align:center;padding:7px 8px">'+r.pg+'</td>'
         +'<td style="text-align:center;padding:7px 8px;color:#22c55e;font-weight:700">'+r.v+'</td>'
         +'<td style="text-align:center;padding:7px 8px;color:#f0c040;font-weight:700">'+r.p+'</td>'
@@ -3836,7 +3835,7 @@ function renderGironiMisto(t){
         ?'<button disabled style="background:rgba(80,80,80,.08);border:1px solid rgba(80,80,80,.2);color:var(--text2);border-radius:4px;padding:3px 10px;font-size:11px;cursor:not-allowed;opacity:.5">✓ In Calendario</button>'
         :'<button onclick="addBracketMatchToCal('+t.id+','+pair[0]+','+pair[1]+')" style="background:rgba(232,255,0,.12);border:1px solid rgba(232,255,0,.3);color:var(--accent);border-radius:4px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer">+ Calendario</button>';
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-bottom:1px solid var(--border)">'
-        +'<span style="font-size:13px;font-weight:600">'+n1+' <span style="color:var(--text2);font-weight:400">vs</span> '+n2+'</span>'
+        +'<span style="font-size:13px;font-weight:600">'+esc(n1)+' <span style="color:var(--text2);font-weight:400">vs</span> '+esc(n2)+'</span>'
         +btn+'</div>';
     }).join('');
 
