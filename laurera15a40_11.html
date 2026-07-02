@@ -283,19 +283,22 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .hdr-admin-col{flex-direction:row!important;gap:6px!important;}
   .hdr-meteo-mobile{display:flex;align-items:center;gap:4px;position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;color:var(--text);background:var(--bg3);border:1px solid var(--border2);border-radius:999px;padding:5px 10px;white-space:nowrap;}
 
-  /* TABS — barra flottante in basso stile app nativa; la voce attiva è una pillola staccata */
+  /* TABS — barra flottante in basso, solo icone, vetro sfumato; la voce attiva è una pillola staccata */
   .tabs{border-top:none!important;border-bottom:none!important;background:transparent!important;}
   .tabs-inner{display:none!important;}
-  .tabs-mobile2{display:flex!important;position:fixed;left:12px;right:12px;bottom:14px;z-index:900;margin:0;background:var(--bg2);border:1px solid var(--border2);border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.55);padding:6px;gap:2px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start!important;}
+  .tabs-mobile2{display:flex!important;position:fixed;left:20px;right:20px;bottom:18px;z-index:900;margin:0;
+    background:linear-gradient(150deg,rgba(30,30,30,.78),rgba(8,8,8,.62));
+    -webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);
+    border:1px solid rgba(255,255,255,.09);border-radius:999px;box-shadow:0 14px 36px rgba(0,0,0,.5);
+    padding:7px;gap:4px;overflow-x:auto;scrollbar-width:none;justify-content:center!important;}
   .tabs-mobile2::-webkit-scrollbar{display:none;}
-  .bn-item{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex-shrink:0;min-width:58px;padding:8px 12px!important;border-radius:999px!important;font-size:10px!important;color:var(--text2);background:transparent;}
-  .bn-icon{font-size:19px;line-height:1;filter:grayscale(1) opacity(.7);transition:filter .15s;}
-  .bn-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.2px;white-space:nowrap;}
-  .bn-item.active{background:var(--bg3)!important;color:var(--accent)!important;}
-  .bn-item.active .bn-icon{filter:none;}
-  .fab{bottom:88px!important;}
-  #install-banner{bottom:88px!important;}
-  .toast{bottom:88px!important;}
+  .bn-item{display:flex!important;align-items:center;justify-content:center;flex-shrink:0;width:46px;height:46px;padding:0!important;border-radius:50%!important;font-size:24px!important;color:var(--text2);background:transparent;}
+  .bn-icon{font-size:24px;line-height:1;filter:grayscale(1) brightness(1.4) opacity(.7);transition:filter .2s,transform .2s;}
+  .bn-item.active{background:rgba(232,255,0,.16)!important;}
+  .bn-item.active .bn-icon{filter:none;transform:scale(1.1);}
+  .fab{bottom:96px!important;}
+  #install-banner{bottom:96px!important;}
+  .toast{bottom:96px!important;}
 
   /* TICKER */
   .ticker-tape{border-bottom-width:1px;}
@@ -640,13 +643,12 @@ body.viewer .adm-hint{display:none!important;}
       </nav>
 <div class="ticker-tape"><div class="ticker-tape-content" id="ticker-tape-content"></div></div>
 <div class="tabs-mobile2">
-  <div class="tab bn-item" data-tab="players" onclick="switchTab('players')"><span class="bn-icon">🏠</span><span class="bn-label">Home</span></div>
-  <div class="tab bn-item" data-tab="tornei" onclick="switchTab('tornei')"><span class="bn-icon">🏆</span><span class="bn-label">Tornei</span></div>
-  <div class="tab bn-item" data-tab="calendario" onclick="switchTab('calendario')"><span class="bn-icon">📅</span><span class="bn-label">Calendario</span></div>
-  <div class="tab bn-item" data-tab="risultati" onclick="switchTab('risultati')"><span class="bn-icon">🏅</span><span class="bn-label">Risultati</span></div>
-  <div class="tab bn-item" data-tab="classifiche-torneo" onclick="switchTab('classifiche-torneo')"><span class="bn-icon">📈</span><span class="bn-label">Ranking</span></div>
-  <div class="tab bn-item" data-tab="classifiche" onclick="switchTab('classifiche')"><span class="bn-icon">📊</span><span class="bn-label">Classifiche</span></div>
-  <div class="tab bn-item" data-tab="albo" onclick="switchTab('albo')"><span class="bn-icon">👑</span><span class="bn-label">Albo</span></div>
+  <div class="tab bn-item" data-tab="tornei" onclick="switchTab('tornei')" title="Tornei"><span class="bn-icon">🏆</span></div>
+  <div class="tab bn-item" data-tab="calendario" onclick="switchTab('calendario')" title="Calendario"><span class="bn-icon">📅</span></div>
+  <div class="tab bn-item" data-tab="risultati" onclick="switchTab('risultati')" title="Risultati"><span class="bn-icon">🏅</span></div>
+  <div class="tab bn-item" data-tab="classifiche-torneo" onclick="switchTab('classifiche-torneo')" title="Ranking"><span class="bn-icon">📈</span></div>
+  <div class="tab bn-item" data-tab="classifiche" onclick="switchTab('classifiche')" title="Classifiche"><span class="bn-icon">📊</span></div>
+  <div class="tab bn-item" data-tab="albo" onclick="switchTab('albo')" title="Albo d'Oro"><span class="bn-icon">👑</span></div>
 </div>
 
 <div id="page-players" class="page active">
