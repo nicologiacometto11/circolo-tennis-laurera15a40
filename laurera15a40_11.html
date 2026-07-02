@@ -290,15 +290,15 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
     background:linear-gradient(150deg,rgba(30,30,30,.78),rgba(8,8,8,.62));
     -webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);
     border:1px solid rgba(255,255,255,.09);border-radius:999px;box-shadow:0 14px 36px rgba(0,0,0,.5);
-    padding:clamp(4px,1.5vw,7px);gap:clamp(1px,1vw,4px);overflow-x:auto;scrollbar-width:none;justify-content:center!important;}
+    padding:clamp(8px,2.2vw,12px) clamp(4px,1.5vw,7px);gap:clamp(1px,1vw,4px);overflow-x:auto;scrollbar-width:none;justify-content:center!important;}
   .tabs-mobile2::-webkit-scrollbar{display:none;}
-  .bn-item{display:flex!important;align-items:center;justify-content:center;flex-shrink:0;width:clamp(34px,12vw,48px);height:clamp(34px,12vw,48px);padding:0!important;border-radius:50%!important;color:var(--text2);background:transparent;}
-  .bn-icon{font-size:clamp(16px,6vw,24px);line-height:1;filter:grayscale(1) brightness(1.4) opacity(.7);transition:filter .2s,transform .2s;}
+  .bn-item{display:flex!important;align-items:center;justify-content:center;flex-shrink:0;width:clamp(36px,12vw,50px);height:clamp(36px,12vw,50px);padding:0!important;border-radius:50%!important;color:var(--text2);background:transparent;}
+  .bn-icon{font-size:clamp(17px,6vw,25px);line-height:1;filter:grayscale(1) brightness(1.4) opacity(.7);transition:filter .2s,transform .2s;}
   .bn-item.active{background:rgba(232,255,0,.16)!important;}
   .bn-item.active .bn-icon{filter:none;transform:scale(1.1);}
-  .fab{bottom:96px!important;}
-  #install-banner{bottom:96px!important;}
-  .toast{bottom:96px!important;}
+  .fab{bottom:104px!important;}
+  #install-banner{bottom:104px!important;}
+  .toast{bottom:104px!important;}
 
   /* TICKER */
   .ticker-tape{border-bottom-width:1px;}
@@ -3647,7 +3647,11 @@ function autoAlboCheck(tid){
     lName+=lp?lp.nome:"?";
   }
   var alboNote=fm.risultato+(lName?" VS "+lName:"");
-  var entry={id:existingIdx>=0?alboData[existingIdx].id:Date.now(),titolo:wName,vincitore:wName,anno:existingIdx>=0?alboData[existingIdx].anno:new Date().getFullYear(),torneo:t.nome,note:alboNote,torneoId:tid};
+  var existing=existingIdx>=0?alboData[existingIdx]:null;
+  // Se è già registrato e non è cambiato nulla, non c'è niente da salvare (evita scritture/avvisi ad ogni apertura dell'app)
+  if(existing&&existing.vincitore===wName&&existing.note===alboNote&&existing.torneo===t.nome)return;
+  if(_checkViewer())return; // solo l'admin può scrivere sull'albo d'oro
+  var entry={id:existing?existing.id:Date.now(),titolo:wName,vincitore:wName,anno:existing?existing.anno:new Date().getFullYear(),torneo:t.nome,note:alboNote,torneoId:tid};
   if(existingIdx>=0){alboData[existingIdx]=entry;}else{alboData.push(entry);}
   saveAlboData();
   if(typeof renderAlbo==="function")renderAlbo();
