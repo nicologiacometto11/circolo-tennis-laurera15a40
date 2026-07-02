@@ -283,10 +283,19 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .hdr-admin-col{flex-direction:row!important;gap:6px!important;}
   .hdr-meteo-mobile{display:flex;align-items:center;gap:4px;position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;color:var(--text);background:var(--bg3);border:1px solid var(--border2);border-radius:999px;padding:5px 10px;white-space:nowrap;}
 
-  /* TABS — tutte le voci visibili e cliccabili, centrate, senza scorrimento (vanno a capo) */
+  /* TABS — barra flottante in basso stile app nativa; la voce attiva è una pillola staccata */
+  .tabs{border-top:none!important;border-bottom:none!important;background:transparent!important;}
   .tabs-inner{display:none!important;}
-  .tabs-mobile2{display:flex!important;}
-  .tab{padding:6px 11px;font-size:11.5px;}
+  .tabs-mobile2{display:flex!important;position:fixed;left:12px;right:12px;bottom:14px;z-index:900;margin:0;background:var(--bg2);border:1px solid var(--border2);border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.55);padding:6px;gap:2px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start!important;}
+  .tabs-mobile2::-webkit-scrollbar{display:none;}
+  .bn-item{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex-shrink:0;min-width:58px;padding:8px 12px!important;border-radius:999px!important;font-size:10px!important;color:var(--text2);background:transparent;}
+  .bn-icon{font-size:19px;line-height:1;filter:grayscale(1) opacity(.7);transition:filter .15s;}
+  .bn-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.2px;white-space:nowrap;}
+  .bn-item.active{background:var(--bg3)!important;color:var(--accent)!important;}
+  .bn-item.active .bn-icon{filter:none;}
+  .fab{bottom:88px!important;}
+  #install-banner{bottom:88px!important;}
+  .toast{bottom:88px!important;}
 
   /* TICKER */
   .ticker-tape{border-bottom-width:1px;}
@@ -629,13 +638,13 @@ body.viewer .adm-hint{display:none!important;}
   <div class="tab" data-tab="settings" onclick="switchTab('settings')">⚙️ Impostazioni</div>
       </div>
       <div class="tabs-mobile2">
-        <div class="tab" data-tab="players" onclick="switchTab('players')">🏠 Home</div>
-        <div class="tab" data-tab="tornei" onclick="switchTab('tornei')">🏆 Tornei</div>
-        <div class="tab" data-tab="calendario" onclick="switchTab('calendario')">📅 Calendario</div>
-        <div class="tab" data-tab="risultati" onclick="switchTab('risultati')">🏅 Risultati</div>
-        <div class="tab" data-tab="classifiche-torneo" onclick="switchTab('classifiche-torneo')">📈 Ranking</div>
-        <div class="tab" data-tab="classifiche" onclick="switchTab('classifiche')">📊 Classifiche</div>
-        <div class="tab" data-tab="albo" onclick="switchTab('albo')">👑 Albo d'Oro</div>
+        <div class="tab bn-item" data-tab="players" onclick="switchTab('players')"><span class="bn-icon">🏠</span><span class="bn-label">Home</span></div>
+        <div class="tab bn-item" data-tab="tornei" onclick="switchTab('tornei')"><span class="bn-icon">🏆</span><span class="bn-label">Tornei</span></div>
+        <div class="tab bn-item" data-tab="calendario" onclick="switchTab('calendario')"><span class="bn-icon">📅</span><span class="bn-label">Calendario</span></div>
+        <div class="tab bn-item" data-tab="risultati" onclick="switchTab('risultati')"><span class="bn-icon">🏅</span><span class="bn-label">Risultati</span></div>
+        <div class="tab bn-item" data-tab="classifiche-torneo" onclick="switchTab('classifiche-torneo')"><span class="bn-icon">📈</span><span class="bn-label">Ranking</span></div>
+        <div class="tab bn-item" data-tab="classifiche" onclick="switchTab('classifiche')"><span class="bn-icon">📊</span><span class="bn-label">Classifiche</span></div>
+        <div class="tab bn-item" data-tab="albo" onclick="switchTab('albo')"><span class="bn-icon">👑</span><span class="bn-label">Albo</span></div>
       </div>
       </nav>
 <div class="ticker-tape"><div class="ticker-tape-content" id="ticker-tape-content"></div></div>
@@ -1186,7 +1195,7 @@ function toast(msg){const t=document.getElementById('toast-el');t.textContent=ms
 function applyTheme(isLight){document.body.classList.toggle('light',isLight);}
 function initTheme(){const saved=localStorage.getItem('laurera_theme');const mq=window.matchMedia('(prefers-color-scheme: light)');applyTheme(saved?saved==='light':mq.matches);mq.addEventListener('change',e=>{if(!localStorage.getItem('laurera_theme'))applyTheme(e.matches);});}
 // ═══ TAB ═══
-function switchTab(t){currentTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+t).classList.add('active');document.getElementById('fab').style.display=['players','calendario'].includes(t)?'flex':'none';if(t==='classifiche')renderRank();if(t==='fanta'){loadFanta();renderFantaPronostici();}if(t==='calendario'){loadTornei();renderCalTorneoSelector();}if(t==='risultati')renderRisultati();if(t==='tornei'){loadTornei();renderTornei();}if(t==='albo'){renderAlbo();}if(t==='classifiche-torneo'){loadTornei();renderRanking();}if(t==='settings'){renderLog();}if(t==='players')renderTickerTape();}
+function switchTab(t){currentTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+t).classList.add('active');document.getElementById('fab').style.display=['players','calendario'].includes(t)?'flex':'none';if(t==='classifiche')renderRank();if(t==='fanta'){loadFanta();renderFantaPronostici();}if(t==='calendario'){loadTornei();renderCalTorneoSelector();}if(t==='risultati')renderRisultati();if(t==='tornei'){loadTornei();renderTornei();}if(t==='albo'){renderAlbo();}if(t==='classifiche-torneo'){loadTornei();renderRanking();}if(t==='settings'){renderLog();}if(t==='players')renderTickerTape();const activeBn=document.querySelector('.bn-item.active');if(activeBn)activeBn.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});}
 function fabClick(){if(_checkViewer())return;if(currentTab==='players')openNewPlayer();else if(currentTab==='calendario')openCalModal();}
 // ═══ FILTERS ═══
 function clearSearch(){const i=document.getElementById('srch-input');i.value='';renderCards();i.focus();}
