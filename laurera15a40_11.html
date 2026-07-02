@@ -286,14 +286,14 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   /* TABS — barra flottante in basso, solo icone, vetro sfumato; la voce attiva è una pillola staccata */
   .tabs{border-top:none!important;border-bottom:none!important;background:transparent!important;}
   .tabs-inner{display:none!important;}
-  .tabs-mobile2{display:flex!important;position:fixed;left:20px;right:20px;bottom:18px;z-index:900;margin:0;
+  .tabs-mobile2{display:flex!important;position:fixed;left:14px;right:14px;bottom:16px;z-index:900;margin:0;
     background:linear-gradient(150deg,rgba(30,30,30,.78),rgba(8,8,8,.62));
     -webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);
     border:1px solid rgba(255,255,255,.09);border-radius:999px;box-shadow:0 14px 36px rgba(0,0,0,.5);
-    padding:7px;gap:4px;overflow-x:auto;scrollbar-width:none;justify-content:center!important;}
+    padding:clamp(4px,1.5vw,7px);gap:clamp(1px,1vw,4px);overflow-x:auto;scrollbar-width:none;justify-content:center!important;}
   .tabs-mobile2::-webkit-scrollbar{display:none;}
-  .bn-item{display:flex!important;align-items:center;justify-content:center;flex-shrink:0;width:46px;height:46px;padding:0!important;border-radius:50%!important;font-size:24px!important;color:var(--text2);background:transparent;}
-  .bn-icon{font-size:24px;line-height:1;filter:grayscale(1) brightness(1.4) opacity(.7);transition:filter .2s,transform .2s;}
+  .bn-item{display:flex!important;align-items:center;justify-content:center;flex-shrink:0;width:clamp(34px,12vw,48px);height:clamp(34px,12vw,48px);padding:0!important;border-radius:50%!important;color:var(--text2);background:transparent;}
+  .bn-icon{font-size:clamp(16px,6vw,24px);line-height:1;filter:grayscale(1) brightness(1.4) opacity(.7);transition:filter .2s,transform .2s;}
   .bn-item.active{background:rgba(232,255,0,.16)!important;}
   .bn-item.active .bn-icon{filter:none;transform:scale(1.1);}
   .fab{bottom:96px!important;}
@@ -643,6 +643,7 @@ body.viewer .adm-hint{display:none!important;}
       </nav>
 <div class="ticker-tape"><div class="ticker-tape-content" id="ticker-tape-content"></div></div>
 <div class="tabs-mobile2">
+  <div class="tab bn-item" data-tab="players" onclick="switchTab('players')" title="Home"><span class="bn-icon">🏠</span></div>
   <div class="tab bn-item" data-tab="tornei" onclick="switchTab('tornei')" title="Tornei"><span class="bn-icon">🏆</span></div>
   <div class="tab bn-item" data-tab="calendario" onclick="switchTab('calendario')" title="Calendario"><span class="bn-icon">📅</span></div>
   <div class="tab bn-item" data-tab="risultati" onclick="switchTab('risultati')" title="Risultati"><span class="bn-icon">🏅</span></div>
