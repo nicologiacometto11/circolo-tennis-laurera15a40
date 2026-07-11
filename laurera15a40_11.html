@@ -386,9 +386,9 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .add-res-short{display:inline!important;}
   .cal-torneo-tipo{display:none!important;}
 
-  /* RANKING (tab Ranking torneo) — nome a capo invece di troncato, cognome sempre su riga propria */
-  .rank-item-name{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.25;}
-  .rank-item-surname{display:block;}
+  /* RANKING (tab Ranking torneo) — nome abbreviato "N. Cognome" su una sola riga, mai a capo */
+  .rank-item-name{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.25;}
+  .rank-item-surname{display:inline;}
 
   /* FANTATENNIS — contatore pronostici sotto al bottone, bottone solo "+" */
   .fanta-actions{flex-direction:column;align-items:stretch!important;gap:3px!important;}
@@ -1440,7 +1440,7 @@ function renderRank(){
   };
   const rows=list.map((p,i)=>`<tr>
       <td style="text-align:center">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</td>
-      <td><div style="display:flex;align-items:center;gap:8px">${avHtml(p)}<span style="font-weight:600">${esc(dispName(p.nome))}</span></div></td>
+      <td><div style="display:flex;align-items:center;gap:8px;min-width:0"><span style="flex-shrink:0">${avHtml(p)}</span><span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(dispName(p.nome))}</span></div></td>
       <td style="text-align:center;font-weight:700">${p.pg||0}</td>
       <td style="text-align:center">${normStorico(p.storico)}</td>
       <td style="text-align:center;font-weight:700;color:var(--accent2)">${(p.mg||0).toFixed(2)}</td>
@@ -3908,7 +3908,7 @@ function renderRanking() {
           <div style="font-size:${rank<=3?'22':'16'}px;min-width:32px;text-align:center;font-weight:800;color:${rankColor};font-family:'Bebas Neue',sans-serif;">${rankIcon}</div>
           ${av}
           <div style="flex:1;min-width:0;">
-            <div class="rank-item-name" style="font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(nomeFirst)}${nomeRest?` <span class="rank-item-surname">${esc(nomeRest)}</span>`:''}</div>
+            <div class="rank-item-name" style="font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(dispName(p.nome))}</div>
           </div>
         </div>
         <div style="background:var(--accent);clip-path:polygon(16px 0,100% 0,100% 100%,0 100%);padding:12px 24px 12px 30px;text-align:center;flex-shrink:0;">
@@ -4097,7 +4097,7 @@ function renderGironiMisto(t){
     // HTML classifica
     var clsRows=ranked.map(function(r,i){
       return '<tr><td style="text-align:center;padding:7px 8px">'+(i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1)+'</td>'
-        +'<td style="padding:7px 8px;font-weight:600">'+esc(dispName(r.nome))+'</td>'
+        +'<td style="padding:7px 8px;font-weight:600;white-space:nowrap">'+esc(dispName(r.nome))+'</td>'
         +'<td style="text-align:center;padding:7px 8px">'+r.pg+'</td>'
         +'<td style="text-align:center;padding:7px 8px;color:#22c55e;font-weight:700">'+r.v+'</td>'
         +'<td style="text-align:center;padding:7px 8px;color:#f0c040;font-weight:700">'+r.p+'</td>'
