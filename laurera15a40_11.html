@@ -963,6 +963,7 @@ body.viewer .adm-hint{display:none!important;}
   <div class="profile-hero">
     <div class="av av-0" id="profile-av" style="width:76px;height:76px;font-size:28px;"></div>
     <div id="profile-name" class="profile-hero-name"></div>
+    <div id="profile-lv" style="margin:2px 0 4px"></div>
     <button onclick="openH2H()" class="profile-h2h-btn">⚔️ Testa a Testa</button>
   </div>
   <div class="profile-body">
@@ -2315,6 +2316,13 @@ function openProfile(playerId){
   av.className=`av ${avc(p.id)}`;
   av.innerHTML=p.photoUrl?`<img src="${p.photoUrl}" alt="">`:ini(p.nome);
   document.getElementById('profile-name').textContent=p.nome;
+  // Livello (visibile a tutti, anche non-admin)
+  const _lvEl=document.getElementById('profile-lv');
+  if(_lvEl){
+    const _lc=caC[p.livello]||'var(--text2)';
+    const _flg=flag(p.naz);
+    _lvEl.innerHTML=`<span style="display:inline-flex;align-items:center;gap:6px;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:.5px;padding:3px 10px;border-radius:7px;background:${_lc}26;color:${_lc};border:1px solid ${_lc}">LIVELLO ${p.livello||'-'}</span>`+(_flg?`<span style="margin-left:8px;font-size:13px;color:var(--text2)">${_flg} ${esc(p.naz||'')}</span>`:'');
+  }
   // Stats
   const mm=(p.storico||'0-0-0').match(/(\d+)[\-\/](\d+)(?:[\-\/](\d+))?/)||['','0','0'];
   const hasD=mm[3]!==undefined;
