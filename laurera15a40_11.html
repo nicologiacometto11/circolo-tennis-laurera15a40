@@ -784,8 +784,25 @@ body.viewer .adm-hint{display:none!important;}
       <p style="margin-top:8px"><strong style="color:var(--red)">Caricare un backup sovrascrive tutti i dati attuali.</strong></p>
     </div>
     <div class="card stg-block">
+      <h3>🎨 Aspetto</h3>
+      <div class="btn-row">
+        <button class="btn btn-g" onclick="applyTheme(false);localStorage.setItem('laurera_theme','dark')">🌙 Scuro</button>
+        <button class="btn btn-g" onclick="applyTheme(true);localStorage.setItem('laurera_theme','light')">☀️ Chiaro</button>
+      </div>
+    </div>
+    <div class="card stg-block">
       <h3>🔐 Admin</h3>
       <div class="btn-row"><button class="btn btn-d" onclick="adminLogout()">🔒 Esci Admin</button></div>
+    </div>
+    <div class="card stg-block">
+      <h3>🧹 Pulizia Dati</h3>
+      <p>Rimuove partite, pronostici e voci dell'albo d'oro rimasti orfani (con "?") dopo la cancellazione manuale di un giocatore.</p>
+      <div class="btn-row"><button class="btn btn-g" onclick="cleanOrphanData()">🧹 Pulisci Dati Orfani</button></div>
+    </div>
+    <div class="card stg-block">
+      <h3>⚠️ Zona Pericolosa</h3>
+      <p><strong style="color:var(--red)">Cancella definitivamente TUTTI i dati del circolo: giocatori, partite, calendario, tornei, albo d'oro, fantalaurera, foto e video.</strong></p>
+      <div class="btn-row"><button class="btn btn-d" onclick="resetData()">🗑️ Resetta Tutto</button></div>
     </div>
     <div class="card stg-block">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
@@ -1202,7 +1219,7 @@ function switchTab(t){currentTab=t;document.querySelectorAll('.tab').forEach(x=>
 function fabClick(){if(_checkViewer())return;if(currentTab==='players')openNewPlayer();else if(currentTab==='calendario')openCalModal();}
 // ═══ FILTERS ═══
 function clearSearch(){const i=document.getElementById('srch-input');i.value='';renderCards();i.focus();}
-function getFiltered(){const q=(document.getElementById('srch-input')||{value:''}).value.toLowerCase(),s=(document.getElementById('sort-sel')||{value:'name'}).value;let list=players.filter(p=>{if(gF!=='ALL'&&p.sesso!==gF)return false;if(!lvF.includes(p.livello))return false;if(q&&!p.nome.toLowerCase().includes(q))return false;return true;});list.sort((a,b)=>s==='name'?a.nome.localeCompare(b.nome):s==='gv'?b.gv-a.gv:s==='mg'?b.mg-a.mg:s==='age'?a.eta-b.eta:wr(b.storico)-wr(a.storico));return list;}
+function getFiltered(){const q=(document.getElementById('srch-input')||{value:''}).value.toLowerCase(),s=(document.getElementById('sort-sel')||{value:'name'}).value;let list=players.filter(p=>{if(p.archiviato)return false;if(gF!=='ALL'&&p.sesso!==gF)return false;if(!lvF.includes(p.livello))return false;if(q&&!p.nome.toLowerCase().includes(q))return false;return true;});list.sort((a,b)=>s==='name'?a.nome.localeCompare(b.nome):s==='gv'?b.gv-a.gv:s==='mg'?b.mg-a.mg:s==='age'?a.eta-b.eta:wr(b.storico)-wr(a.storico));return list;}
 // ═══ RENDER CARDS ═══
 function storicoHtml(s){
   // V-S (no draws) or V-P-S (with draws)
@@ -1377,11 +1394,25 @@ function removeAv(){pendingPhoto=null;const n=document.getElementById('fp-nome')
 function openEditPlayer(id){if(_checkViewer())return;editPlayerId=id;pendingPhoto=null;const p=players.find(x=>x.id===id);document.getElementById('mp-title').textContent='Modifica: '+p.nome;document.getElementById('fp-nome').value=p.nome;document.getElementById('fp-sesso')&&(document.getElementById('fp-sesso').value=p.sesso||'UOMO');document.getElementById('fp-lv').value=p.livello;document.getElementById('fp-naz').value=p.naz;document.getElementById('fp-storico').value=normStorico(p.storico);document.getElementById('fp-pg').value=p.pg;document.getElementById('fp-gv').value=p.gv;document.getElementById('fp-mg').value=p.mg.toFixed(2);const av=document.getElementById('mp-av');av.className=`av ${avc(p.id)}`;av.style.cssText='width:54px;height:54px;font-size:20px';av.innerHTML=p.photoUrl?`<img src="${p.photoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`<span style="font-family:'Bebas Neue',sans-serif;font-size:20px">${ini(p.nome)}</span>`;document.getElementById('mp-del-btn').style.display='';document.getElementById('mp-av-file').value='';document.getElementById('modal-player').classList.add('open');}
 function openNewPlayer(){if(_checkViewer())return;editPlayerId=null;pendingPhoto=null;document.getElementById('mp-title').textContent='Nuovo Giocatore';['fp-nome','fp-storico'].forEach(id=>document.getElementById(id).value='');document.getElementById('fp-lv').value=1;document.getElementById('fp-naz').value='ITALIA';document.getElementById('fp-storico').value='0-0-0';document.getElementById('fp-pg').value=0;document.getElementById('fp-gv').value=0;document.getElementById('fp-mg').value='0.00';const av=document.getElementById('mp-av');av.className='av av-0';av.style.cssText='width:54px;height:54px;font-size:20px';av.innerHTML='<span style="font-family:\'Bebas Neue\',sans-serif;font-size:20px">??</span>';document.getElementById('mp-del-btn').style.display='none';document.getElementById('mp-av-file').value='';document.getElementById('modal-player').classList.add('open');}
 function savePlayer(){const nome=document.getElementById('fp-nome').value.trim().toUpperCase();if(!nome){toast('❌ Inserisci il nome');return;}const gv=+document.getElementById('fp-gv').value||0,pg=+document.getElementById('fp-pg').value||0;const data={nome,eta:0,sesso:document.getElementById('fp-sesso').value,livello:+document.getElementById('fp-lv').value,naz:document.getElementById('fp-naz').value.trim().toUpperCase(),mano:'DESTRA',storico:normStorico(document.getElementById('fp-storico').value.trim()),pg,gv,mg:calcMg(gv,pg)};if(editPlayerId){const idx=players.findIndex(p=>p.id===editPlayerId);const ex=players[idx];if(pendingPhoto){data.photoUrl=pendingPhoto;savePh(editPlayerId,pendingPhoto);}else if(ex._rp){data.photoUrl=null;delPh(editPlayerId);delete ex._rp;}else if(ex.photoUrl){data.photoUrl=ex.photoUrl;}players[idx]={...ex,...data};addLog('👤','Aggiornato giocatore: '+nome);toast('✅ Salvato!');}else{const nid=nextId++;if(pendingPhoto){data.photoUrl=pendingPhoto;savePh(nid,pendingPhoto);}players.push({id:nid,...data});addLog('👤','Aggiunto giocatore: '+nome);toast('✅ Aggiunto!');}save();document.getElementById('modal-player').classList.remove('open');renderCards();renderTickerTape();renderRisultati();if(currentTab==='tornei')renderTornei();updateHdrStats();}
-function deletePlayer(){if(!editPlayerId)return;delPh(editPlayerId);players=players.filter(p=>p.id!==editPlayerId);save();document.getElementById('modal-player').classList.remove('open');renderCards();toast('🗑️ Eliminato');}
+function deletePlayer(){
+  if(!editPlayerId)return;
+  const p=players.find(x=>x.id===editPlayerId);if(!p)return;
+  const hasHistory=(p.pg>0)||sched.some(m=>m.p1Id===editPlayerId||m.p2Id===editPlayerId)||matches.some(m=>m.p1===editPlayerId||m.p2===editPlayerId);
+  if(hasHistory){
+    if(!confirm('Questo giocatore ha partite/storico registrati. Per non rompere risultati, calendario e albo d\'oro verrà archiviato invece di essere cancellato: sparirà dalle liste attive ma resterà nello storico. Continuare?'))return;
+    p.archiviato=true;
+    save();
+    document.getElementById('modal-player').classList.remove('open');
+    renderCards();toast('📦 Giocatore archiviato');
+    return;
+  }
+  if(!confirm('Eliminare definitivamente questo giocatore?'))return;
+  delPh(editPlayerId);players=players.filter(x=>x.id!==editPlayerId);save();document.getElementById('modal-player').classList.remove('open');renderCards();toast('🗑️ Eliminato');
+}
 // ═══ RANK ═══
 function renderRank(){
   const sortKey=document.getElementById('rank-sort-sel')?document.getElementById('rank-sort-sel').value:'gv';
-  let list=[...players];
+  let list=players.filter(p=>!p.archiviato);
   if(sortKey==='name')list.sort((a,b)=>a.nome.localeCompare(b.nome));
   else list.sort((a,b)=>(+b[sortKey]||0)-(+a[sortKey]||0));
   const avHtml=p=>{
@@ -1503,7 +1534,7 @@ function renderTickerTape(){
   el.style.animation='';
 }
 // ═══ HIGHLIGHTS ═══
-function fillMSelects(){const opts='<option value="">— Seleziona —</option>'+[...players].sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('');document.getElementById('mm-p1').innerHTML=opts;document.getElementById('mm-p2').innerHTML=opts;}
+function fillMSelects(){const opts='<option value="">— Seleziona —</option>'+players.filter(p=>!p.archiviato).sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('');document.getElementById('mm-p1').innerHTML=opts;document.getElementById('mm-p2').innerHTML=opts;}
 function renderMatches(){const grid=document.getElementById('match-grid');if(!matches.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1"><span class="empty-icon">🎬</span>Nessun highlight ancora</div>';return;}grid.innerHTML=matches.map(m=>{const p1=players.find(p=>p.id===m.p1Id),p2=players.find(p=>p.id===m.p2Id);const ds=m.data?new Date(m.data).toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'}):'—';const hv=!!m.videoUrl;return`<div class="mcard"><div class="mthumb" onclick="${hv?`playVid(${m.id})`:''}"> ${hv?`<video src="${m.videoUrl}" preload="metadata"></video><div class="moverlay"><div class="mplay">▶</div></div>`:`<div class="mthumb-ph"><span>🎾</span><span>Nessun video</span></div>`}</div><div class="mbody"><div class="mtitle">${esc(m.titolo)||'Partita'}</div><div class="mmeta"><span>${p1?esc(p1.nome):'—'}</span><span style="color:var(--text2)">vs</span><span>${p2?esc(p2.nome):'—'}</span>${m.risultato?`<span style="color:var(--accent2);font-weight:700">${esc(m.risultato)}</span>`:''}</div><div class="mmeta" style="margin-top:4px"><span style="background:var(--bg4);padding:2px 7px;border-radius:5px;font-size:11px">📅 ${ds}</span></div><div class="mactions"><label class="mbtn mbtn-p" style="cursor:pointer">📹 ${hv?'Sostituisci':'Carica Video'}<input type="file" accept="video/*" style="display:none" onchange="uploadVid(this,${m.id})"></label><button class="mbtn mbtn-g" onclick="openMatchModal(${m.id})">✏️</button>${hv?`<button class="mbtn mbtn-d" onclick="removeVid(${m.id})">🗑</button>`:''}</div><div class="vprog" id="vp-${m.id}"><div class="vprog-fill" id="vpf-${m.id}" style="width:0%"></div></div></div></div>`;}).join('');}
 function openMatchModal(id){if(_checkViewer())return;editMatchId=id||null;fillMSelects();if(id){const m=matches.find(x=>x.id===id);document.getElementById('mm-title').textContent='Modifica';document.getElementById('mm-titolo').value=m.titolo||'';document.getElementById('mm-p1').value=m.p1Id||'';document.getElementById('mm-p2').value=m.p2Id||'';document.getElementById('mm-data').value=m.data||'';document.getElementById('mm-risultato').value=m.risultato||'';document.getElementById('mm-note').value=m.note||'';document.getElementById('mm-del-btn').style.display='';}else{document.getElementById('mm-title').textContent='Nuovo';['mm-titolo','mm-data','mm-risultato','mm-note'].forEach(x=>document.getElementById(x).value='');document.getElementById('mm-p1').value='';document.getElementById('mm-p2').value='';document.getElementById('mm-del-btn').style.display='none';}document.getElementById('modal-match').classList.add('open');}
 function saveMatch(){const data={titolo:document.getElementById('mm-titolo').value.trim(),p1Id:+document.getElementById('mm-p1').value||null,p2Id:+document.getElementById('mm-p2').value||null,data:document.getElementById('mm-data').value,risultato:document.getElementById('mm-risultato').value.trim(),note:document.getElementById('mm-note').value.trim()};if(editMatchId){const idx=matches.findIndex(m=>m.id===editMatchId);matches[idx]={...matches[idx],...data};toast('✅ Aggiornato!');}else{matches.push({id:matchNextId++,...data});toast('✅ Aggiunto!');}save();document.getElementById('modal-match').classList.remove('open');renderMatches();}
@@ -1638,7 +1669,7 @@ function fillCalSelects(){
     return;
   }
   const opts='<option value="">— Seleziona —</option>'+
-    [...players].filter(p=>!eligibleIds||eligibleIds.includes(p.id))
+    [...players].filter(p=>!p.archiviato&&(!eligibleIds||eligibleIds.includes(p.id)))
     .sort((a,b)=>a.nome.localeCompare(b.nome))
     .map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('');
   document.getElementById('mc-p1').innerHTML=opts;
@@ -1989,7 +2020,53 @@ function importBackup(input){
   r.readAsText(input.files[0]);
 }
 function importPhotos(input){if(!input.files||!input.files.length)return;const log=document.getElementById('photo-log');log.style.display='block';log.innerHTML='⏳...';const files=Array.from(input.files);let ok=0,miss=0,done=0,logs=[];const norm=n=>n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,' ').trim().replace(/\s+/g,'.');files.forEach(file=>{const raw=file.name.toLowerCase().replace(/\.[^.]+$/,'');const hit=players.find(p=>{const pn=norm(p.nome);const pts=pn.split('.');return raw===pn||pts.every(pt=>raw.includes(pt));});if(hit){const r=new FileReader();r.onload=e=>{hit.photoUrl=e.target.result;savePh(hit.id,e.target.result);ok++;done++;logs.push(`✅ ${esc(file.name)} → ${esc(hit.nome)}`);if(done===files.length){save();renderCards();log.innerHTML=`<strong style="color:var(--green)">${ok} abbinate</strong>, ${miss} non trovate<br>`+logs.join('<br>');toast('✅ '+ok+' foto!');}};r.readAsDataURL(file);}else{miss++;done++;logs.push(`⚠️ ${esc(file.name)} → non trovato`);}});}
-function resetData(){if(!confirm('Sei sicuro? Tutte le modifiche andranno perse.'))return;players=[];matches=[];sched=[];nextId=100;matchNextId=200;schedNextId=300;for(const k of Object.keys(localStorage)){if(k.startsWith('laurera_'))localStorage.removeItem(k);}save();renderCards();renderTickerTape();toast('🔄 Ripristinato');}
+function resetData(){
+  if(_checkViewer())return;
+  if(!confirm('⚠️ Questo cancellerà DEFINITIVAMENTE tutti i dati del circolo: giocatori, partite, calendario, tornei, albo d\'oro, fantalaurera, foto e video. Continuare?'))return;
+  if(prompt('Per confermare scrivi RESETTA (in maiuscolo):')!=='RESETTA'){toast('❌ Annullato');return;}
+  players=[];matches=[];sched=[];nextId=100;matchNextId=200;schedNextId=300;
+  tornei=[];tNextId=1000;
+  alboData=[];
+  fantaData={predictions:[]};
+  for(const k of Object.keys(localStorage)){if(k.startsWith('laurera_'))localStorage.removeItem(k);}
+  save();saveTornei();saveAlboData();saveFanta();
+  try{_doc('tornei').set({tornei:JSON.stringify(tornei),tNextId}).catch(()=>{});}catch(e){}
+  renderCards();renderTickerTape();
+  if(typeof renderAlbo==='function')renderAlbo();
+  if(typeof renderTornei==='function')renderTornei();
+  toast('🔄 Tutti i dati sono stati resettati');
+}
+function cleanOrphanData(){
+  if(_checkViewer())return;
+  if(!confirm('Rimuove partite, pronostici e voci dell\'albo d\'oro che fanno riferimento a giocatori ormai cancellati (quelli che mostrano "?"). Continuare?'))return;
+  const pid=id=>players.some(p=>p.id===id);
+  let removed=0;
+  const beforeSched=sched.length;
+  sched=sched.filter(m=>{
+    if(m.teamName1||m.teamName2||m.torneoId)return true; // gestiti da tornei/nomi squadra, non toccare
+    const orphan=(m.p1Id&&!pid(m.p1Id))||(m.p2Id&&!pid(m.p2Id));
+    return !orphan;
+  });
+  removed+=beforeSched-sched.length;
+  const beforeMatches=matches.length;
+  matches=matches.filter(m=>{
+    const orphan=(m.p1&&!pid(m.p1))||(m.p2&&!pid(m.p2));
+    return !orphan;
+  });
+  removed+=beforeMatches-matches.length;
+  const validSchedIds=new Set(sched.map(m=>m.id));
+  const beforePred=(fantaData.predictions||[]).length;
+  fantaData.predictions=(fantaData.predictions||[]).filter(p=>validSchedIds.has(p.matchId));
+  removed+=beforePred-fantaData.predictions.length;
+  const beforeAlbo=alboData.length;
+  alboData=alboData.filter(a=>!(a.vincitore&&a.vincitore.includes('?')));
+  removed+=beforeAlbo-alboData.length;
+  save();saveFanta();saveAlboData();
+  renderRisultati();renderTickerTape();
+  if(typeof renderAlbo==='function')renderAlbo();
+  if(typeof renderFantaPronostici==='function')renderFantaPronostici();
+  toast(removed?`🧹 Rimossi ${removed} elementi orfani`:'✅ Nessun dato orfano trovato');
+}
 function recalcStats(){
   // Reset all player stats and recompute from sched ground truth
   players.forEach(p=>{p.pg=0;p.gv=0;p.storico='0-0-0';p.mg=0;});
@@ -2667,7 +2744,7 @@ function openEditTorneo(id){if(_checkViewer())return;
 function fillMtPlayers(selected){
   const el=document.getElementById('mt-players-list');if(!el)return;
   const s=document.getElementById('mt-search');if(s)s.value='';
-  el.innerHTML=[...players].sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>{
+  el.innerHTML=players.filter(p=>!p.archiviato||selected.includes(p.id)).sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>{
     const checked=selected.includes(p.id);
     const ini=p.nome.split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
     return`<label class="mt-player-chip"><input type="checkbox" value="${p.id}" ${checked?'checked':''} onchange="updateMtCount()"><div class="mt-chip-av av-${p.id%8}">${ini}</div><span class="mt-chip-name">${esc(p.nome)}</span><div class="mt-chip-check">✓</div></label>`;
