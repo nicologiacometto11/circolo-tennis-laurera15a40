@@ -980,7 +980,7 @@ body.viewer .adm-hint{display:none!important;}
     <h2>🏆 <span id="mt-title">Nuovo Torneo</span></h2>
 
     <div class="form-grid">
-      <div class="fg fg-full"><label>Nome Torneo</label><input id="mt-nome" type="text" placeholder="E.R.A.D Tour — Estate 2025"></div>
+      <div class="fg fg-full"><label>Nome Torneo</label><input id="mt-nome" type="text" placeholder="es. Torneo Estate 2025"></div>
       <div class="fg"><label>Tipologia</label>
         <select id="mt-tipo" onchange="updateMtCount()">
           <option value="girone">🔄 Campionato (tutti vs tutti)</option>
@@ -1083,7 +1083,7 @@ body.viewer .adm-hint{display:none!important;}
     </div>
   </div>
 </div>
-<div class="modal-bg" id="modal-albo" onclick="if(event.target===this)this.classList.remove('open')"><div class="modal" onclick="event.stopPropagation()"><h2 id="albo-modal-title">👑 Nuovo Trofeo</h2><div class="form-grid"><div class="fg fg-full"><label>Trofeo / Titolo</label><input id="albo-titolo" type="text" placeholder="es. Campione E.R.A.D Tour"></div><div class="fg"><label>Vincitore / Coppia</label><input id="albo-vincitore" type="text" placeholder="es. Barzon / Dellerba"></div><div class="fg"><label>Anno</label><input id="albo-anno" type="number" placeholder="2026" min="1900" max="2100"></div><div class="fg fg-full"><label>Torneo / Evento</label><input id="albo-torneo" type="text" placeholder="es. E.R.A.D Tour"></div><div class="fg fg-full"><label>Note (opzionale)</label><input id="albo-note" type="text" placeholder="es. Finale 6-4 7-5"></div></div><div class="modal-actions"><button class="btn btn-d" id="albo-del-btn" onclick="deleteAlbo()" style="display:none">🗑 Elimina</button><button class="btn btn-g" onclick="document.getElementById('modal-albo').classList.remove('open')">Annulla</button><button class="btn btn-p" onclick="saveAlbo()">💾 Salva</button></div></div></div>
+<div class="modal-bg" id="modal-albo" onclick="if(event.target===this)this.classList.remove('open')"><div class="modal" onclick="event.stopPropagation()"><h2 id="albo-modal-title">👑 Nuovo Trofeo</h2><div class="form-grid"><div class="fg fg-full"><label>Trofeo / Titolo</label><input id="albo-titolo" type="text" placeholder="es. Campione Torneo Estate"></div><div class="fg"><label>Vincitore / Coppia</label><input id="albo-vincitore" type="text" placeholder="es. Barzon / Dellerba"></div><div class="fg"><label>Anno</label><input id="albo-anno" type="number" placeholder="2026" min="1900" max="2100"></div><div class="fg fg-full"><label>Torneo / Evento</label><input id="albo-torneo" type="text" placeholder="es. Torneo Estate 2025"></div><div class="fg fg-full"><label>Note (opzionale)</label><input id="albo-note" type="text" placeholder="es. Finale 6-4 7-5"></div></div><div class="modal-actions"><button class="btn btn-d" id="albo-del-btn" onclick="deleteAlbo()" style="display:none">🗑 Elimina</button><button class="btn btn-g" onclick="document.getElementById('modal-albo').classList.remove('open')">Annulla</button><button class="btn btn-p" onclick="saveAlbo()">💾 Salva</button></div></div></div>
 
 <!-- MODAL ESPORTA GIOCATORI PDF -->
 <div class="modal-bg" id="modal-export-players" onclick="if(event.target===this)this.classList.remove('open')">
@@ -2719,7 +2719,7 @@ function openNewTorneoModal(){if(_checkViewer())return;
   document.getElementById('mt-data-end').value='';
   document.getElementById('mt-del-btn').style.display='none';
   fillMtPlayers([]);
-  document.getElementById('mt-players-section').style.display='none';
+  document.getElementById('mt-players-section').style.display='';
   document.getElementById('modal-torneo').classList.add('open');
 }
 function openEditTorneo(id){if(_checkViewer())return;
