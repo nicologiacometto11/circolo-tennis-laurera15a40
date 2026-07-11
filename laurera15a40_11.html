@@ -1180,7 +1180,8 @@ firebase.initializeApp(_fbConfig);
 const _db=firebase.firestore();
 const _auth=firebase.auth();
 const _doc=(name)=>_db.collection('clubs').doc('laurera15a40').collection('data').doc(name);
-let _skipNextSnap={main:false,tornei:false,fanta:false,albo:false};
+let _skipNextSnap={main:false,tornei:false,fanta:false,albo:false,log:false};
+let _changeLog=[];
 
 function _lsCache(){try{localStorage.setItem('laurera_p',JSON.stringify(players.map(p=>{const{photoUrl,...r}=p;return r;})));localStorage.setItem('laurera_m',JSON.stringify(matches));localStorage.setItem('laurera_s',JSON.stringify(sched));localStorage.setItem('laurera_i',JSON.stringify({nextId,matchNextId,schedNextId}));}catch(e){}}
 function _lsLoad(){try{const rp=localStorage.getItem('laurera_p');if(rp)players=JSON.parse(rp);const rm=localStorage.getItem('laurera_m');if(rm)matches=JSON.parse(rm);const rs=localStorage.getItem('laurera_s');if(rs)sched=JSON.parse(rs);const ri=localStorage.getItem('laurera_i');if(ri){const x=JSON.parse(ri);nextId=x.nextId||100;matchNextId=x.matchNextId||200;schedNextId=x.schedNextId||300;}}catch(e){}}
@@ -1426,13 +1427,13 @@ function deletePlayer(){
   if(hasHistory){
     if(!confirm('Questo giocatore ha partite/storico registrati. Per non rompere risultati, calendario e albo d\'oro verrà archiviato invece di essere cancellato: sparirà dalle liste attive ma resterà nello storico. Continuare?'))return;
     p.archiviato=true;
-    save();
+    save();addLog('📦','Archiviato giocatore: '+p.nome);
     document.getElementById('modal-player').classList.remove('open');
     renderCards();toast('📦 Giocatore archiviato');
     return;
   }
   if(!confirm('Eliminare definitivamente questo giocatore?'))return;
-  delPh(editPlayerId);players=players.filter(x=>x.id!==editPlayerId);save();document.getElementById('modal-player').classList.remove('open');renderCards();toast('🗑️ Eliminato');
+  const _delNome=p.nome;delPh(editPlayerId);players=players.filter(x=>x.id!==editPlayerId);save();addLog('🗑️','Eliminato giocatore: '+_delNome);document.getElementById('modal-player').classList.remove('open');renderCards();toast('🗑️ Eliminato');
 }
 // ═══ RANK ═══
 function renderRank(){
@@ -2039,6 +2040,7 @@ function importBackup(input){
       players.forEach(p=>{if(p.photoUrl)savePh(p.id,p.photoUrl);});
       matches.forEach(m=>{if(m.videoUrl)saveVid(m.id,m.videoUrl);});
       save();saveTornei();saveFanta();saveAlboData();
+      addLog('⬆️','Backup importato: '+players.length+' giocatori, '+tornei.length+' tornei');
       switchTab(currentTab);
       toast('✅ Backup importato!');
     }catch(e){toast('❌ File non valido');}
@@ -2057,6 +2059,7 @@ function resetData(){
   for(const k of Object.keys(localStorage)){if(k.startsWith('laurera_'))localStorage.removeItem(k);}
   save();saveTornei();saveAlboData();saveFanta();
   try{_doc('tornei').set({tornei:JSON.stringify(tornei),tNextId}).catch(()=>{});}catch(e){}
+  addLog('🔄','RESET TOTALE di tutti i dati del circolo');
   renderCards();renderTickerTape();
   if(typeof renderAlbo==='function')renderAlbo();
   if(typeof renderTornei==='function')renderTornei();
@@ -2123,7 +2126,7 @@ function recalcStats(){
       });
     }
   });
-  save();renderCards();renderTickerTape();if(currentTab==='classifiche')renderRank();
+  save();addLog('📊','Ricalcolate le statistiche dal calendario');renderCards();renderTickerTape();if(currentTab==='classifiche')renderRank();
   toast('✅ Statistiche ricalcolate da calendario!');
 }
 // ═══ AUTO PARSE GAMES ═══
@@ -2581,25 +2584,50 @@ function initQuotes(){
 // ═══════════════════════════════════════════════
 // REGISTRO MODIFICHE
 // ═══════════════════════════════════════════════
-function addLog(icon, text){
+function _logActor(){
+  try{const u=_auth&&_auth.currentUser;if(u&&u.email)return u.email.split('@')[0];}catch(e){}
+  return '';
+}
+async function loadLog(){
   try{
-    const logs=JSON.parse(localStorage.getItem('laurera_log')||'[]');
-    const now=new Date();
-    const time=now.toLocaleDateString('it-IT',{day:'2-digit',month:'short'})+' '+now.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
-    logs.unshift({icon,text,time});
-    if(logs.length>100)logs.pop();
-    localStorage.setItem('laurera_log',JSON.stringify(logs));
-  }catch(e){}
+    const snap=await _doc('log').get();
+    if(snap.exists&&Array.isArray(snap.data().entries)){
+      _changeLog=snap.data().entries;
+    } else {
+      // Prima volta: migra l'eventuale registro locale su Firestore (condiviso)
+      try{const local=JSON.parse(localStorage.getItem('laurera_log')||'[]');_changeLog=Array.isArray(local)?local:[];}catch(e){_changeLog=[];}
+      if(_changeLog.length){_skipNextSnap.log=true;_doc('log').set({entries:_changeLog}).catch(()=>{});}
+    }
+  }catch(e){
+    try{const local=JSON.parse(localStorage.getItem('laurera_log')||'[]');_changeLog=Array.isArray(local)?local:[];}catch(e2){_changeLog=[];}
+  }
+  try{localStorage.setItem('laurera_log',JSON.stringify(_changeLog));}catch(e){}
+}
+function addLog(icon, text){
+  const now=new Date();
+  const time=now.toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'})+' '+now.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  const who=_logActor();
+  _changeLog.unshift({icon,text,time,who,ts:now.getTime()});
+  if(_changeLog.length>300)_changeLog.pop();
+  try{localStorage.setItem('laurera_log',JSON.stringify(_changeLog));}catch(e){}
+  // Salva sul registro CONDIVISO (Firestore): così tutti vedono le modifiche di chiunque
+  try{_skipNextSnap.log=true;_doc('log').set({entries:_changeLog}).catch(e=>{console.error('addLog() save failed:',e);});}catch(e){}
+  renderLog();
 }
 function renderLog(){
   const el=document.getElementById('log-list');if(!el)return;
-  try{
-    const logs=JSON.parse(localStorage.getItem('laurera_log')||'[]');
-    if(!logs.length){el.innerHTML='<div class="log-entry"><span class="log-icon">ℹ️</span><span class="log-text">Nessuna modifica registrata.</span></div>';return;}
-    el.innerHTML=logs.map(l=>`<div class="log-entry"><span class="log-icon">${l.icon}</span><span class="log-text">${esc(l.text)}</span><span class="log-time">${l.time}</span></div>`).join('');
-  }catch(e){}
+  const logs=_changeLog||[];
+  if(!logs.length){el.innerHTML='<div class="log-entry"><span class="log-icon">ℹ️</span><span class="log-text">Nessuna modifica registrata.</span></div>';return;}
+  el.innerHTML=logs.map(l=>`<div class="log-entry"><span class="log-icon">${l.icon}</span><span class="log-text">${esc(l.text)}${l.who?` <span style="color:var(--accent2);font-size:11px">· ${esc(l.who)}</span>`:''}</span><span class="log-time">${esc(l.time||'')}</span></div>`).join('');
 }
-function clearLog(){if(!confirm('Cancellare il registro?'))return;localStorage.removeItem('laurera_log');renderLog();}
+function clearLog(){
+  if(_checkViewer())return;
+  if(!confirm('Cancellare il registro modifiche per tutti?'))return;
+  _changeLog=[];
+  try{localStorage.removeItem('laurera_log');}catch(e){}
+  _skipNextSnap.log=true;_doc('log').set({entries:[]}).catch(()=>{});
+  renderLog();
+}
 
 // ═══════════════════════════════════════════════
 // TORNEI
@@ -3401,8 +3429,9 @@ function migrateStorageNamespace(){
 migrateStorageNamespace();
 initTheme();initAdmin();fillNazList();
 (async()=>{
-  await Promise.all([loadTornei(),loadFanta(),loadAlbo(),load()]);
+  await Promise.all([loadTornei(),loadFanta(),loadAlbo(),load(),loadLog()]);
   migrateStoricoAll();
+  renderLog();
 
   // ── Realtime listeners ──
   _doc('main').onSnapshot(snap=>{
@@ -3432,6 +3461,15 @@ initTheme();initAdmin();fillNazList();
     if(!snap.exists)return;
     alboData=snap.data().alboData||[];
     if(currentTab==='albo')renderAlbo();
+  });
+  _doc('log').onSnapshot(snap=>{
+    if(_skipNextSnap.log){_skipNextSnap.log=false;return;}
+    if(!snap.exists)return;
+    if(Array.isArray(snap.data().entries)){
+      _changeLog=snap.data().entries;
+      try{localStorage.setItem('laurera_log',JSON.stringify(_changeLog));}catch(e){}
+      if(currentTab==='settings')renderLog();
+    }
   });
   // Aggiorna albo per tornei già completati
   setTimeout(function(){tornei.forEach(function(t){if(t.bracket)autoAlboCheck(t.id);});},300);migrateAlboNotes();renderAlbo();renderCards();renderTickerTape();updateHdrStats();fetchMeteo();setInterval(updateHdrClock,1000);setInterval(updateHdrStats,30000);setInterval(fetchMeteo,600000);updateHdrClock();initQuotes();
@@ -3699,19 +3737,23 @@ function saveAlbo(){
     anno:parseInt(document.getElementById('albo-anno').value)||new Date().getFullYear(),
     torneo:document.getElementById('albo-torneo').value.trim(),
     note:document.getElementById('albo-note').value.trim()};
+  var _wasEdit=!!editAlboId;
   if(editAlboId){
     for(var i=0;i<alboData.length;i++){if(alboData[i].id===editAlboId){alboData[i]=entry;break;}}
   } else {alboData.push(entry);}
   saveAlboData();
+  addLog('👑',(_wasEdit?'Modificato':'Aggiunto')+' trofeo albo d\'oro: '+titolo+' — '+vincitore);
   document.getElementById('modal-albo').classList.remove('open');
   renderAlbo();toast('✅ Trofeo salvato!');
 }
 function deleteAlbo(){
   if(!editAlboId)return;
+  var _delT=null;for(var k=0;k<alboData.length;k++){if(alboData[k].id===editAlboId){_delT=alboData[k];break;}}
   var newData=[];
   for(var i=0;i<alboData.length;i++){if(alboData[i].id!==editAlboId)newData.push(alboData[i]);}
   alboData=newData;
   saveAlboData();
+  addLog('🗑️','Eliminato trofeo albo d\'oro: '+(_delT?(_delT.titolo+' — '+_delT.vincitore):''));
   document.getElementById('modal-albo').classList.remove('open');
   renderAlbo();toast('🗑 Trofeo eliminato');
 }
@@ -4333,6 +4375,7 @@ function resetPuntiRanking(){
   // Salva la data di reset: i tornei con partite PRIMA di questa data non contano più
   const resetDate = new Date().toISOString();
   try{ localStorage.setItem('laurera_ranking_reset', resetDate); } catch(e){}
+  addLog('🔄','Azzerati i punti del ranking');
   renderRanking();
   toast('✅ Punti azzerati!');
 }
