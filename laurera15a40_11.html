@@ -611,6 +611,10 @@ body.viewer .tab[data-tab="settings"]{display:none!important;}
 body.viewer .tab[data-tab="fanta"]{display:none!important;}
 body.viewer #settings-gear-btn{display:none!important;}
 body.viewer .adm-hint{display:none!important;}
+/* Non-admin: niente livello sulle card, anello avatar giallo (colore app) invece del colore-livello.
+   Le card speciali "foil" (campione / #1) mantengono l'anello dorato. */
+body.viewer .pcrd-lv{display:none!important;}
+body.viewer .pcrd:not(.foil) .pcrd-ring{background:var(--accent)!important;}
 /* ── ADMIN LOCK ICON ── */
 #admin-lock-btn{background:none;border:none;cursor:pointer;font-size:18px;opacity:.45;transition:opacity .2s;padding:4px 6px;line-height:1}
 #admin-lock-btn:hover{opacity:1}
