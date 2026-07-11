@@ -855,8 +855,8 @@ body.viewer .adm-hint{display:none!important;}
     <div class="form-grid">
       <div class="fg fg-full"><label>Nome</label><input id="fp-nome" type="text" oninput="updateMpAv()"></div>
       <div class="fg"><label>Sesso</label><select id="fp-sesso"><option value="UOMO">Uomo</option><option value="DONNA">Donna</option></select></div>
-      <div class="fg"><label>Livello</label><select id="fp-lv"><option value="1">Livello 1</option><option value="2">Livello 2</option><option value="3">Livello 3</option></select></div>
-      <div class="fg"><label>Nazionalità</label><input id="fp-naz" type="text" placeholder="ITALIA"></div>
+      <div class="fg"><label>Livello</label><select id="fp-lv"><option value="1">Livello 1</option><option value="2">Livello 2</option><option value="3">Livello 3</option><option value="4">Livello 4</option><option value="5">Livello 5</option></select></div>
+      <div class="fg"><label>Nazionalità</label><input id="fp-naz" type="text" list="naz-list" placeholder="ITALIA"><datalist id="naz-list"></datalist></div>
       <div class="fg"><label>Storico (V-P-S)</label><input id="fp-storico" type="text" placeholder="es. 10-2-3"></div>
       <div class="fg"><label>Partite Giocate</label><input id="fp-pg" type="number" min="0" oninput="calcMgAuto()"></div>
       <div class="fg"><label>Game Vinti</label><input id="fp-gv" type="number" min="0" oninput="calcMgAuto()"></div>
@@ -1148,7 +1148,7 @@ function flag(n){if(!n)return'';const k=n.toString().trim().toUpperCase().normal
 // ═══ STATE ═══
 let players=[],matches=[],sched=[];
 let nextId=100,matchNextId=200,schedNextId=300;
-let gF='ALL',lvF=[1,2,3],editPlayerId=null,editMatchId=null,editSchedId=null,pendingPhoto=null;
+let gF='ALL',lvF=[1,2,3,4,5],editPlayerId=null,editMatchId=null,editSchedId=null,pendingPhoto=null;
 let currentTab='players';
 // ═══ STORAGE ═══
 // ═══ FIREBASE INIT ═══
@@ -1197,7 +1197,9 @@ const mobileShortName=nome=>{
 };
 const dispName=nome=>isMobileView()?mobileShortName(nome):nome;
 const avc=id=>`av-${id%8}`;
-const caC={1:'#22c55e',2:'#9b59b6',3:'#f59e0b'};
+const caC={1:'#86efac',2:'#16a34a',3:'#eab308',4:'#f97316',5:'#ef4444'};
+const NAZIONALITA=['ITALIA','FRANCIA','SPAGNA','GERMANIA','SVIZZERA','REGNO UNITO','PORTOGALLO','BELGIO','OLANDA','AUSTRIA','SERBIA','CROAZIA','ARGENTINA','BRASILE','STATI UNITI','RUSSIA','POLONIA','ROMANIA','GRECIA','ALBANIA','TUNISIA','MAROCCO','ALTRO'];
+function fillNazList(){const el=document.getElementById('naz-list');if(!el)return;el.innerHTML=NAZIONALITA.map(n=>`<option value="${n}">`).join('');}
 const calcMg=(gv,pg)=>pg>0?parseFloat((gv/pg).toFixed(6)):0;
 function normStorico(s){
   const m=(s||'0-0-0').match(/(\d+)[\-\/](\d+)(?:[\-\/](\d+))?/);
@@ -3366,7 +3368,7 @@ function migrateStorageNamespace(){
   }catch(e){}
 }
 migrateStorageNamespace();
-initTheme();initAdmin();
+initTheme();initAdmin();fillNazList();
 (async()=>{
   await Promise.all([loadTornei(),loadFanta(),loadAlbo(),load()]);
   migrateStoricoAll();
