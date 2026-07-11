@@ -48,6 +48,7 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
 .hdr-chip-icon{width:15px;height:15px;flex-shrink:0;color:var(--accent2);}
 .hdr-chip strong{color:var(--text2);font-weight:500;font-size:11px;margin-left:3px;text-transform:uppercase;letter-spacing:.3px;}
 .hdr-meteo-mobile{display:none;}
+.hdr-players-mobile{display:none;}
 @media(max-width:640px){.hdr-info{min-width:auto;}}
 /* TABS */
 .tabs{background:var(--bg2);border-top:3px solid var(--accent);border-bottom:3px solid var(--accent);overflow-x:auto;scrollbar-width:none;position:sticky;top:var(--header-h,0px);z-index:999;backdrop-filter:blur(20px);letter-spacing:.5px;}
@@ -281,7 +282,8 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{background:#f
   .hdr-chip{display:none!important;}
   #admin-lock-btn{margin-left:0;}
   .hdr-admin-col{flex-direction:row!important;gap:6px!important;}
-  .hdr-meteo-mobile{display:flex;align-items:center;gap:4px;position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;color:var(--text);background:var(--bg3);border:1px solid var(--border2);border-radius:999px;padding:5px 10px;white-space:nowrap;}
+  .hdr-meteo-mobile{display:none!important;}
+  .hdr-players-mobile{display:flex;align-items:center;gap:5px;position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:700;color:var(--text);background:var(--bg3);border:1px solid var(--border2);border-radius:999px;padding:5px 11px;white-space:nowrap;}
 
   /* TABS — barra flottante in basso, solo icone, vetro sfumato; la voce attiva è una pillola staccata */
   .tabs{border-top:none!important;border-bottom:none!important;background:transparent!important;}
@@ -625,7 +627,7 @@ body.viewer .adm-hint{display:none!important;}
 <body class="viewer">
 <header class="header">
   <div class="hdr">
-    <div class="hdr-meteo-mobile" id="hdr-meteo2" title="Meteo Volvera">—</div>
+    <div class="hdr-players-mobile" title="Giocatori registrati"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;flex-shrink:0;color:var(--accent2)"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span id="hdr-players2">—</span></div>
     <img src="https://www.laurera15a40.com/uploads/1/5/0/6/150685976/editor/logo-tipo-long-def.png?1725893045" class="logo-img" alt="Laurera 15A40" onerror="this.style.display='none'" onclick="switchTab('players')" style="cursor:pointer">
     <div class="hdr-center">
       <div class="hdr-title"><h1>CENTRO SPORTIVO · LAURERA15A40</h1><a class="hdr-addr" href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47881766c48bc33f:0xb7e99e2c09f32821?sa=X&ved=1t:8290&ictx=111" target="_blank" rel="noopener" style="font-size:16px;text-decoration:none;cursor:pointer">📍 Via Ugo Foscolo, 21, 10040 Volvera TO</a></div>
